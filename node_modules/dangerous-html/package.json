@@ -1,0 +1,60 @@
+{
+    "name": "dangerous-html",
+    "version": "0.1.13",
+    "description": "",
+    "main": "dist/default/lib.js",
+    "module": "dist/default/lib.mjs",
+    "unpkg": "dist/default/lib.umd.js",
+    "exports": {
+        ".": {
+            "import": "./dist/default/lib.mjs",
+            "require": "./dist/default/lib.js",
+            "umd": "./dist/default/lib.umd.js"
+        },
+        "./react": {
+            "import": "./dist/react/lib.mjs",
+            "require": "./dist/react/lib.js",
+            "umd": "./dist/react/lib.umd.js"
+        },
+        "./vue": {
+            "import": "./dist/vue/lib.mjs",
+            "require": "./dist/vue/lib.js",
+            "umd": "./dist/vue/lib.umd.js"
+        }
+    },
+    "scripts": {
+        "test": "yarn build && cp dist/default/lib.umd.js example/ && cp dist/react/lib.mjs example/ && cp dist/vue/lib.mjs example/vue-app/src && http-server example/",
+        "build": "yarn build:umd && yarn build:react && yarn build:vue",
+        "build:umd": "vite build",
+        "build:react": "vite build -c vite.config-react.js",
+        "build:vue": "vite build -c vite.config-vue.js"
+    },
+    "author": "",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/JayaKrishnaNamburu/danerously-set-html/issues"
+    },
+    "homepage": "https://github.com/JayaKrishnaNamburu/danerously-set-html#readme",
+    "devDependencies": {
+        "@types/react": "^17.0.2",
+        "@vitejs/plugin-vue2": "^2.0.0",
+        "http-server": "^14.1.1",
+        "lit": "^2.4.0",
+        "preact": "^10.3.2",
+        "react": "^17.0.2",
+        "vite": "^3.1.8",
+        "vue": "^2.7.0"
+    },
+    "peerDependencies": {
+        "react": "^17.x",
+        "vue": "^2.x"
+    },
+    "peerDependenciesMeta": {
+        "react": {
+            "optional": true
+        },
+        "vue": {
+            "optional": true
+        }
+    }
+}

@@ -1,0 +1,66 @@
+.excludes-mark {
+    gap: var(--dl-space-space-halfunit);
+    display: flex;
+    position: relative;
+    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+  }
+   
+  .excludes-icon1 {
+    display: flex;
+    padding: 5px;
+    align-items: center;
+    border-radius: 50%;
+    flex-direction: row;
+    justify-content: center;
+    background-color: #414141;
+  }
+   
+  .excludes-icon2 {
+    fill: #0F0F0F;
+    width: 12px;
+    height: 12px;
+  }
+   
+  .excludes-label {
+    color: #75797E;
+    font-size: 14px;
+    font-family: Poppins;
+    line-height: 25px;
+  }
+   
+  
+   
+  
+   
+  
+   
+  
+   
+  
+   
+  
+   
+  
+   
+  
+   
+  
+   
+  
+   
+  
+   
+  
+   
+  
+   
+  
+   
+  
+   
+  
+   
+  
+  
