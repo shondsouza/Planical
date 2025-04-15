@@ -182,4 +182,8 @@ __pycache__/
 *.csv
 .env
 database.db
-*.bat 
+*.bat
+
+# Allow these specific files
+!stresslevel.pkl
+!dreaddit-train.csv 
