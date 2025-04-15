@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <title>Verify Email - Planical</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="icon" href="https://source.unsplash.com/1600x900/?healthcare">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <!-- Your existing CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        // Function to detect email provider and redirect to webmail
+        function redirectToEmailProvider() {
+            const user = firebase.auth().currentUser;
+            if (user) {
+                const email = user.email;
+                const domain = email.split('@')[1].toLowerCase();
+                
+                if (domain.includes('gmail') || domain.includes('google')) {
+                    window.open('https://mail.google.com', '_blank');
+                } else if (domain.includes('yahoo')) {
+                    window.open('https://mail.yahoo.com', '_blank');
+                } else if (domain.includes('outlook') || domain.includes('hotmail') || domain.includes('live')) {
+                    window.open('https://outlook.live.com', '_blank');
+                } else {
+                    // Default case - show generic message
+                    alert('Please check your email inbox for the verification link');
+                }
+            }
+        }
+    </script>
+</head>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: 'Open Sans', sans-serif;
+        background: #222;
+        background-image: url('https://source.unsplash.com/1600x900/?healthcare');
+        font-size: 120%;
+    }
+
+    .card {
+        background: #000000d0;
+        color: white;
+        padding: 2em;
+        border-radius: 30px;
+        width: 100%;
+        max-width: 500px;
+        margin: 0.75em;
+    }
+
+    .search {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .butn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        align-content: center;
+    }
+
+    button {
+        padding: 10px;
+        background-color: white;
+        border: none;
+        color: black;
+        cursor: pointer;
+        margin: 10px;
+        padding: 15px 32px;
+        border-radius: 10%;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+    }
+
+    button:hover {
+        background: whitesmoke;
+    }
+
+    .flex {
+        display: flex;
+        align-items: center;
+    }
+
+    .description {
+        text-transform: capitalize;
+        margin-left: 8px;
+    }
+
+    .alert {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: white;
+        padding: 1em;
+        border-radius: 15px;
+        margin: 1em 0;
+    }
+
+    .alert-info {
+        background: rgba(0, 123, 255, 0.2);
+    }
+
+    .alert-success {
+        background: rgba(40, 167, 69, 0.2);
+    }
+
+    a {
+        color: #4CAF50;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: #45a049;
+        text-decoration: underline;
+    }
+
+    .container {
+        background: #000000d0;
+        color: white;
+        padding: 2em;
+        border-radius: 30px;
+        width: 100%;
+        max-width: 500px;
+        margin: 0.75em;
+        text-align: center;
+    }
+
+    h2 {
+        margin-bottom: 1.5em;
+        color: #4CAF50;
+    }
+
+    #verificationStatus {
+        margin: 2em 0;
+    }
+
+    #resendSection {
+        margin: 2em 0;
+    }
+
+    #resendButton {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 1em;
+    }
+
+    #resendButton:hover {
+        background-color: #45a049;
+    }
+
+    .email-services {
+        margin: 2em 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .email-btn, .login-btn {
+        display: flex;
+        align-items: center;
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        margin: 8px 0;
+        font-weight: bold;
+        transition: background-color 0.3s;
+    }
+    
+    .email-btn img {
+        margin-right: 10px;
+    }
+    
+    .email-btn:hover, .login-btn:hover {
+        background-color: #45a049;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .login-btn {
+        margin-top: 15px;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <h2>Verify Your Email</h2>
+        <div class="alert alert-info">
+            We've sent a verification email to your address. Please check your inbox and click the verification link.
+        </div>
+        
+        <div id="verificationStatus" style="display: none;">
+            <div class="alert alert-success">
+                <p>Email verified successfully! You can now <a href="{{ url_for('login') }}">login</a>.</p>
+            </div>
+        </div>
+
+        <div id="emailProviders">
+            <p>Open your email provider:</p>
+            <button id="openEmailBtn" onclick="redirectToEmailProvider()" class="btn btn-primary">
+                Open Email Provider
+            </button>
+        </div>
+
+        <div id="resendSection">
+            <p>Didn't receive the email?</p>
+            <button id="resendButton" onclick="resendVerification()">Resend Verification Email</button>
+        </div>
+
+        <p>Already verified? <a href="{{ url_for('login') }}">Login</a></p>
+    </div>
+
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = JSON.parse('{{ firebase_config|tojson|safe }}');
+        if (!firebase.apps || !firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        // Initialize Firestore
+        const db = firebase.firestore();
+
+        // Check verification status
+        function checkVerification() {
+            const user = firebase.auth().currentUser;
+            if (user) {
+                user.reload().then(() => {
+                    if (user.emailVerified) {
+                        // Update Firestore document
+                        db.collection('users').doc(user.uid).update({
+                            emailVerified: true
+                        }).then(() => {
+                            document.getElementById('verificationStatus').style.display = 'block';
+                            document.getElementById('resendSection').style.display = 'none';
+                            document.getElementById('emailProviders').style.display = 'none';
+                        });
+                    }
+                });
+            }
+        }
+
+        // Resend verification email
+        function resendVerification() {
+            const user = firebase.auth().currentUser;
+            if (user) {
+                user.sendEmailVerification()
+                    .then(() => {
+                        alert('Verification email sent!');
+                    })
+                    .catch((error) => {
+                        alert(error.message);
+                    });
+            }
+        }
+
+        // Check verification status every 5 seconds
+        setInterval(checkVerification, 5000);
+        checkVerification(); // Initial check
+    </script>
+</body>
+</html> 

@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planical AI - Direct Chat</title>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <style>
+        /* Scoped custom properties for this page only */
+        #planical-ai-app {
+            --primary-color: #4361ee;
+            --primary-light: #4895ef;
+            --primary-dark: #3a0ca3;
+            --success-color: #4CAF50;
+            --warning-color: #FFA500;
+            --background-color: #f8f9fa;
+            --card-bg-color: #ffffff;
+            --text-color: #333;
+            --text-light: #666;
+            --text-muted: #888;
+            --border-color: #e0e0e0;
+            --user-msg-bg: #4361ee;
+            --bot-msg-bg: #f0f4f8;
+            --bot-msg-border: #e6ebf5;
+            --transition-speed: 0.3s;
+        }
+        
+        #planical-ai-app.dark-theme {
+            --background-color: #121212;
+            --card-bg-color: #1e1e1e;
+            --text-color: #e0e0e0;
+            --text-light: #b0b0b0;
+            --text-muted: #909090;
+            --border-color: #2a2a2a;
+            --bot-msg-bg: #2a2a2a;
+            --bot-msg-border: #333333;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --avatar-border: #333333;
+            --input-focus-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Styling explicitly for the AI chatbot page */
+        #planical-ai-app {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        nav {
+            background-color: var(--card-bg-color);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            height: 40px;
+            width: auto;
+            transition: transform var(--transition-speed);
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .brand-logo {
+            height: 35px;
+            width: auto;
+            transition: transform var(--transition-speed);
+        }
+        
+        .brand-logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .brand-name {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            letter-spacing: 0.5px;
+        }
+        
+        #planical-ai-app.dark-theme .brand-name {
+            color: var(--primary-light);
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color var(--transition-speed);
+            display: flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-color);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+        
+        .home-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .nav-icon {
+            margin-right: 2px;
+        }
+        
+        .active-link {
+            color: var(--primary-color) !important;
+            font-weight: 600 !important;
+            background-color: rgba(67, 97, 238, 0.08);
+        }
+        
+        #planical-ai-app.dark-theme .active-link {
+            background-color: rgba(67, 97, 238, 0.15);
+        }
+        
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: background-color var(--transition-speed);
+        }
+        
+        .theme-toggle:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        #planical-ai-app.dark-theme .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .welcome-logo {
+            width: 90px;
+            height: auto;
+            margin: 0 auto 20px;
+            display: block;
+            animation: pulsate 3s infinite alternate ease-in-out;
+        }
+        
+        @keyframes pulsate {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+        
+        .chat-container {
+            flex: 1;
+            max-width: 950px;
+            margin: 0 auto;
+            width: 100%;
+            background-color: var(--card-bg-color);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            transition: all var(--transition-speed);
+            border: 1px solid var(--border-color);
+        }
+        
+        @media (max-width: 992px) {
+            .chat-container {
+                margin: 15px;
+                max-width: none;
+                border-radius: 12px;
+            }
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .chat-header h1 {
+            font-size: 1.8rem;
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+        
+        .chat-header-logo {
+            height: 35px;
+            width: auto;
+            margin-right: 15px;
+            filter: brightness(0) invert(1);
+        }
+        
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            scroll-behavior: smooth;
+            background-color: var(--card-bg-color);
+            background-image: 
+                radial-gradient(circle at 25px 25px, rgba(67, 97, 238, 0.03) 2%, transparent 0%), 
+                radial-gradient(circle at 75px 75px, rgba(67, 97, 238, 0.04) 2%, transparent 0%);
+            background-size: 100px 100px;
+        }
+        
+        .welcome-message {
+            text-align: center;
+            margin: 20px auto;
+            max-width: 500px;
+            padding: 25px 30px;
+            background-color: var(--bot-msg-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            animation: fadeIn 0.5s ease-out;
+            transition: all var(--transition-speed), transform 0.3s ease;
+            border: 1px solid var(--bot-msg-border);
+        }
+        
+        .welcome-message h2 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .welcome-message p {
+            color: var(--text-light);
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+        
+        .welcome-message .hint {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-style: italic;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed rgba(0, 0, 0, 0.1);
+        }
+        
+        .ai-status {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .message-wrapper {
+            display: flex;
+            margin-bottom: 25px;
+            max-width: 85%;
+            animation: messageSlide 0.3s ease-out;
+        }
+        
+        .user-wrapper {
+            margin-left: auto;
+            flex-direction: row-reverse;
+            animation: slideFromRight 0.3s ease-out;
+        }
+        
+        .bot-wrapper {
+            margin-right: auto;
+            animation: slideFromLeft 0.3s ease-out;
+        }
+        
+        .avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid var(--card-bg-color);
+            flex-shrink: 0;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .avatar:hover img {
+            transform: scale(1.1);
+        }
+        
+        .message {
+            padding: 15px 20px;
+            border-radius: 18px;
+            max-width: 100%;
+            word-wrap: break-word;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+            line-height: 1.6;
+        }
+        
+        .user-message {
+            background-color: var(--user-msg-bg);
+            color: white;
+            border-top-right-radius: 4px;
+        }
+        
+        .bot-message {
+            background-color: var(--bot-msg-bg);
+            color: var(--text-color);
+            border-top-left-radius: 4px;
+            border: 1px solid var(--bot-msg-border);
+        }
+        
+        .input-area {
+            display: flex;
+            padding: 20px;
+            background-color: var(--card-bg-color);
+            border-top: 1px solid var(--border-color);
+            position: relative;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        #messageInput {
+            flex: 1;
+            padding: 16px 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            outline: none;
+            font-size: 15px;
+            transition: all var(--transition-speed);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        
+        #messageInput::placeholder {
+            color: var(--text-muted);
+        }
+        
+        #messageInput:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+        
+        #planical-ai-app.dark-theme #messageInput:focus {
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.25);
+        }
+        
+        #sendButton {
+            margin-left: 12px;
+            padding: 0 25px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all var(--transition-speed);
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #sendButton:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(67, 97, 238, 0.35);
+        }
+        
+        #sendButton:active {
+            transform: translateY(1px);
+        }
+        
+        #sendButton:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 0;
+        }
+        
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            margin: 0 2px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 50%;
+            display: inline-block;
+            animation: bounce 1.3s infinite ease-in-out;
+        }
+        
+        .typing-indicator span:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+        
+        @keyframes bounce {
+            0%, 80%, 100% { 
+                transform: scale(0);
+            } 40% { 
+                transform: scale(1.0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideFromLeft {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideFromRight {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes messageSlide {
+            from { transform: translateY(10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        #planical-ai-app.dark-theme .welcome-message {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        #planical-ai-app.dark-theme .chat-container {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        #planical-ai-app.dark-theme .logo:not(.chat-header-logo) {
+            filter: brightness(0.9);
+        }
+        
+        #planical-ai-app.dark-theme .welcome-logo {
+            filter: brightness(0.9);
+        }
+        
+        .bot-message a {
+            color: var(--primary-light);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--primary-light);
+            transition: all 0.2s ease;
+        }
+        
+        .bot-message a:hover {
+            border-bottom-style: solid;
+            opacity: 0.9;
+        }
+        
+        #planical-ai-app.dark-theme .input-focus {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        #planical-ai-app.dark-theme #messageInput {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        #planical-ai-app.dark-theme .chat-header-logo {
+            filter: brightness(0) invert(1) brightness(0.95);
+        }
+        
+        /* Improve dark mode transition */
+        html {
+            transition: background-color 0.3s ease;
+        }
+        
+        * {
+            transition-property: background-color, border-color, color, box-shadow;
+            transition-duration: 0.3s;
+            transition-timing-function: ease;
+        }
+        
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            transform: translateY(20px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border: none;
+            z-index: 99;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .back-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        #planical-ai-app.dark-theme .back-to-top {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        }
+        
+        @media (max-width: 768px) {
+            .brand-name {
+                font-size: 1.2rem;
+            }
+            
+            .brand-logo {
+                height: 30px;
+            }
+            
+            .nav-links a {
+                margin-left: 10px;
+                padding: 5px 8px;
+                font-size: 0.8rem;
+            }
+            
+            .theme-toggle {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .nav-icon {
+                width: 14px;
+                height: 14px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .brand {
+                gap: 8px;
+            }
+            
+            .brand-name {
+                font-size: 1.1rem;
+            }
+            
+            .brand-logo {
+                height: 25px;
+            }
+            
+            .nav-links {
+                gap: 5px;
+            }
+            
+            .nav-links a:not(.active-link) span {
+                display: none;
+            }
+            
+            .home-link .nav-icon {
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="planical-ai-app">
+        <nav>
+            <div class="brand">
+                <img src="/logo1.png" alt="Planical Logo" class="brand-logo">
+                <span class="brand-name">Planical</span>
+            </div>
+            <div class="nav-links">
+                <a href="/" class="home-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    <span>Home</span>
+                </a>
+                <a href="/planical-ai" class="active-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                    </svg>
+                    <span>AI Assistant</span>
+                </a>
+                <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark/light mode">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+        <div class="chat-container">
+            <div class="chat-header">
+                <img src="/images/logo.png" alt="Planical AI Logo" class="chat-header-logo">
+                <h1>Planical AI</h1>
+            </div>
+            
+            <div class="messages-container" id="messages">
+                <div class="welcome-message">
+                    <img src="/images/logo.png" alt="Planical AI Logo" class="welcome-logo">
+                    <h2>Welcome to Planical AI</h2>
+                    <p>How are you feeling today? I'm here to listen and help.</p>
+                    <p class="hint">Try asking about stress, anxiety, depression, or just say hello!</p>
+                </div>
+            </div>
+            
+            <div class="input-area">
+                <input 
+                    type="text" 
+                    id="messageInput" 
+                    placeholder="Type your message here..." 
+                    autocomplete="off"
+                />
+                <button id="sendButton">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <button id="backToTop" class="back-to-top" aria-label="Back to top">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        // Inline JavaScript to avoid dependency on external files
+        document.addEventListener('DOMContentLoaded', function() {
+            const messagesContainer = document.getElementById('messages');
+            const messageInput = document.getElementById('messageInput');
+            const sendButton = document.getElementById('sendButton');
+            
+            // Remove welcome message when first message is sent
+            let firstMessage = true;
+            let isUsingAI = false; // Will be set to true if AI response is detected
+            
+            // Check if using AI
+            async function checkAIStatus() {
+                try {
+                    const response = await fetch('/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ message: "AI status check" })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    // Check if using AI based on the flag from the server
+                    if (data.using_ai === true) {
+                        isUsingAI = true;
+                        
+                        // Update welcome message
+                        const welcomeMessage = document.querySelector('.welcome-message');
+                        if (welcomeMessage) {
+                            const aiStatusEl = document.createElement('p');
+                            aiStatusEl.className = 'ai-status';
+                            aiStatusEl.innerHTML = '✓ <strong>AI-powered responses enabled</strong>';
+                            aiStatusEl.style.color = 'var(--success-color)';
+                            aiStatusEl.style.backgroundColor = 'rgba(76, 175, 80, 0.1)';
+                            aiStatusEl.style.border = '1px solid rgba(76, 175, 80, 0.2)';
+                            welcomeMessage.appendChild(aiStatusEl);
+                        }
+                    } else {
+                        // Update welcome message
+                        const welcomeMessage = document.querySelector('.welcome-message');
+                        if (welcomeMessage) {
+                            const aiStatusEl = document.createElement('p');
+                            aiStatusEl.className = 'ai-status';
+                            aiStatusEl.innerHTML = '⚠️ <strong>Using mock responses</strong> (AI API key not configured)';
+                            aiStatusEl.style.color = 'var(--warning-color)';
+                            aiStatusEl.style.backgroundColor = 'rgba(255, 165, 0, 0.1)';
+                            aiStatusEl.style.border = '1px solid rgba(255, 165, 0, 0.2)';
+                            welcomeMessage.appendChild(aiStatusEl);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error checking AI status:', error);
+                }
+            }
+            
+            // Run the AI status check
+            checkAIStatus();
+            
+            function scrollToBottom() {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+            
+            function createMessage(text, sender) {
+                // Create wrapper
+                const wrapperDiv = document.createElement('div');
+                wrapperDiv.classList.add('message-wrapper');
+                wrapperDiv.classList.add(sender === 'user' ? 'user-wrapper' : 'bot-wrapper');
+                
+                // Create avatar with image
+                const avatarDiv = document.createElement('div');
+                avatarDiv.classList.add('avatar');
+                
+                const avatarImg = document.createElement('img');
+                
+                if (sender === 'user') {
+                    avatarImg.src = '/images/icon.jpeg';
+                    avatarImg.alt = 'User';
+                } else {
+                    avatarImg.src = '/images/female.jpeg';
+                    avatarImg.alt = 'Doctor';
+                }
+                
+                avatarDiv.appendChild(avatarImg);
+                
+                // Create message bubble
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+                
+                // Format links in the text if it's from the bot
+                if (sender === 'bot') {
+                    const linkRegex = /(https?:\/\/[^\s]+)/g;
+                    text = text.replace(linkRegex, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+                    messageDiv.innerHTML = text;
+                } else {
+                    messageDiv.textContent = text;
+                }
+                
+                // Assemble the message
+                wrapperDiv.appendChild(avatarDiv);
+                wrapperDiv.appendChild(messageDiv);
+                
+                return wrapperDiv;
+            }
+            
+            function createLoadingIndicator() {
+                // Create wrapper
+                const wrapperDiv = document.createElement('div');
+                wrapperDiv.classList.add('message-wrapper', 'bot-wrapper');
+                wrapperDiv.id = 'loadingIndicator';
+                
+                // Create avatar with image
+                const avatarDiv = document.createElement('div');
+                avatarDiv.classList.add('avatar');
+                
+                const avatarImg = document.createElement('img');
+                avatarImg.src = '/images/female.jpeg';
+                avatarImg.alt = 'Doctor';
+                avatarDiv.appendChild(avatarImg);
+                
+                // Create message with typing indicator
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message', 'bot-message');
+                
+                const typingIndicator = document.createElement('div');
+                typingIndicator.classList.add('typing-indicator');
+                
+                for (let i = 0; i < 3; i++) {
+                    const dot = document.createElement('span');
+                    typingIndicator.appendChild(dot);
+                }
+                
+                messageDiv.appendChild(typingIndicator);
+                
+                // Assemble the message
+                wrapperDiv.appendChild(avatarDiv);
+                wrapperDiv.appendChild(messageDiv);
+                
+                return wrapperDiv;
+            }
+            
+            async function sendMessage() {
+                const message = messageInput.value.trim();
+                if (!message) return;
+                
+                // Clear input
+                messageInput.value = '';
+                
+                // Remove welcome message if this is first message
+                if (firstMessage) {
+                    const welcomeMessage = document.querySelector('.welcome-message');
+                    if (welcomeMessage) {
+                        welcomeMessage.classList.add('fade-out');
+                        setTimeout(() => {
+                            messagesContainer.removeChild(welcomeMessage);
+                        }, 300);
+                    }
+                    firstMessage = false;
+                }
+                
+                // Add user message
+                messagesContainer.appendChild(createMessage(message, 'user'));
+                scrollToBottom();
+                
+                // Add loading indicator
+                const loadingIndicator = createLoadingIndicator();
+                messagesContainer.appendChild(loadingIndicator);
+                scrollToBottom();
+                
+                // Disable input while waiting for response
+                messageInput.disabled = true;
+                sendButton.disabled = true;
+                
+                try {
+                    // Add a small delay animation for loading
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    
+                    // Send message to API - used absolute path to avoid any redirects
+                    const currentUrl = window.location.origin;
+                    const response = await fetch(`${currentUrl}/chat`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ message: message })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    // Remove loading indicator
+                    messagesContainer.removeChild(loadingIndicator);
+                    
+                    // Update AI status if needed
+                    if (data.using_ai !== undefined) {
+                        isUsingAI = data.using_ai;
+                    }
+                    
+                    // Add bot response
+                    messagesContainer.appendChild(createMessage(data.response, 'bot'));
+                    scrollToBottom();
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    
+                    // Remove loading indicator
+                    messagesContainer.removeChild(loadingIndicator);
+                    
+                    // Add error message
+                    messagesContainer.appendChild(createMessage('Sorry, I encountered an error. Please try again later.', 'bot'));
+                    scrollToBottom();
+                } finally {
+                    // Re-enable input
+                    messageInput.disabled = false;
+                    sendButton.disabled = false;
+                    messageInput.focus();
+                }
+            }
+            
+            // Event listeners
+            sendButton.addEventListener('click', sendMessage);
+            
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // Add an input animation
+            messageInput.addEventListener('focus', function() {
+                this.parentElement.classList.add('input-focus');
+            });
+            
+            messageInput.addEventListener('blur', function() {
+                this.parentElement.classList.remove('input-focus');
+            });
+            
+            // Focus input on load
+            messageInput.focus();
+            
+            // Add CSS for fade-out animation
+            const style = document.createElement('style');
+            style.textContent = `
+                .fade-out {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                    transition: all 0.3s ease;
+                }
+                
+                .input-focus {
+                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Theme toggling functionality
+            const themeToggle = document.getElementById('themeToggle');
+            const appContainer = document.getElementById('planical-ai-app');
+            
+            // Check for saved theme preference or use preferred color scheme
+            const savedTheme = localStorage.getItem('planical_ai_theme');
+            if (savedTheme === 'dark') {
+                appContainer.classList.add('dark-theme');
+                updateThemeIcon('dark');
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches && !savedTheme) {
+                appContainer.classList.add('dark-theme');
+                updateThemeIcon('dark');
+            } else {
+                updateThemeIcon('light');
+            }
+            
+            // Toggle theme
+            themeToggle.addEventListener('click', () => {
+                const isDarkTheme = appContainer.classList.contains('dark-theme');
+                const newTheme = isDarkTheme ? 'light' : 'dark';
+                
+                // Add rotation animation to the toggle button
+                themeToggle.style.transform = 'rotate(360deg)';
+                setTimeout(() => {
+                    themeToggle.style.transform = '';
+                }, 400);
+                
+                // Toggle dark theme class
+                if (newTheme === 'dark') {
+                    appContainer.classList.add('dark-theme');
+                } else {
+                    appContainer.classList.remove('dark-theme');
+                }
+                
+                // Save preference
+                localStorage.setItem('planical_ai_theme', newTheme);
+                
+                updateThemeIcon(newTheme);
+                
+                // Show theme change notification
+                showThemeNotification(newTheme);
+            });
+            
+            // Update theme icon based on current theme
+            function updateThemeIcon(theme) {
+                if (theme === 'dark') {
+                    themeToggle.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                    `;
+                } else {
+                    themeToggle.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    `;
+                }
+            }
+            
+            // Show theme change notification
+            function showThemeNotification(theme) {
+                const notification = document.createElement('div');
+                notification.className = 'theme-notification';
+                notification.textContent = theme === 'dark' ? '🌙 Dark mode enabled' : '☀️ Light mode enabled';
+                
+                notification.style.position = 'fixed';
+                notification.style.bottom = '20px';
+                notification.style.right = '20px';
+                notification.style.padding = '10px 15px';
+                notification.style.backgroundColor = 'var(--card-bg-color)';
+                notification.style.color = 'var(--text-color)';
+                notification.style.borderRadius = '5px';
+                notification.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+                notification.style.zIndex = '1000';
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateY(20px)';
+                notification.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                
+                appContainer.appendChild(notification);
+                
+                // Show notification with animation
+                setTimeout(() => {
+                    notification.style.opacity = '1';
+                    notification.style.transform = 'translateY(0)';
+                }, 10);
+                
+                // Remove notification after delay
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateY(20px)';
+                    
+                    setTimeout(() => {
+                        appContainer.removeChild(notification);
+                    }, 300);
+                }, 2000);
+            }
+
+            // Back to top button functionality
+            const backToTopButton = document.getElementById('backToTop');
+            
+            // Show button when scrolling down
+            messagesContainer.addEventListener('scroll', () => {
+                if (messagesContainer.scrollTop > 200) {
+                    backToTopButton.classList.add('visible');
+                } else {
+                    backToTopButton.classList.remove('visible');
+                }
+            });
+            
+            // Scroll to top when clicking the button
+            backToTopButton.addEventListener('click', () => {
+                messagesContainer.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

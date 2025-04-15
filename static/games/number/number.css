@@ -1,0 +1,93 @@
+* {
+    -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      font-family: 'Exo', sans-serif;
+      color: #0144af;
+  }
+  
+  
+  body {
+    background-color: #90b9f9;
+  }
+  
+  #counter, #timer {
+    padding-right: 10px; 
+    display: inline-block;
+  }
+  
+  
+  #menu, #completedLevel, #gameOver {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 180px;
+    width: 400px;
+    padding: 50px;
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: #90b9f9;
+    text-align: center;
+  }
+  
+  #completedLevel, #gameOver {
+    display: none;
+  }
+  
+  
+  .board {
+    display: flex;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    flex-wrap: wrap;
+    background-color: #0144af;
+    border: 1px solid #0144af;
+  }
+  
+  
+  .tile {
+    background-color: #90b9f9;
+    font-size: 80px;
+    height: 100px;
+    width: 100px;
+    border: 1px solid black;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    margin: 4px;
+    cursor: pointer;
+  }
+  
+  
+  .empty {
+    visibility: hidden;
+  }
+  
+  input {
+    margin: 10px;
+  }
+
+  .exit-btn {
+    background: #0d6efd;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+  }
+
+  .exit-btn:hover {
+    background: #0b5ed7;
+  }

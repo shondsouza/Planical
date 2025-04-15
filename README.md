@@ -1,23 +1,57 @@
+# Planical - Mental Healthcare Platform
+
+Planical is a comprehensive mental healthcare platform designed to connect patients with mental health professionals through secure video consultations. The platform facilitates virtual consultations, appointment scheduling, and mental health resources.
+
+## Features
+
+- **User Authentication**: Secure login system for patients, doctors, and administrators
+- **Doctor Approval System**: Admin dashboard to verify and approve doctor registrations
+- **Virtual Consultations**: Real-time video consultations using WebRTC
+- **Appointment Scheduling**: Patients can request appointments with available doctors
+- **Consultation Management**: Doctors can accept, decline, or reschedule patient consultations
+- **Real-time Notifications**: Socket.IO based real-time notifications for consultations
+- **Mental Health Resources**: Access to various mental health resources and tools
+- **User Profiles**: Customizable profiles for both patients and healthcare providers
+
+## Technologies Used
+
+- **Backend**: Flask (Python)
+- **Frontend**: HTML, CSS, JavaScript, Bootstrap
+- **Database**: Firebase Firestore
+- **Real-time Communication**: Socket.IO
+- **Video Calling**: WebRTC with PeerJS
+- **Authentication**: Firebase Authentication
+
+## Installation and Setup
+
+1. Clone the repository
+2. Install dependencies: `pip install -r requirements.txt`
+3. Set up Firebase project and add your configuration
+4. Run the application: `python app.py`
+
+## License
+
+This project is proprietary and confidential. All rights reserved.
+
 <h1 align="center">
-         MindCare - Mental HealthCare Web App
+         Planical - Mental HealthCare Web App
 </h1>
 
 *****
 
-[![GitHub last commit](https://img.shields.io/github/last-commit/tandrimasingha/MindCare-MentalHealthcare?label=Last%20commit&color=green&logo=git&logoColor=white&style=flat-square)](https://github.com/tandrimasingha/Data-Analysis)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/tandrimasingha/MindCare-MentalHealthcare?label=Code%20size&logo=python&logoColor=white&style=flat-square)
-![GitHub repo size](https://img.shields.io/github/repo-size/tandrimasingha/MindCare-MentalHealthcare?label=Repo%20size&color=red&logo=github&logoColor=white&style=flat-square)
-![GitHub stars](https://img.shields.io/github/stars/tandrimasingha/MindCare-MentalHealthcare?label=Stars&logo=github&style=flat-square)
-![GitHub issues](https://img.shields.io/github/issues/tandrimasingha/MindCare-MentalHealthcare?label=Issues&color=yellow&logo=github&style=flat-square)
-
+[![GitHub last commit](https://img.shields.io/github/last-commit/tandrimasingha/Planical-MentalHealthcare?label=Last%20commit&color=green&logo=git&logoColor=white&style=flat-square)](https://github.com/tandrimasingha/Data-Analysis)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/tandrimasingha/Planical-MentalHealthcare?label=Code%20size&logo=python&logoColor=white&style=flat-square)
+![GitHub repo size](https://img.shields.io/github/repo-size/tandrimasingha/Planical-MentalHealthcare?label=Repo%20size&color=red&logo=github&logoColor=white&style=flat-square)
+![GitHub stars](https://img.shields.io/github/stars/tandrimasingha/Planical-MentalHealthcare?label=Stars&logo=github&style=flat-square)
+![GitHub issues](https://img.shields.io/github/issues/tandrimasingha/Planical-MentalHealthcare?label=Issues&color=yellow&logo=github&style=flat-square)
 
 
 
 
 ## 📊 Overview of the App
 
-Welcome to MindCare. <br> MindCare is a web app that analyses the psychological and mental health conditions of an individual and provide solutions to the problems.
-MindCare is a mental health solution that aims to provide users with easy access to resources related to mental wellbeing.  MindCare will help people to identify these issues timely and take necessary steps to improve the conditions of the victims and provide care to those, who are at risk of serious mental complications. The purpose of MindCare is to assist its users by providing solutions to their mental health conditions without requiring professional help in most cases. We have observed that these solutions work efficiently in bettering their mental health conditions. Users can also track their habits and keep a record of how often they have been doing the same. In serious cases, users will be able to book an appointment with a psychologist for consultation and get timely help.
+Welcome to Planical. <br> Planical is a web app that analyses the psychological and mental health conditions of an individual and provide solutions to the problems.
+Planical is a mental health solution that aims to provide users with easy access to resources related to mental wellbeing.  Planical will help people to identify these issues timely and take necessary steps to improve the conditions of the victims and provide care to those, who are at risk of serious mental complications. The purpose of Planical is to assist its users by providing solutions to their mental health conditions without requiring professional help in most cases. We have observed that these solutions work efficiently in bettering their mental health conditions. Users can also track their habits and keep a record of how often they have been doing the same. In serious cases, users will be able to book an appointment with a psychologist for consultation and get timely help.
 
 
 
@@ -63,10 +97,31 @@ Open VSCode -
 
 1.1 `git clone <repo link>`
 
-1.2 `cd MindCare`
+1.2 `cd Planical`
 
 1.3 `pip install -r requirements.txt `
 
 1.4 `flask run`
+
+## Running the Application with Chatbot
+
+To run both the main application and the chatbot backend simultaneously:
+
+1. Make sure you have installed all requirements for both the main app and the chatbot backend:
+   ```
+   pip install -r requirements.txt
+   pip install -r Chatbot/requirements.txt
+   ```
+
+2. Run the start services script:
+   ```
+   python start_services.py
+   ```
+
+3. Navigate to http://localhost:5000 in your browser
+
+4. Use the "Planical AI" link in the navigation or visit directly at http://localhost:5000/planical-ai to access the chatbot
+
+5. Use Ctrl+C in the terminal to shut down both services
 
 

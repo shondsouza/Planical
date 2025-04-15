@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Virtual Consultation - Doctor View - Planical</title>
+  
+  <!-- Favicons -->
+  <link href="{{url_for('static', filename='logo1.png')}}" rel="icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
+  
+  <!-- Main CSS File -->
+  <link href="{{url_for('static', filename='assets/css/style.css')}}" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f8fa;
+      padding-top: 70px;
+    }
+    
+    .consultation-header {
+      background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+      color: white;
+      padding: 3rem 0;
+      margin-bottom: 2rem;
+      border-radius: 0 0 20px 20px;
+    }
+    
+    .card {
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+      background-color: #fff;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      padding: 1.25rem 1.5rem;
+      font-weight: 600;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      line-height: 1;
+      color: #fff;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: baseline;
+      border-radius: 50rem;
+    }
+    
+    .status-online {
+      background-color: #28a745;
+    }
+    
+    .status-offline {
+      background-color: #6c757d;
+    }
+    
+    .status-busy {
+      background-color: #dc3545;
+    }
+    
+    .waiting-area {
+      background-color: #fff;
+      border-radius: 15px;
+      padding: 2rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+    }
+    
+    .waiting-area h3 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: #0d6efd;
+    }
+    
+    .waiting-icon {
+      font-size: 4rem;
+      color: #0d6efd;
+      margin-bottom: 1.5rem;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    
+    .status-toggle {
+      background-color: #f8f9fa;
+      border: 2px solid #0d6efd;
+      border-radius: 50px;
+      padding: 0.75rem 2rem;
+      font-weight: 600;
+      color: #0d6efd;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .status-toggle:hover {
+      background-color: #0d6efd;
+      color: white;
+    }
+    
+    .status-toggle.active {
+      background-color: #28a745;
+      border-color: #28a745;
+      color: white;
+    }
+    
+    .status-toggle.inactive {
+      background-color: #dc3545;
+      border-color: #dc3545;
+      color: white;
+    }
+    
+    .consultation-request {
+      background-color: #fff;
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border-left: 5px solid #0d6efd;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+      display: none; /* Initially hidden, shown when request comes in */
+    }
+    
+    .consultation-request.active {
+      display: block;
+      animation: slideIn 0.5s ease-out;
+    }
+    
+    @keyframes slideIn {
+      0% {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    .patient-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .patient-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: #e9ecef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #0d6efd;
+      margin-right: 1rem;
+      font-weight: 600;
+    }
+    
+    .patient-details h4 {
+      font-size: 1.25rem;
+      margin-bottom: 0.25rem;
+    }
+    
+    .patient-details p {
+      color: #6c757d;
+      margin-bottom: 0;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+    
+    .accept-button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      flex: 1;
+    }
+    
+    .accept-button:hover {
+      background-color: #218838;
+      transform: translateY(-2px);
+    }
+    
+    .decline-button {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      flex: 1;
+    }
+    
+    .decline-button:hover {
+      background-color: #c82333;
+      transform: translateY(-2px);
+    }
+    
+    .recent-consultations {
+      margin-top: 2rem;
+    }
+    
+    .recent-consultations h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: #2a2a2a;
+    }
+    
+    .consultation-item {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 1px solid #e9ecef;
+      transition: all 0.3s ease;
+    }
+    
+    .consultation-item:last-child {
+      border-bottom: none;
+    }
+    
+    .consultation-item:hover {
+      background-color: #f8f9fa;
+    }
+    
+    .consultation-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #e9ecef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      color: #0d6efd;
+      margin-right: 1rem;
+      font-weight: 600;
+    }
+    
+    .consultation-info {
+      flex: 1;
+    }
+    
+    .consultation-info h4 {
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+    
+    .consultation-info p {
+      color: #6c757d;
+      margin-bottom: 0;
+      font-size: 0.875rem;
+    }
+    
+    .consultation-time {
+      color: #6c757d;
+      font-size: 0.875rem;
+    }
+    
+    .waiting-area.offline-mode {
+      background-color: #fdf7e2;
+      border: 2px dashed #ffc107;
+      position: relative;
+    }
+    
+    .waiting-area.offline-mode .waiting-icon {
+      color: #ffc107;
+    }
+    
+    .waiting-area.offline-mode::after {
+      content: "OFFLINE MODE";
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #ffc107;
+      color: #000;
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 0.8rem;
+    }
+    
+    .network-status {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      z-index: 1000;
+      display: none;
+    }
+    
+    .network-status.online {
+      background-color: #28a745;
+      color: white;
+      display: block;
+    }
+    
+    .network-status.offline {
+      background-color: #ffc107;
+      color: black;
+      display: block;
+    }
+    
+    @media (max-width: 767.98px) {
+      .action-buttons {
+        flex-direction: column;
+      }
+    }
+    
+    .connection-status {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+    }
+    
+    .status-indicator {
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .status-indicator.online {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #81c784;
+    }
+    
+    .status-indicator.offline {
+      background-color: #ffebee;
+      color: #c62828;
+      border: 1px solid #ef9a9a;
+    }
+    
+    .status-indicator.partial {
+      background-color: #fff3e0;
+      color: #ef6c00;
+      border: 1px solid #ffb74d;
+    }
+    
+    .status-indicator.disconnected {
+      background-color: #fafafa;
+      color: #616161;
+      border: 1px solid #e0e0e0;
+    }
+    
+    .offline-notification {
+      margin-bottom: 15px;
+    }
+    
+    .try-reconnect-btn {
+      margin-left: 10px;
+      background: transparent;
+      border: 1px solid #856404;
+      color: #856404;
+      border-radius: 3px;
+      padding: 2px 8px;
+      cursor: pointer;
+    }
+    
+    .try-reconnect-btn:hover {
+      background-color: #856404;
+      color: white;
+    }
+    
+    /* Notification styles */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      max-width: 350px;
+      z-index: 9999;
+      display: none;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+      border-radius: 0.25rem;
+      overflow: hidden;
+    }
+    
+    .notification .toast {
+      margin-bottom: 0;
+    }
+    
+    .notification .toast-header {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 0.75rem;
+      background-clip: padding-box;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .notification .toast-body {
+      padding: 0.75rem;
+    }
+    
+    .notification .btn-close {
+      padding: 0.25rem 0.5rem;
+      background-color: transparent;
+      border: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1;
+      color: #000;
+      text-shadow: 0 1px 0 #fff;
+      opacity: 0.5;
+      cursor: pointer;
+    }
+    
+    .notification .btn-close:hover {
+      color: #000;
+      text-decoration: none;
+      opacity: 0.75;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center justify-content-between">
+      <h1 class="logo"><img src="{{url_for('static', filename='logo.png')}}" alt="" class="src"><a href="/">Planical</a></h1>
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link" href="/">Home</a></li>
+          <li><a class="nav-link active" href="/virtual-consultation">Video Consultation</a></li>
+          <li><a class="nav-link" href="/profile">Profile</a></li>
+          <li><a class="nav-link" href="/logout">Logout</a></li>
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+    </div>
+  </header><!-- End Header -->
+
+  <!-- ======= Consultation Header ======= -->
+  <section class="consultation-header">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8">
+          <h1>Doctor Virtual Consultation</h1>
+          <p class="mb-0">Provide mental health consultations to patients through secure video calls.</p>
+        </div>
+        <div class="col-lg-4 d-flex justify-content-end align-items-center">
+          <span class="status-badge status-online me-2" id="status-badge">Available</span>
+          <span id="status-text">You're available for consultations</span>
+        </div>
+      </div>
+    </div>
+  </section><!-- End Consultation Header -->
+
+  <main id="main">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8">
+          <!-- Waiting Area -->
+          <div class="waiting-area">
+            <i class="bi bi-broadcast waiting-icon"></i>
+            <h3>Waiting for Patient Calls</h3>
+            <p>You'll be notified when a patient requests a video consultation. Make sure your camera and microphone are enabled.</p>
+            <button class="status-toggle active" id="status-toggle" onclick="toggleAvailability()">
+              <i class="bi bi-check-circle-fill"></i>
+              <span>Available for Consultations</span>
+            </button>
+          </div>
+
+          <!-- Consultation Request (initially hidden) -->
+          <div class="card mb-4" id="consultation-request-container">
+            <div class="card-header">
+              <i class="bi bi-bell-fill me-2"></i>Consultation Requests
+            </div>
+            <div class="card-body p-0" id="consultation-requests">
+              <!-- Consultation requests will be inserted here -->
+              <div class="text-center text-muted py-4" id="noRequestsMessage">
+                <i class="bi bi-hourglass"></i>
+                <p>No pending consultation requests</p>
+                <p class="small text-muted">Requests will appear here when patients need your assistance</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Consultations -->
+          <div class="card recent-consultations">
+            <div class="card-header">
+              <i class="bi bi-clock-history me-2"></i>Recent Consultations
+            </div>
+            <div class="card-body">
+              <!-- Sample recent consultations, will be dynamically populated in a real app -->
+              <div class="consultation-item">
+                <div class="consultation-avatar">R</div>
+                <div class="consultation-info">
+                  <h4>Rahul Sharma</h4>
+                  <p>Consultation for anxiety symptoms</p>
+                </div>
+                <div class="consultation-time">Yesterday</div>
+              </div>
+              <div class="consultation-item">
+                <div class="consultation-avatar">P</div>
+                <div class="consultation-info">
+                  <h4>Priya Patel</h4>
+                  <p>Follow-up consultation for depression</p>
+                </div>
+                <div class="consultation-time">2 days ago</div>
+              </div>
+              <div class="consultation-item">
+                <div class="consultation-avatar">A</div>
+                <div class="consultation-info">
+                  <h4>Amit Verma</h4>
+                  <p>Initial consultation for stress management</p>
+                </div>
+                <div class="consultation-time">5 days ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-4">
+          <!-- Doctor Profile -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="bi bi-person-badge-fill me-2"></i>Your Profile
+            </div>
+            <div class="card-body text-center">
+              <div style="width: 100px; height: 100px; border-radius: 50%; background-color: #0d6efd; color: white; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 1.5rem;">
+                D
+              </div>
+              <h4>Dr. {{ session.get('user', {}).get('name', 'Doctor') }}</h4>
+              <p class="mb-2">Mental Health Specialist</p>
+              <p class="mb-3"><i class="bi bi-award-fill me-2"></i>ID: {{ session.get('user', {}).get('doctor_id', 'N/A') }}</p>
+              <hr>
+              <div class="d-flex justify-content-between">
+                <div>
+                  <p class="mb-0 fw-bold">12</p>
+                  <p class="text-muted small">Consultations Today</p>
+                </div>
+                <div>
+                  <p class="mb-0 fw-bold">86</p>
+                  <p class="text-muted small">Total Consultations</p>
+                </div>
+                <div>
+                  <p class="mb-0 fw-bold">4.9</p>
+                  <p class="text-muted small">Rating</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Guidelines -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <i class="bi bi-list-check me-2"></i>Consultation Guidelines
+            </div>
+            <div class="card-body">
+              <ul class="list-unstyled">
+                <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i>Ensure patient confidentiality at all times</li>
+                <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i>Use a professional background during calls</li>
+                <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i>Wear appropriate professional attire</li>
+                <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i>Take notes during and after consultations</li>
+                <li><i class="bi bi-check-circle-fill text-success me-2"></i>Follow up with patients as needed</li>
+              </ul>
+              <hr>
+              <p class="small text-muted mb-0">For more detailed guidelines, please refer to the <a href="#" class="text-decoration-none">Doctor's Handbook</a>.</p>
+            </div>
+          </div>
+          
+          <!-- Support -->
+          <div class="card">
+            <div class="card-header">
+              <i class="bi bi-headset me-2"></i>Technical Support
+            </div>
+            <div class="card-body">
+              <p>If you're experiencing technical difficulties during consultations, please contact our support team.</p>
+              <p><i class="bi bi-envelope-fill me-2"></i>Email: support@planical.com</p>
+              <p class="mb-0"><i class="bi bi-telephone-fill me-2"></i>Phone: +91 901 9708133</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" style="background-color: #f8f9fa; padding: 30px 0; text-align: center; margin-top: 3rem;">
+    <div class="container">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Planical</span></strong>. All Rights Reserved
+      </div>
+      <div class="credits">
+        Doctor Consultation Platform
+      </div>
+    </div>
+  </footer><!-- End Footer -->
+
+  <!-- Vendor JS Files -->
+  <script src="{{url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  
+  <!-- Firebase required libraries -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  
+  <!-- Add firebase configuration script -->
+  <script>
+    // Firebase settings to help avoid connection errors
+    const FIREBASE_SETTINGS = {
+      cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
+      experimentalForceLongPolling: true, 
+      experimentalAutoDetectLongPolling: false,
+      useFetchStreams: false,
+      ignoreUndefinedProperties: true
+    };
+    
+    // Function to initialize Firebase with proper error handling
+    function initializeFirebase() {
+      return new Promise((resolve, reject) => {
+        try {
+          // Check if Firebase JS is loaded
+          if (typeof firebase === 'undefined') {
+            console.error("Firebase SDK not loaded");
+            
+            // Try to load the Firebase scripts
+            const firebaseScripts = [
+              "https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js",
+              "https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js",
+              "https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"
+            ];
+            
+            let loadedCount = 0;
+            firebaseScripts.forEach(src => {
+              const script = document.createElement('script');
+              script.src = src;
+              script.onload = () => {
+                loadedCount++;
+                if (loadedCount === firebaseScripts.length) {
+                  console.log("Firebase scripts loaded successfully, retrying initialization");
+                  // Slight delay to ensure scripts are fully processed
+                  setTimeout(() => initializeFirebase().then(resolve).catch(reject), 500);
+                }
+              };
+              script.onerror = () => {
+                console.error(`Failed to load Firebase script: ${src}`);
+                reject(new Error("Firebase SDK could not be loaded"));
+              };
+              document.head.appendChild(script);
+            });
+            
+            return; // Exit and wait for scripts to load
+          }
+          
+          // Check if already initialized
+          if (firebase.apps && firebase.apps.length > 0) {
+            console.log("Firebase already initialized");
+            
+            try {
+              // Apply settings to help with connection issues
+              const db = firebase.firestore();
+              db.settings(FIREBASE_SETTINGS);
+              console.log("Applied enhanced settings to existing Firebase instance");
+            } catch (settingErr) {
+              console.warn("Could not apply settings to existing Firebase instance:", settingErr);
+            }
+            
+            resolve(true);
+            return;
+          }
+          
+          // Get firebase config with safeguards
+          const firebaseConfig = {
+            apiKey: "{{ firebase_config.apiKey }}" || "",
+            authDomain: "{{ firebase_config.authDomain }}" || "",
+            projectId: "{{ firebase_config.projectId }}" || "",
+            storageBucket: "{{ firebase_config.storageBucket }}" || "",
+            messagingSenderId: "{{ firebase_config.messagingSenderId }}" || "",
+            appId: "{{ firebase_config.appId }}" || "",
+            databaseURL: "{{ firebase_config.databaseURL }}" || ""
+          };
+          
+          // Log project ID for debugging
+          console.log("Firebase config loaded - Project ID:", firebaseConfig.projectId || "MISSING");
+          
+          // Validate essential config properties
+          const missingProps = [];
+          if (!firebaseConfig.apiKey) missingProps.push("apiKey");
+          if (!firebaseConfig.projectId) missingProps.push("projectId");
+          
+          if (missingProps.length > 0) {
+            // Create a usable mock Firebase object that will not error out the app
+            console.warn(`Firebase configuration incomplete - missing: ${missingProps.join(", ")}`);
+            showNotification("Limited functionality mode", "Database connection is not properly configured", "warning");
+            
+            // Create a mock Firebase implementation
+            setupMockFirebase();
+            resolve(false);
+            return;
+          }
+          
+          // Initialize Firebase with the config
+          firebase.initializeApp(firebaseConfig);
+          console.log("Firebase initialized with long polling transport to avoid WebChannel errors");
+          
+          // Apply settings that help avoid HTTP 400 errors
+          const db = firebase.firestore();
+          try {
+            db.settings(FIREBASE_SETTINGS);
+            console.log("Applied enhanced Firestore settings to prevent WebChannel errors");
+          } catch (err) {
+            console.warn("Could not apply Firestore settings:", err);
+          }
+          
+          // Test the connection
+          const connectionTest = async () => {
+            try {
+              await db.collection('system').doc('status').get();
+              console.log("Firebase connection test successful");
+              return true;
+            } catch (err) {
+              console.warn("Firebase connection test failed:", err);
+              
+              // Try to fix common issues
+              const errString = String(err);
+              if (errString.includes("WebChannel") || errString.includes("400")) {
+                console.log("Detected WebChannel error, applying additional fixes");
+                
+                // More aggressive settings to avoid WebChannel errors
+                try {
+                  db.settings({
+                    ...FIREBASE_SETTINGS,
+                    experimentalForceLongPolling: true,
+                    experimentalAutoDetectLongPolling: false,
+                    experimentalLongPollingOptions: {
+                      timeoutSeconds: 30,
+                      keepAliveSeconds: 5
+                    },
+                    useFetchStreams: false
+                  });
+                  console.log("Applied more aggressive settings to fix WebChannel issues");
+                } catch (fixErr) {
+                  console.warn("Failed to apply WebChannel fixes:", fixErr);
+                }
+              }
+              
+              // Still resolve, we'll use the REST API as fallback
+              return false;
+            }
+          };
+          
+          // Wait a bit for Firebase to settle then test connection
+          setTimeout(async () => {
+            const success = await connectionTest();
+            
+            if (success) {
+              resolve(true);
+            } else {
+              // We'll still resolve but indicate there are issues
+              console.log("Will use alternative methods due to connection issues");
+              resolve(false);
+            }
+          }, 1000);
+        } catch (error) {
+          console.error("Error during Firebase initialization:", error);
+          showNotification("Database connection error", "Working in limited functionality mode", "warning");
+          setupMockFirebase();
+          reject(error);
+        }
+      });
+    }
+    
+    // Function to set up a mock Firebase implementation when config is missing
+    function setupMockFirebase() {
+      if (typeof firebase === 'undefined' || firebase.apps.length === 0) {
+        console.log("Setting up mock Firebase for offline/limited functionality mode");
+        
+        // Create a minimal mock Firebase implementation
+        window.firebase = window.firebase || {};
+        firebase.apps = [];
+        
+        // Mock app
+        firebase.initializeApp = () => {
+          const mockApp = {
+            name: "[mock-app]"
+          };
+          firebase.apps.push(mockApp);
+          return mockApp;
+        };
+        
+        firebase.app = () => {
+          if (firebase.apps.length === 0) {
+            return firebase.initializeApp();
+          }
+          return firebase.apps[0];
+        };
+        
+        // Mock firestore
+        firebase.firestore = () => {
+          const mockDb = {
+            collection: (name) => ({
+              doc: (id) => ({
+                get: () => Promise.reject(new Error("Mock Firebase - offline mode")),
+                set: () => Promise.reject(new Error("Mock Firebase - offline mode")),
+                update: () => Promise.reject(new Error("Mock Firebase - offline mode"))
+              }),
+              where: () => ({
+                get: () => Promise.resolve({ empty: true, docs: [] }),
+                onSnapshot: (callback) => {
+                  callback({ empty: true, docs: [] });
+                  return () => {}; // Unsubscribe function
+                }
+              }),
+              get: () => Promise.resolve({ empty: true, docs: [] })
+            }),
+            settings: () => {},
+            enablePersistence: () => Promise.resolve(),
+            enableNetwork: () => Promise.resolve(),
+            disableNetwork: () => Promise.resolve()
+          };
+          return mockDb;
+        };
+        
+        // Mock constants
+        firebase.firestore.CACHE_SIZE_UNLIMITED = 'unlimited';
+        firebase.firestore.FieldValue = {
+          serverTimestamp: () => new Date()
+        };
+        
+        // Mock database
+        firebase.database = () => ({
+          ref: (path) => ({
+            on: (event, callback) => {
+              if (path === '.info/connected') {
+                callback({ val: () => false });
+              }
+              return () => {}; // Unsubscribe function
+            },
+            off: () => {},
+            once: () => Promise.resolve({ val: () => false })
+          })
+        });
+        
+        console.log("Mock Firebase setup complete - app will work in limited functionality mode");
+      }
+    }
+
+    // Initialize Firebase when the DOM is loaded
+    window.addEventListener('DOMContentLoaded', function() {
+      console.log("DOM loaded, initializing Firebase...");
+      
+      // Initialize Firebase
+      initializeFirebase()
+        .then(success => {
+          console.log("Firebase initialization complete, success:", success);
+          
+          // Initialize the connection manager after Firebase is ready
+          if (typeof initConnectionManager === 'function') {
+            initConnectionManager();
+          } else {
+            console.warn("ConnectionManager initialization function not found");
+          }
+        })
+        .catch(error => {
+          console.error("Firebase initialization failed:", error);
+          showNotification("Database connection error", "Working in limited functionality mode", "warning");
+          
+          // Still try to initialize the connection manager
+          if (typeof initConnectionManager === 'function') {
+            initConnectionManager();
+          }
+        });
+    });
+  </script>
+  
+  <!-- Socket.IO Connection and Event Handlers -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log("Initializing Socket.IO for doctor view");
+      
+      // Notification function to show alerts to the doctor
+      function showNotification(message, type = 'info', title = 'Notification') {
+        // Check if we need to create the notification element
+        let notification = document.getElementById('notification');
+        if (!notification) {
+          notification = document.createElement('div');
+          notification.id = 'notification';
+          notification.className = 'notification';
+          notification.innerHTML = `
+            <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+              <div class="toast-header">
+                <strong class="me-auto" id="notificationTitle">${title}</strong>
+                <button type="button" class="btn-close" onclick="hideNotification()"></button>
+              </div>
+              <div class="toast-body" id="notificationMessage">${message}</div>
+            </div>
+          `;
+          document.body.appendChild(notification);
+        } else {
+          document.getElementById('notificationMessage').textContent = message;
+          document.getElementById('notificationTitle').textContent = title;
+        }
+        
+        // Set style based on type
+        const toast = notification.querySelector('.toast');
+        toast.className = 'toast show';
+        
+        if (type === 'success') {
+          toast.classList.add('bg-success', 'text-white');
+        } else if (type === 'error' || type === 'danger') {
+          toast.classList.add('bg-danger', 'text-white');
+        } else if (type === 'warning') {
+          toast.classList.add('bg-warning');
+        } else {
+          toast.classList.add('bg-info', 'text-white');
+        }
+        
+        // Show notification
+        notification.style.display = 'block';
+        
+        // Auto-hide after 5 seconds
+        setTimeout(hideNotification, 5000);
+      }
+      
+      // Hide notification function
+      function hideNotification() {
+        const notification = document.getElementById('notification');
+        if (notification) {
+          notification.style.display = 'none';
+        }
+      }
+      
+      // Make hideNotification available globally
+      window.hideNotification = hideNotification;
+      
+      // Initialize Socket.IO connection
+      const socket = io();
+      
+      // Doctor info
+      const doctorId = "{{ session.get('user', {}).get('uid', '') }}";
+      const doctorName = "{{ session.get('user', {}).get('name', 'Doctor') }}";
+      
+      console.log("Doctor info:", { doctorId, doctorName });
+      
+      // Connect to socket server
+      socket.on('connect', function() {
+        console.log('Socket.IO connected successfully');
+        
+        // Join the doctor room
+        socket.emit('join-doctor-room', {
+          userId: doctorId,
+          userName: doctorName,
+          isAvailable: true
+        });
+        
+        // Add explicit debug logging
+        console.log('Doctor info sent to server:', {
+          doctorId: doctorId,
+          doctorName: doctorName,
+          isAvailable: true
+        });
+        
+        // Send an explicit message to set status as available
+        socket.emit('update-doctor-status', {
+          userId: doctorId,
+          userName: doctorName,
+          isAvailable: true
+        });
+        
+        // Show a notification that we're connected
+        showNotification('Connected to server. You are now available for consultations.', 'success');
+      });
+      
+      // Log connection errors
+      socket.on('connect_error', function(error) {
+        console.error('Socket.IO connection error:', error);
+        showNotification('Connection error. Please refresh the page.', 'error');
+      });
+      
+      // Most importantly - listen for new consultation requests!
+      socket.on('new-consultation-request', function(data) {
+        console.log('New consultation request received:', data);
+        
+        // Show the request in UI
+        displayConsultationRequest(data);
+        
+        // Show a notification
+        showNotification('New consultation request from ' + (data.patientName || 'a patient'), 'info');
+      });
+      
+      // Also listen for the notification event which might be used instead
+      socket.on('new-consultation-notification', function(data) {
+        console.log('New consultation notification received:', data);
+        
+        // Show the request in UI
+        displayConsultationRequest(data);
+        
+        // Show a notification
+        showNotification('New consultation request from ' + (data.patientName || 'a patient'), 'info');
+      });
+      
+      // Listen for consultation cancellation
+      socket.on('consultation-cancelled', function(data) {
+        console.log('Consultation cancelled:', data);
+        
+        const consultationId = data.consultationId;
+        const patientName = data.patientName || 'A patient';
+        
+        // Show notification
+        showNotification(`${patientName} has cancelled their consultation request`, 'warning');
+        
+        // Remove the consultation request from UI if it exists
+        const requestElement = document.querySelector(`.consultation-request[data-consultation-id="${consultationId}"]`);
+        if (requestElement) {
+          requestElement.remove();
+          
+          // If no more requests, show the "no requests" message
+          if (document.querySelectorAll('.consultation-request').length === 0) {
+            const noRequestsMessage = document.getElementById('noRequestsMessage');
+            if (noRequestsMessage) {
+              noRequestsMessage.style.display = 'block';
+            }
+          }
+        }
+      });
+      
+      // Function to display a consultation request in the UI
+      function displayConsultationRequest(data) {
+        const requestsContainer = document.getElementById('consultation-requests');
+        const noRequestsMessage = document.getElementById('noRequestsMessage');
+        
+        if (!requestsContainer) {
+          console.error('Consultation requests container not found');
+          return;
+        }
+        
+        // Hide the "no requests" message
+        if (noRequestsMessage) {
+          noRequestsMessage.style.display = 'none';
+        }
+        
+        // Create a new request element
+        const requestElement = document.createElement('div');
+        requestElement.className = 'consultation-request p-4 border-bottom';
+        requestElement.setAttribute('data-consultation-id', data.consultationId);
+        
+        // Generate the patient initials for the avatar
+        const patientInitials = data.patientName ? data.patientName.charAt(0).toUpperCase() : 'P';
+        
+        // Create request content
+        requestElement.innerHTML = `
+          <div class="patient-info mb-3">
+            <div class="patient-avatar">${patientInitials}</div>
+            <div class="patient-details">
+              <h4>${data.patientName || 'Patient'}</h4>
+              <p>Request ID: ${data.consultationId}</p>
+              <span class="badge bg-warning text-dark">Pending</span>
+            </div>
+          </div>
+          <p class="mb-3">${data.symptoms || 'No symptoms provided'}</p>
+          <div class="action-buttons">
+            <button class="accept-button" onclick="acceptConsultation('${data.consultationId}', '${data.patientId}')">
+              <i class="bi bi-check-circle me-2"></i>Accept Consultation
+            </button>
+            <button class="decline-button" onclick="showDeclineModal('${data.consultationId}', '${data.patientId}')">
+              <i class="bi bi-x-circle me-2"></i>Decline
+            </button>
+          </div>
+        `;
+        
+        // Add to the requests container
+        requestsContainer.insertBefore(requestElement, requestsContainer.firstChild);
+      }
+      
+      // Make sure the functions needed for the buttons are available
+      window.acceptConsultation = function(consultationId, patientId) {
+        console.log('Accepting consultation:', consultationId);
+        
+        // Update the status in Firestore
+        if (typeof firebase !== 'undefined' && firebase.firestore) {
+          const db = firebase.firestore();
+          db.collection('consultations').doc(consultationId).update({
+            status: 'accepted',
+            acceptedAt: firebase.firestore.FieldValue.serverTimestamp()
+          }).catch(error => {
+            console.error('Error updating consultation status in Firestore:', error);
+          });
+        }
+        
+        // Send acceptance via Socket.IO
+        socket.emit('consultation-accepted', {
+          consultationId: consultationId,
+          patientId: patientId,
+          doctorId: doctorId,
+          doctorName: doctorName
+        });
+        
+        // Redirect to the video call page
+        setTimeout(() => {
+          window.location.href = `/doctor-video-call/${consultationId}`;
+        }, 1000);
+      };
+      
+      window.showDeclineModal = function(consultationId, patientId) {
+        // Set the consultation ID and patient ID in the modal
+        const modal = document.getElementById('declineModal');
+        modal.setAttribute('data-consultation-id', consultationId);
+        modal.setAttribute('data-patient-id', patientId);
+        
+        // Show the modal
+        const declineModal = new bootstrap.Modal(modal);
+        declineModal.show();
+      };
+      
+      // Handle decline button in modal
+      document.getElementById('confirmDecline').addEventListener('click', function() {
+        const modal = document.getElementById('declineModal');
+        const consultationId = modal.getAttribute('data-consultation-id');
+        const patientId = modal.getAttribute('data-patient-id');
+        const reasonSelect = document.getElementById('declineReason');
+        const otherReasonInput = document.getElementById('otherReason');
+        
+        let reason = reasonSelect.value;
+        
+        // If "Other" is selected, use the text from the textarea
+        if (reason === 'Other' && otherReasonInput.value.trim()) {
+          reason = otherReasonInput.value.trim();
+        }
+        
+        if (!reason) {
+          alert('Please select a reason for declining the consultation');
+          return;
+        }
+        
+        // Update Firestore
+        if (typeof firebase !== 'undefined' && firebase.firestore) {
+          const db = firebase.firestore();
+          db.collection('consultations').doc(consultationId).update({
+            status: 'rejected',
+            rejectionReason: reason,
+            rejectedAt: firebase.firestore.FieldValue.serverTimestamp()
+          }).catch(error => {
+            console.error('Error updating consultation status in Firestore:', error);
+          });
+        }
+        
+        // Send rejection via Socket.IO
+        socket.emit('consultation-rejected', {
+          consultationId: consultationId,
+          patientId: patientId,
+          doctorId: doctorId,
+          doctorName: doctorName,
+          reason: reason
+        });
+        
+        // Close the modal
+        bootstrap.Modal.getInstance(modal).hide();
+      });
+      
+      // Show/hide other reason textarea
+      document.getElementById('declineReason').addEventListener('change', function() {
+        const otherReasonContainer = document.getElementById('otherReasonContainer');
+        if (this.value === 'Other') {
+          otherReasonContainer.style.display = 'block';
+        } else {
+          otherReasonContainer.style.display = 'none';
+        }
+      });
+      
+      // Toggle availability function
+      window.toggleAvailability = function() {
+        const statusToggle = document.getElementById('status-toggle');
+        const statusBadge = document.getElementById('status-badge');
+        const statusText = document.getElementById('status-text');
+        
+        const isCurrentlyAvailable = statusToggle.classList.contains('active');
+        const newStatus = !isCurrentlyAvailable;
+        
+        // Update the UI
+        if (newStatus) {
+          statusToggle.classList.add('active');
+          statusToggle.classList.remove('inactive');
+          statusToggle.innerHTML = '<i class="bi bi-check-circle-fill"></i> Available for Consultations';
+          
+          statusBadge.className = 'status-badge status-online me-2';
+          statusText.textContent = "You're available for consultations";
+        } else {
+          statusToggle.classList.remove('active');
+          statusToggle.classList.add('inactive');
+          statusToggle.innerHTML = '<i class="bi bi-x-circle-fill"></i> Not Available';
+          
+          statusBadge.className = 'status-badge status-offline me-2';
+          statusText.textContent = "You're not available for consultations";
+        }
+        
+        // Emit status update to server
+        socket.emit('update-doctor-status', {
+          userId: doctorId,
+          userName: doctorName,
+          isAvailable: newStatus
+        });
+      };
+      
+      // Fetch pending consultations from Firestore as a fallback
+      if (typeof firebase !== 'undefined' && firebase.firestore) {
+        setTimeout(() => {
+          console.log('Checking for pending consultations in Firestore...');
+          const db = firebase.firestore();
+          
+          // Log doctor ID we're checking for
+          console.log(`Querying consultations for doctor ID: ${doctorId}`);
+          
+          db.collection('consultations')
+            .where('doctorId', '==', doctorId)
+            .where('status', '==', 'pending')
+            .get()
+            .then(snapshot => {
+              if (snapshot.empty) {
+                console.log('No pending consultation requests found in Firestore');
+                return;
+              }
+              
+              console.log(`Found ${snapshot.size} pending consultation requests in Firestore`);
+              
+              // Display each request
+              snapshot.forEach(doc => {
+                const data = doc.data();
+                data.consultationId = doc.id;
+                console.log('Found consultation request:', data);
+                displayConsultationRequest(data);
+              });
+            })
+            .catch(error => {
+              console.error('Error fetching consultations from Firestore:', error);
+              
+              // If there was an error, try a direct fetch using the REST API as fallback
+              try {
+                const projectId = '{{ firebase_config.projectId }}';
+                if (projectId) {
+                  const apiKey = '{{ firebase_config.apiKey }}';
+                  fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/consultations?key=${apiKey}`)
+                    .then(response => response.json())
+                    .then(data => {
+                      console.log('REST API fallback response:', data);
+                      if (data.documents) {
+                        // Process the documents from REST API
+                        const pendingConsultations = data.documents.filter(doc => {
+                          const fields = doc.fields || {};
+                          return fields.doctorId?.stringValue === doctorId && 
+                                 fields.status?.stringValue === 'pending';
+                        });
+                        
+                        console.log(`Found ${pendingConsultations.length} pending consultations via REST API`);
+                        
+                        pendingConsultations.forEach(doc => {
+                          // Convert Firestore REST format to our format
+                          const nameSegments = doc.name.split('/');
+                          const consultationId = nameSegments[nameSegments.length - 1];
+                          
+                          const consultData = {
+                            consultationId: consultationId,
+                            patientName: doc.fields.patientName?.stringValue || 'Unknown Patient',
+                            patientId: doc.fields.patientId?.stringValue || '',
+                            symptoms: doc.fields.symptoms?.stringValue || 'No symptoms provided'
+                          };
+                          
+                          displayConsultationRequest(consultData);
+                        });
+                      }
+                    })
+                    .catch(restError => {
+                      console.error('REST API fallback also failed:', restError);
+                    });
+                }
+              } catch (fallbackError) {
+                console.error('Error in REST API fallback:', fallbackError);
+              }
+            });
+        }, 2000);
+      }
+    });
+  </script>
+</body>
+</html> 

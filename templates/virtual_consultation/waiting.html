@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Waiting for Doctor - Planical</title>
+  
+  <!-- Favicons -->
+  <link href="{{url_for('static', filename='logo1.png')}}" rel="icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
+  
+  <!-- Main CSS File -->
+  <link href="{{url_for('static', filename='assets/css/style.css')}}" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f8fa;
+      padding-top: 70px;
+    }
+    
+    .waiting-header {
+      background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+      color: white;
+      padding: 3rem 0;
+      margin-bottom: 2rem;
+      border-radius: 0 0 20px 20px;
+    }
+    
+    .card {
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      margin-bottom: 1.5rem;
+    }
+    
+    .waiting-container {
+      text-align: center;
+      padding: 2rem;
+    }
+    
+    .waiting-icon {
+      font-size: 4rem;
+      color: #0d6efd;
+      margin-bottom: 1.5rem;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      background-color: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeeba;
+    }
+    
+    .cancel-button {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin-right: 1rem;
+    }
+    
+    .cancel-button:hover {
+      background-color: #c82333;
+    }
+    
+    .dashboard-button {
+      background-color: #6c757d;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .dashboard-button:hover {
+      background-color: #5a6268;
+    }
+    
+    .notification {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1050;
+      max-width: 350px;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center justify-content-between">
+      <h1 class="logo"><img src="{{url_for('static', filename='logo.png')}}" alt="" class="src"><a href="/">Planical</a></h1>
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link" href="/">Home</a></li>
+          <li><a class="nav-link active" href="/virtual-consultation">Video Consultation</a></li>
+          <li><a class="nav-link" href="/profile">Profile</a></li>
+          <li><a class="nav-link" href="/logout">Logout</a></li>
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+    </div>
+  </header><!-- End Header -->
+
+  <!-- ======= Waiting Header ======= -->
+  <section class="waiting-header">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8">
+          <h1>Waiting for Doctor's Response</h1>
+          <p class="mb-0">Your consultation request has been sent to Dr. {{ doctor_name }}</p>
+        </div>
+        <div class="col-lg-4 d-flex justify-content-end align-items-center">
+          <a href="/virtual-consultation" class="btn btn-outline-light">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+          </a>
+        </div>
+      </div>
+    </div>
+  </section><!-- End Waiting Header -->
+
+  <main id="main">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <!-- Waiting Card -->
+          <div class="card waiting-container">
+            <i class="bi bi-hourglass-split waiting-icon"></i>
+            <div class="status-badge">
+              <i class="bi bi-clock me-2"></i>Waiting for Response
+            </div>
+            <h3 class="mb-3">Your consultation request is pending</h3>
+            <p>Your request has been sent to Dr. {{ doctor_name }}.</p>
+            <p>Please wait while we notify the doctor. This may take a few minutes.</p>
+            <p>You'll be notified when the doctor accepts your request.</p>
+            <p>Consultation ID: <strong>{{ consultation_id }}</strong></p>
+            
+            <div class="d-flex justify-content-center mt-4">
+              <form action="/cancel-consultation/{{ consultation_id }}" method="POST" id="cancelForm">
+                <button type="submit" class="cancel-button" id="cancelRequest">
+                  <i class="bi bi-x-circle me-2"></i>Cancel Request
+                </button>
+              </form>
+              <a href="/virtual-consultation" class="dashboard-button">
+                <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" style="background-color: #f8f9fa; padding: 30px 0; text-align: center; margin-top: 3rem;">
+    <div class="container">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Planical</span></strong>. All Rights Reserved
+      </div>
+      <div class="credits">
+        Virtual Consultation Service
+      </div>
+    </div>
+  </footer><!-- End Footer -->
+
+  <!-- Vendor JS Files -->
+  <script src="{{url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  
+  <!-- Notification Element -->
+  <div id="notification" class="notification">
+    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <strong class="me-auto">Notification</strong>
+        <button type="button" class="btn-close" onclick="hideNotification()"></button>
+      </div>
+      <div class="toast-body" id="notificationMessage">
+        <!-- Notification message goes here -->
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log("Waiting page loaded");
+      
+      // Connect to Socket.IO
+      const socket = io();
+      const consultationId = "{{ consultation_id }}";
+      const doctorName = "{{ doctor_name }}";
+      const userId = "{{ user_id }}";
+      
+      console.log("Consultation ID:", consultationId);
+      
+      // Show notification function
+      function showNotification(message, type) {
+        const notification = document.getElementById('notification');
+        const notificationMessage = document.getElementById('notificationMessage');
+        
+        // Set message
+        notificationMessage.textContent = message;
+        
+        // Set background color based on type
+        const toast = notification.querySelector('.toast');
+        toast.className = 'toast show';
+        
+        if (type === 'success') {
+          toast.classList.add('bg-success', 'text-white');
+        } else if (type === 'error') {
+          toast.classList.add('bg-danger', 'text-white');
+        } else if (type === 'warning') {
+          toast.classList.add('bg-warning');
+        } else {
+          toast.classList.add('bg-info', 'text-white');
+        }
+        
+        // Show notification
+        notification.style.display = 'block';
+        
+        // Auto-hide after 5 seconds
+        setTimeout(hideNotification, 5000);
+      }
+      
+      // Hide notification function
+      function hideNotification() {
+        const notification = document.getElementById('notification');
+        notification.style.display = 'none';
+      }
+      
+      // Make hideNotification available globally
+      window.hideNotification = hideNotification;
+      
+      // Socket.IO events
+      socket.on('connect', function() {
+        console.log('Socket.IO connected successfully');
+        
+        // Join room for this consultation
+        socket.emit('join-consultation-room', {
+          consultationId: consultationId,
+          userId: userId
+        });
+      });
+      
+      socket.on('connect_error', function(error) {
+        console.error('Socket.IO connection error:', error);
+        showNotification('Error connecting to the server. Refresh the page to reconnect.', 'error');
+      });
+      
+      // Listen for consultation accepted event
+      socket.on('consultation-accepted', function(data) {
+        if (data.consultationId === consultationId) {
+          console.log('Consultation accepted:', data);
+          showNotification('Your consultation request has been accepted! Redirecting to video call...', 'success');
+          
+          // Update UI
+          document.querySelector('.status-badge').innerHTML = '<i class="bi bi-check-circle me-2"></i>Accepted';
+          document.querySelector('.status-badge').style.backgroundColor = '#d4edda';
+          document.querySelector('.status-badge').style.color = '#155724';
+          document.querySelector('.status-badge').style.borderColor = '#c3e6cb';
+          
+          document.querySelector('.waiting-icon').className = 'bi bi-check-circle-fill waiting-icon';
+          document.querySelector('.waiting-icon').style.color = '#28a745';
+          
+          // Redirect to video call after a short delay
+          setTimeout(function() {
+            window.location.href = '/patient-video-call/' + consultationId;
+          }, 3000);
+        }
+      });
+      
+      // Listen for consultation rejected event
+      socket.on('consultation-rejected', function(data) {
+        if (data.consultationId === consultationId) {
+          console.log('Consultation rejected:', data);
+          showNotification('Your consultation request has been rejected by the doctor: ' + (data.reason || 'No reason provided'), 'error');
+          
+          // Update UI
+          document.querySelector('.status-badge').innerHTML = '<i class="bi bi-x-circle me-2"></i>Rejected';
+          document.querySelector('.status-badge').style.backgroundColor = '#f8d7da';
+          document.querySelector('.status-badge').style.color = '#721c24';
+          document.querySelector('.status-badge').style.borderColor = '#f5c6cb';
+          
+          document.querySelector('.waiting-icon').className = 'bi bi-x-circle-fill waiting-icon';
+          document.querySelector('.waiting-icon').style.color = '#dc3545';
+          
+          // Update buttons
+          document.getElementById('cancelRequest').style.display = 'none';
+        }
+      });
+      
+      // Cancel form submission
+      document.getElementById('cancelForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (confirm('Are you sure you want to cancel this consultation request?')) {
+          // Emit socket event to cancel
+          socket.emit('cancel-consultation', {
+            consultationId: consultationId,
+            userId: userId
+          });
+          
+          // Redirect to consultation page
+          window.location.href = '/virtual-consultation';
+        }
+      });
+    });
+  </script>
+</body>
+</html> 

@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Virtual Consultation - Patient View - Planical</title>
+  
+  <!-- Favicons -->
+  <link href="{{url_for('static', filename='logo1.png')}}" rel="icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
+  
+  <!-- Main CSS File -->
+  <link href="{{url_for('static', filename='assets/css/style.css')}}" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f8fa;
+      padding-top: 70px;
+    }
+    
+    .consultation-header {
+      background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+      color: white;
+      padding: 3rem 0;
+      margin-bottom: 2rem;
+      border-radius: 0 0 20px 20px;
+    }
+    
+    .card {
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+      background-color: #fff;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      padding: 1.25rem 1.5rem;
+      font-weight: 600;
+    }
+    
+    .doctor-card {
+      display: flex;
+      align-items: center;
+      padding: 1.5rem;
+    }
+    
+    .doctor-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: #e9ecef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: #0d6efd;
+      margin-right: 1.5rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    
+    .doctor-info h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .doctor-info p {
+      color: #6c757d;
+      margin-bottom: 0.75rem;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      line-height: 1;
+      color: #fff;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: baseline;
+      border-radius: 50rem;
+    }
+    
+    .status-online {
+      background-color: #28a745;
+    }
+    
+    .status-offline {
+      background-color: #6c757d;
+    }
+    
+    .status-busy {
+      background-color: #dc3545;
+    }
+    
+    .call-button {
+      background-color: #0d6efd;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .call-button:hover {
+      background-color: #0a58ca;
+      transform: translateY(-2px);
+    }
+    
+    .instructions {
+      background-color: #fff;
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+    }
+    
+    .instructions h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #0d6efd;
+    }
+    
+    .instructions ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+    
+    .instructions li {
+      position: relative;
+      padding: 0.5rem 0 0.5rem 2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .instructions li:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.75rem;
+      width: 1.25rem;
+      height: 1.25rem;
+      background-color: #e7f1ff;
+      border-radius: 50%;
+    }
+    
+    .instructions li:after {
+      content: "✓";
+      position: absolute;
+      left: 0.35rem;
+      top: 0.35rem;
+      color: #0d6efd;
+      font-weight: bold;
+    }
+    
+    .notice {
+      padding: 1.5rem;
+      background-color: #fff3cd;
+      border-radius: 0.5rem;
+      border-left: 5px solid #ffc107;
+      margin-bottom: 1.5rem;
+    }
+    
+    .notice h4 {
+      color: #856404;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .notice p {
+      color: #856404;
+      margin-bottom: 0;
+    }
+    
+    @media (max-width: 767.98px) {
+      .doctor-card {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .doctor-avatar {
+        margin-right: 0;
+        margin-bottom: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center justify-content-between">
+      <h1 class="logo"><img src="{{url_for('static', filename='logo.png')}}" alt="" class="src"><a href="/">Planical</a></h1>
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link" href="/">Home</a></li>
+          <li><a class="nav-link active" href="/virtual-consultation">Video Consultation</a></li>
+          <li><a class="nav-link" href="/profile">Profile</a></li>
+          <li><a class="nav-link" href="/logout">Logout</a></li>
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+    </div>
+  </header><!-- End Header -->
+
+  <!-- ======= Consultation Header ======= -->
+  <section class="consultation-header">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8">
+          <h1>Virtual Doctor Consultation</h1>
+          <p class="mb-0">Connect with qualified mental health professionals through secure video calls.</p>
+        </div>
+        <div class="col-lg-4 d-flex justify-content-end align-items-center">
+          <span class="status-badge status-online me-2">Available</span>
+          <span>You're ready to start consultations</span>
+        </div>
+      </div>
+    </div>
+  </section><!-- End Consultation Header -->
+
+  <main id="main">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8">
+          <!-- Instructions -->
+          <div class="instructions">
+            <h3>How Video Consultations Work</h3>
+            <ul>
+              <li>Select an available doctor from the list below</li>
+              <li>Click the "Start Video Call" button to request a consultation</li>
+              <li>Wait for the doctor to accept your call request</li>
+              <li>Ensure your camera and microphone are enabled when prompted</li>
+              <li>Speak clearly and find a quiet, well-lit place for your call</li>
+            </ul>
+          </div>
+
+          <!-- Available Doctors -->
+          <h2 class="mb-4">Available Mental Health Professionals</h2>
+          
+          {% if doctors %}
+            {% for doctor in doctors %}
+              <div class="card">
+                <div class="doctor-card">
+                  <div class="doctor-avatar">
+                    {{ doctor.name[0] if doctor.name else 'D' }}
+                  </div>
+                  <div class="doctor-info flex-grow-1">
+                    <h3>{{ doctor.name }}</h3>
+                    <p><i class="bi bi-briefcase-fill me-2"></i>{{ doctor.specialization }}</p>
+                    <p><i class="bi bi-award-fill me-2"></i>Doctor ID: {{ doctor.doctor_id }}</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                      <span class="status-badge status-online">Available</span>
+                      <button onclick="requestConsultation('{{ doctor.id }}', '{{ doctor.name }}')" class="call-button">
+                        <i class="bi bi-calendar-plus"></i>
+                        Request Consultation
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="alert alert-info">
+              <p>No doctors are currently available. Please check back later.</p>
+            </div>
+          {% endif %}
+        </div>
+        
+        <div class="col-lg-4">
+          <!-- Notice -->
+          <div class="notice">
+            <h4><i class="bi bi-exclamation-triangle-fill me-2"></i>Important Notice</h4>
+            <p>Video consultations are not a replacement for emergency medical services. If you're experiencing a mental health emergency, please call our helpline at <strong>080 2572 2573</strong> or visit your nearest emergency room.</p>
+          </div>
+          
+          <!-- Tips -->
+          <div class="card">
+            <div class="card-header">
+              <i class="bi bi-lightbulb-fill me-2"></i>Tips for a Successful Consultation
+            </div>
+            <div class="card-body">
+              <ul class="list-unstyled">
+                <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i>Find a quiet, private space for your call</li>
+                <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i>Test your camera and microphone before starting</li>
+                <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i>Have a list of symptoms or questions ready</li>
+                <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i>Keep a pen and paper nearby to take notes</li>
+                <li><i class="bi bi-check-circle-fill text-success me-2"></i>Ensure your device is charged or plugged in</li>
+              </ul>
+            </div>
+          </div>
+          
+          <!-- Support -->
+          <div class="card">
+            <div class="card-header">
+              <i class="bi bi-headset me-2"></i>Need Help?
+            </div>
+            <div class="card-body">
+              <p>If you're experiencing technical difficulties or have questions about your consultation, our support team is here to help.</p>
+              <p><i class="bi bi-envelope-fill me-2"></i>Email: support@planical.com</p>
+              <p><i class="bi bi-telephone-fill me-2"></i>Phone: +91 901 9708133</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" style="background-color: #f8f9fa; padding: 30px 0; text-align: center; margin-top: 3rem;">
+    <div class="container">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Planical</span></strong>. All Rights Reserved
+      </div>
+      <div class="credits">
+        Virtual Consultation Service
+      </div>
+    </div>
+  </footer><!-- End Footer -->
+
+  <!-- Vendor JS Files -->
+  <script src="{{url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  
+  <!-- Add connection status indicator -->
+  <div id="connection-status" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1040;">
+    <div class="d-flex align-items-center bg-white rounded-pill shadow-sm px-3 py-2">
+      <span class="status-indicator me-2" style="width: 12px; height: 12px; border-radius: 50%; background-color: #ccc; display: inline-block;"></span>
+      <span class="status-text small">Checking...</span>
+    </div>
+  </div>
+  
+  <div id="notification" class="position-fixed top-0 end-0 p-3" style="z-index: 1050; display: none;">
+    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <strong class="me-auto">Notification</strong>
+        <button type="button" class="btn-close" onclick="hideNotification()"></button>
+      </div>
+      <div class="toast-body" id="notificationMessage">
+        <!-- Notification message goes here -->
+      </div>
+    </div>
+  </div>
+  
+  <!-- Add ConnectionManager script before main script -->
+  <script src="/static/js/connection_status.js"></script>
+  
+  <script>
+    // Connection status management
+    let connectionManager;
+    let isOfflineMode = false;
+    
+    function initConnectionManager() {
+      connectionManager = new ConnectionManager({
+        firebaseApp: firebase.app(),
+        checkInterval: 15000, // 15 seconds
+        onStatusChange: handleConnectionStatusChange,
+        onReconnect: handleReconnection,
+        onDisconnect: handleDisconnection
+      });
+      
+      // Enable offline persistence
+      connectionManager.enableOfflinePersistence()
+        .then(success => {
+          console.log('Offline persistence setup:', success ? 'succeeded' : 'failed');
+        });
+    }
+    
+    function handleConnectionStatusChange(status) {
+      const statusElement = document.getElementById('connection-status');
+      const statusIndicator = statusElement.querySelector('.status-indicator');
+      const statusText = statusElement.querySelector('.status-text');
+      
+      // Remove all status classes
+      statusIndicator.classList.remove('online', 'offline', 'partial', 'disconnected');
+      
+      // Update UI based on status
+      switch(status.overallStatus) {
+        case 'connected':
+          statusIndicator.style.backgroundColor = '#28a745'; // green
+          statusText.textContent = 'Connected';
+          isOfflineMode = false;
+          break;
+        case 'partially-connected':
+          statusIndicator.style.backgroundColor = '#ffc107'; // yellow
+          statusText.textContent = 'Partial Connection';
+          isOfflineMode = false;
+          break;
+        case 'disconnected':
+          statusIndicator.style.backgroundColor = '#dc3545'; // red
+          statusText.textContent = 'Connection Lost';
+          isOfflineMode = true;
+          break;
+        case 'offline':
+          statusIndicator.style.backgroundColor = '#6c757d'; // gray
+          statusText.textContent = 'Offline';
+          isOfflineMode = true;
+          break;
+      }
+      
+      // Update UI components based on connection status
+      updateUIForConnectionStatus();
+    }
+    
+    function handleReconnection(source) {
+      console.log(`Reconnected to ${source}`);
+      showNotification(`Connection restored. You're back online.`, 'success');
+    }
+    
+    function handleDisconnection(source) {
+      console.log(`Disconnected from ${source}`);
+      showNotification('Connection lost. Working in offline mode. Some features may be limited.', 'warning');
+    }
+    
+    function updateUIForConnectionStatus() {
+      // Update UI elements based on connection status
+      const consultButtons = document.querySelectorAll('.call-button');
+      
+      if (isOfflineMode) {
+        // Disable actions that require network
+        consultButtons.forEach(btn => {
+          btn.disabled = true;
+          btn.title = "Cannot request consultation while offline";
+        });
+        
+        // Only show notification once when going offline
+        if (!document.querySelector('.offline-notification')) {
+          const offlineNotice = document.createElement('div');
+          offlineNotice.className = 'offline-notification container my-3';
+          offlineNotice.innerHTML = `
+            <div class="alert alert-warning">
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              You're currently offline. Some features are unavailable.
+              <button class="btn btn-sm btn-outline-warning ms-3 try-reconnect-btn">Try to reconnect</button>
+            </div>
+          `;
+          document.querySelector('.consultation-header').after(offlineNotice);
+          
+          // Add reconnect button handler
+          offlineNotice.querySelector('.try-reconnect-btn').addEventListener('click', () => {
+            connectionManager.attemptReconnect();
+          });
+        }
+      } else {
+        // Re-enable network-dependent features
+        consultButtons.forEach(btn => {
+          btn.disabled = false;
+          btn.title = "Request a consultation";
+        });
+        
+        // Remove offline notification if present
+        const offlineNotice = document.querySelector('.offline-notification');
+        if (offlineNotice) {
+          offlineNotice.remove();
+        }
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      // Connect to Socket.IO server
+      const socket = io();
+      const userId = "{{ user_id }}";
+      const userName = "{{ user_name }}";
+      
+      // Initialize Firebase if defined
+      if (typeof firebase !== 'undefined') {
+        try {
+          const firebaseConfig = {
+            apiKey: "{{ firebase_config.apiKey }}",
+            authDomain: "{{ firebase_config.authDomain }}",
+            projectId: "{{ firebase_config.projectId }}",
+            storageBucket: "{{ firebase_config.storageBucket }}",
+            messagingSenderId: "{{ firebase_config.messagingSenderId }}",
+            appId: "{{ firebase_config.appId }}"
+          };
+          
+          // Initialize Firebase
+          if (!firebase.apps || !firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+            console.log("Firebase initialized successfully");
+            
+            // Initialize connection manager
+            initConnectionManager();
+          }
+        } catch (error) {
+          console.error("Error initializing Firebase:", error);
+        }
+      }
+      
+      // Show notification function
+      window.showNotification = function(message, type) {
+        const notification = document.getElementById('notification');
+        const notificationMessage = document.getElementById('notificationMessage');
+        
+        // Set message
+        notificationMessage.textContent = message;
+        
+        // Set background color based on type
+        const toast = notification.querySelector('.toast');
+        toast.className = 'toast show';
+        
+        if (type === 'success') {
+          toast.classList.add('bg-success', 'text-white');
+        } else if (type === 'error') {
+          toast.classList.add('bg-danger', 'text-white');
+        } else if (type === 'warning') {
+          toast.classList.add('bg-warning');
+        } else {
+          toast.classList.add('bg-info', 'text-white');
+        }
+        
+        // Show notification
+        notification.style.display = 'block';
+        
+        // Auto-hide after 5 seconds
+        setTimeout(hideNotification, 5000);
+      };
+      
+      // Hide notification function
+      window.hideNotification = function() {
+        const notification = document.getElementById('notification');
+        notification.style.display = 'none';
+      };
+      
+      // Request consultation function
+      window.requestConsultation = function(doctorId, doctorName) {
+        // Redirect to the consultation request form
+        window.location.href = `/request-consultation/${doctorId}?doctorName=${encodeURIComponent(doctorName)}`;
+      };
+      
+      // Listen for consultation accepted event
+      socket.on('consultation-accepted', function(data) {
+        const doctorName = data.doctorName;
+        const callId = data.consultationId;
+        const scheduledTime = data.scheduledTime;
+        
+        if (scheduledTime) {
+          // Format date and time for display
+          const dateObj = new Date(scheduledTime);
+          const formattedDate = dateObj.toLocaleDateString();
+          const formattedTime = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          
+          showNotification(`Dr. ${doctorName} has scheduled your consultation for ${formattedDate} at ${formattedTime}.`, 'success');
+          
+          // Don't redirect automatically for scheduled consultations
+        } else {
+          // Immediate consultation
+          showNotification(`Dr. ${doctorName} has accepted your consultation request. Redirecting to video call...`, 'success');
+          
+          // Redirect to video call page after a short delay
+          setTimeout(function() {
+            window.location.href = `/patient-video-call/${callId}`;
+          }, 2000);
+        }
+      });
+      
+      // Listen for consultation rejected event
+      socket.on('consultation-rejected', function(data) {
+        const doctorName = data.doctorName;
+        const reason = data.reason;
+        
+        showNotification(`Dr. ${doctorName} cannot take your consultation right now. Reason: ${reason}`, 'warning');
+      });
+    });
+  </script>
+</body>
+</html> 

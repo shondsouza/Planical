@@ -6,43 +6,45 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
 
-  <title>MindCare</title>
+  <title>Planical</title>
 
   <meta content="" name="description">
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="{{url_for('static', filename='logo.png')}}" rel="icon">
+  <link href="{{url_for('static', filename='logo1.png')}}" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
-  <link
-    href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/boxicons/css/boxicons.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/remixicon/remixicon.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/aos/aos.css')}}" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
   <!-- Template Main CSS File -->
-  <link href="/assets/css/style.css" rel="stylesheet">
-  <link href="assets/css/main-home.css" rel="stylesheet">
-  <link href="assets/css/variables.css" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/css/style.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/css/variables-pink.css')}}" rel="stylesheet">
+  <link rel="stylesheet" href="{{url_for('static', filename='assets/css/jquery.convform.css')}}">
+  <link href="{{url_for('static', filename='assets/css/chatbot-fixes.css')}}" rel="stylesheet">
 
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
-  <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
-  <link rel="stylesheet" type="text/css" href="css/style.css">
-  <link rel="stylesheet" type="text/css" href="css/responsive.css">
+  <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/bootstrap.css')}}">
+  <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/style.css')}}">
+  <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/responsive.css')}}">
 
   <!-- ChatBot -->
-  <link rel="stylesheet" type="text/css" href="css/jquery.convform.css">
-  <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
-  <script type="text/javascript" src="js/jquery.convform.js"></script>
-  <script type="text/javascript" src="js/custom.js"></script>
+  <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/jquery.convform.css')}}">
+  <script type="text/javascript" src="{{url_for('static', filename='js/jquery-3.1.1.min.js')}}"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='js/jquery.convform.js')}}"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='js/custom.js')}}"></script>
 
 
   <!-- =======================================================
@@ -53,32 +55,1348 @@
   ======================================================== -->
 </head>
 <style>
+  :root {
+    --font-primary: 'Poppins', sans-serif;
+    --font-secondary: 'Poppins', sans-serif;
+    --font-weight-light: 300;
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+  }
+  
+  /* Chat icon pulse animation */
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(13, 110, 253, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+    }
+  }
+  
+  .chat_icon {
+    animation: pulse 2s infinite;
+  }
+  
+  .chat_icon:hover {
+    animation: none;
+  }
+  
+  /* Mental health button hover effect */
+  .mental-health-btn:hover,
+  a.btn.mental-health-btn:hover,
+  .btn.mental-health-btn:hover {
+    background-color: #000000 !important;
+    color: white !important;
+    border-color: #000000 !important;
+  }
+  
+  /* Chatbot conversation styles */
+  .my-conv-form-wrapper {
+    position: relative;
+    overflow: hidden !important;
+    height: auto !important;
+    max-height: 60vh !important;
+  }
+  
+  .conv-form-wrapper {
+    overflow: hidden !important;
+  }
+  
+  /* Set overflow-y to auto only when content exceeds container height */
+  .my-conv-form-wrapper:hover,
+  .my-conv-form-wrapper:active,
+  .my-conv-form-wrapper:focus-within {
+    overflow-y: auto !important;
+  }
+  
+  .conv-form-wrapper form {
+    padding-bottom: 0 !important;
+  }
+  
+  .conv-form-wrapper div.options {
+    word-wrap: break-word;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  .conv-form-wrapper div.message {
+    word-wrap: break-word;
+    max-width: 280px;
+  }
+  
+  .conv-form-wrapper div.message p {
+    max-width: 100%;
+    overflow-wrap: break-word;
+  }
+  
+  body {
+    font-family: var(--font-primary);
+    font-weight: var(--font-weight-regular);
+    line-height: 1.6;
+    color: #2a2a2a;
+    transition: color 0.3s ease;
+  }
+  
+  /* Main heading styles */
+  .hero h1, 
+  .section-title h2,
+  .logo a {
+    font-family: var(--font-primary);
+    font-weight: var(--font-weight-semibold);
+  }
+  
+  /* Navbar and secondary headings */
+  .navbar a,
+  h2, h3, h4, h5, h6,
+  .section-title span,
+  .btn-get-started,
+  .service-item h3 {
+    font-family: var(--font-primary);
+    font-weight: var(--font-weight-medium);
+  }
+  
+  /* Regular text */
+  p,
+  .description,
+  .testimonial-item p,
+  .profile-info p,
+  .footer p {
+    font-family: var(--font-primary);
+    font-weight: var(--font-weight-regular);
+  }
+  
+  h1, h2, h3, h4, h5, h6, .navbar a, .btn, .logo a {
+    font-family: var(--font-secondary);
+    font-weight: var(--font-weight-semibold);
+  }
+  
+  .hero h1 {
+    font-size: 2.5rem !important;
+    font-weight: 800;
+    color: #ffffff !important;
+    letter-spacing: -1px;
+    line-height: 0.9;
+    /* Override default browser styles */
+    margin: 0 !important;
+    padding: 0 !important;
+    margin-block-start: 0 !important;
+    margin-block-end: 0 !important;
+    margin-inline-start: 0 !important;
+    margin-inline-end: 0 !important;
+    display: block;
+    max-height: none !important;
+    max-width: none !important;
+  }
+  
+  .hero h2 {
+    font-weight: var(--font-weight-medium);
+    font-size: 1.1rem;
+    line-height: 1.5;
+    color: #2a2a2a;
+    transition: color 0.3s ease;
+  }
+  
+  body.dark-mode .hero h2 {
+    color: #ffffff !important;
+  }
+  
+  .section-title h2 {
+    font-size: 2.2rem;
+    position: relative;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    color: #2a2a2a;
+    transition: color 0.3s ease;
+  }
+  
+  .section-title span {
+    font-size: 1rem;
+    font-weight: var(--font-weight-medium);
+    color: #4CAF50;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  p {
+    font-size: 1rem;
+  }
+  
   #person-name {
     color: white;
   }
+  
+  .logout-btn {
+    padding: 8px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    margin-left: 10px;
+    font-weight: 500;
+  }
+  
+  .logout-btn:hover {
+    background-color: #45a049;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .dark-mode-toggle {
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-left: 15px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid #e1e1e1;
+    color: #4CAF50;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .dark-mode-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dark-mode-toggle::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(76, 175, 80, 0.1);
+    border-radius: 50%;
+    transform: scale(0);
+    transition: transform 0.3s ease;
+  }
+  
+  .dark-mode-toggle:hover::before {
+    transform: scale(1);
+  }
+  
+  .dark-mode-toggle i {
+    z-index: 1;
+    transition: transform 0.5s ease;
+  }
+  
+  .dark-mode-toggle:hover i {
+    transform: rotate(30deg);
+  }
+  
+  /* Dark mode styles */
+  body.dark-mode {
+    background-color: #121212;
+    color: #ffffff !important;
+  }
+  
+  body.dark-mode #header {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+  
+  body.dark-mode .navbar a, 
+  body.dark-mode h1, 
+  body.dark-mode h2,
+  body.dark-mode p {
+    color: #ffffff !important;
+  }
+  
+  body.dark-mode .icon-box {
+    background-color: #2a2a2a;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  body.dark-mode #hero {
+    background-color: #1a1a1a;
+  }
+  
+  body.dark-mode section {
+    background-color: #121212;
+  }
+  
+  body.dark-mode .card,
+  body.dark-mode .testimonial-item {
+    background-color: #1e1e1e;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  body.dark-mode .footer {
+    background-color: #1e1e1e;
+  }
+
+  body.dark-mode .btn-get-started,
+  body.dark-mode .getstarted {
+    background: #4CAF50;
+    color: white;
+  }
+
+  body.dark-mode .btn-watch-video {
+    color: #e0e0e0;
+  }
+
+  body.dark-mode input,
+  body.dark-mode textarea {
+    background-color: #2a2a2a;
+    border-color: #444;
+    color: #f5f5f5;
+  }
+
+  body.dark-mode hr {
+    border-color: #444;
+  }
+
+  body.dark-mode .dark-mode-toggle {
+    border-color: #444;
+    color: #f5f5f5;
+  }
+
+  body.dark-mode .dark-mode-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Animation for dark mode transition */
+  body, section, #header, .card, .icon-box, .testimonial-item, input, textarea {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  /* Updated Profile Button Styles */
+  .profile-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px !important;
+    height: 45px !important;
+    padding: 0;
+    margin-left: 15px;
+    border-radius: 50%;
+    background: #0d6efd;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none !important;
+    text-align: center;
+    line-height: 45px; /* Match height for vertical centering */
+    color: white !important;
+  }
+
+  .profile-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: #000000 !important;
+    color: white !important;
+  }
+
+  .profile-button:hover div {
+    color: white !important;
+  }
+
+  .profile-button img {
+    width: 45px !important;
+    height: 45px !important;
+    object-fit: contain;
+  }
+
+  /* For non-logged in users */
+  .profile-button i {
+    font-size: 20px;
+    color: #2a2a2a;
+  }
+
+  body.dark-mode .profile-button {
+    background: #0d6efd;
+    color: white !important;
+  }
+
+  .profile-dropdown {
+    position: relative;
+  }
+  
+  .profile-dropdown-content {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 300px;
+    height: 100vh;
+    background: #fff;
+    border-radius: 16px 0 0 16px;
+    box-shadow: -5px 0 30px rgba(0, 0, 0, 0.1);
+    padding: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transform: translateX(100%);
+    z-index: 1000;
+    pointer-events: none;
+    overflow-y: auto;
+  }
+
+  .profile-dropdown.active .profile-dropdown-content {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+  
+  .profile-header {
+    display: flex;
+    align-items: center;
+    padding: 25px 20px;
+    background: #fafafa;
+    margin-bottom: 0;
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .profile-avatar {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: #0d6efd;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-right: 12px;
+    line-height: 1;
+    text-align: center;
+    box-shadow: 0 3px 8px rgba(13, 110, 253, 0.3);
+  }
+  
+  .profile-info h5 {
+    margin: 0;
+    font-size: 17px;
+    color: #333;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  
+  .profile-info p {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: #666;
+    line-height: 1.2;
+  }
+  
+  .profile-menu {
+    list-style: none;
+    padding: 10px 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .profile-menu li {
+    padding: 0;
+    width: 100%;
+    position: relative;
+  }
+  
+  .profile-menu li:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 20px;
+    right: 20px;
+    height: 1px;
+    background: #f0f0f0;
+  }
+  
+  .profile-menu li:last-child:after {
+    display: none;
+  }
+  
+  .profile-menu i {
+    margin-right: 0;
+    font-size: 18px;
+    width: 16px;
+    text-align: center;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .profile-menu a {
+    display: flex !important;
+    align-items: center;
+    color: #333 !important;
+    font-size: 16px;
+    padding: 14px 20px !important;
+    transition: all 0.3s ease;
+    width: 100%;
+    position: relative;
+    gap: 5px;
+  }
+  
+  .profile-menu a:hover {
+    background: rgba(13, 110, 253, 0.05);
+    color: #0d6efd !important;
+    padding-left: 25px !important;
+  }
+  
+  .profile-menu a:hover i {
+    transform: scale(1.1);
+    color: #0d6efd;
+  }
+  
+  .profile-menu a:after {
+    content: '\f054';
+    font-family: 'bootstrap-icons';
+    position: absolute;
+    right: 20px;
+    opacity: 0.5;
+    font-size: 12px;
+    transition: all 0.3s ease;
+  }
+  
+  .profile-menu a:hover:after {
+    opacity: 1;
+    transform: translateX(5px);
+    color: #0d6efd;
+  }
+  
+  /* Logout special styling */
+  .profile-menu li:last-child a {
+    color: #dc3545 !important;
+  }
+  
+  .profile-menu li:last-child a:hover {
+    background: rgba(220, 53, 69, 0.05);
+    color: #dc3545 !important;
+  }
+  
+  .profile-menu li:last-child a:hover i {
+    color: #dc3545;
+  }
+  
+  .profile-menu li:last-child a:hover:after {
+    color: #dc3545;
+  }
+  
+  /* Dark mode adjustments */
+  body.dark-mode .profile-dropdown-content {
+    background: #222;
+    box-shadow: -5px 0 30px rgba(0, 0, 0, 0.3);
+  }
+  
+  body.dark-mode .profile-header {
+    background: #1a1a1a;
+    border-bottom-color: #333;
+  }
+  
+  body.dark-mode .sidebar-close-btn {
+    background: #333;
+  }
+  
+  body.dark-mode .sidebar-close-btn:hover {
+    background: #444;
+  }
+  
+  body.dark-mode .sidebar-close-btn i {
+    color: #f5f5f5;
+  }
+  
+  body.dark-mode .profile-info h5 {
+    color: #f5f5f5;
+  }
+  
+  body.dark-mode .profile-info p {
+    color: #aaa;
+  }
+  
+  body.dark-mode .profile-menu li:after {
+    background: #333;
+  }
+  
+  body.dark-mode .profile-menu a {
+    color: #f5f5f5 !important;
+  }
+  
+  body.dark-mode .profile-menu a:hover {
+    background: rgba(13, 110, 253, 0.1);
+  }
+  
+  body.dark-mode .profile-menu a:after {
+    opacity: 0.5;
+  }
+  
+  body.dark-mode .profile-menu li:last-child a {
+    color: #f77 !important;
+  }
+  
+  body.dark-mode .profile-menu li:last-child a:hover {
+    background: rgba(220, 53, 69, 0.1);
+  }
+
+  .navbar {
+    padding: 15px 0;
+    transition: all 0.3s ease;
+    background: transparent;
+    position: relative;
+    z-index: 100;
+  }
+
+  .navbar ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    list-style: none;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .navbar .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 20px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #2a2a2a;
+    white-space: nowrap;
+    transition: 0.3s;
+    position: relative;
+    background: none;
+    border: none;
+    box-shadow: none;
+  }
+
+  .navbar .nav-link:hover {
+    color: #0d6efd !important;
+    transform: translateY(-2px);
+    background: none;
+  }
+  
+  .navbar .getstarted,
+  .navbar .getstarted:focus {
+    background: #0d6efd;
+    color: #fff;
+    padding: 15px 35px;
+    border-radius: 50px;
+    margin-left: 15px;
+    font-size: 15px;
+  }
+
+  .navbar .getstarted:hover,
+  .navbar .getstarted:focus:hover {
+    background: #000000;
+    color: #fff !important;
+  }
+
+  .navbar-mobile .getstarted,
+  .navbar-mobile .getstarted:focus {
+    margin: 15px;
+    padding: 15px 35px;
+    background: #0d6efd;
+    color: #fff;
+  }
+
+  .navbar-mobile .getstarted:hover,
+  .navbar-mobile .getstarted:focus:hover {
+    background: #000000;
+    color: #fff !important;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    font-size: 35px;
+    font-weight: 700;
+    color: #2a2a2a !important;
+    text-decoration: none;
+  }
+
+  .logo:hover {
+    color: #2a2a2a !important;
+  }
+
+  .logo img {
+    margin-right: 12px;
+    max-height: 50px;
+    width: auto;
+  }
+
+  .logo a {
+    font-size: 35px;
+    font-weight: 700;
+    color: #2a2a2a !important;
+    text-decoration: none;
+  }
+
+  /* Dark mode adjustments */
+  body.dark-mode .logo,
+  body.dark-mode .logo:hover,
+  body.dark-mode .logo a {
+    color: #ffffff !important;
+  }
+
+  .navbar {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .navbar ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    list-style: none;
+    align-items: center;
+    gap: 25px;
+  }
+
+  @media (max-width: 991px) {
+    .logo {
+      margin-right: 30px !important;
+    }
+  }
+
+  /* Hero section styles */
+  #hero {
+    position: relative;
+    overflow: hidden;
+  }
+
+  #hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 37%;
+    height: 100%;
+    background-color: #D0F4FD;
+    z-index: 0;
+  }
+
+  #hero::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 63%;
+    height: 100%;
+    background-color: #ffffff;
+    z-index: 0;
+  }
+
+  #hero .container {
+    position: relative;
+    z-index: 1;
+  }
+
+  #hero .hero-img {
+    position: relative;
+    z-index: 2;
+    transform: scale(1.25);
+    margin-left: auto;
+    margin-right: -80px;
+    margin-bottom: -50px;
+    display: flex;
+    align-items: flex-end;
+    padding-top: 30px;
+  }
+
+  #hero .hero-img img {
+    animation: float 3s ease-in-out infinite;
+    max-width: 120%;
+    height: auto;
+    margin-bottom: 0;
+    transform: translateY(40px);
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
+
+  /* Ensure text remains visible */
+  #hero h1, #hero h2 {
+    position: relative;
+    z-index: 2;
+  }
+
+  #hero .btn-get-started,
+  #hero .btn-watch-video {
+    position: relative;
+    z-index: 2;
+  }
+
+  @media (max-width: 991px) {
+    #hero .hero-img {
+      margin-left: auto;
+      margin-right: 0;
+      margin-bottom: 0;
+      padding-top: 0;
+      transform: scale(1.1);
+    }
+    
+    #hero .hero-img img {
+      transform: translateY(0);
+      max-width: 100%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero h1 {
+      font-size: 2.5rem !important;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .hero h1 {
+      font-size: 2.5rem !important;
+    }
+  }
+
+  /* Add a direct style override */
+  .col-lg-6 h1 {
+    font-size: 2.5rem !important;
+  }
+
+  #header {
+    transition: all 0.5s;
+    background: transparent !important;
+    z-index: 997;
+    box-shadow: none !important;
+    border: none !important;
+    position: absolute;
+  }
+
+  #header.fixed-top {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  #header .container {
+    padding: 0 15px;
+    background: transparent !important;
+  }
+
+  /* Remove sticky header styles */
+  .navbar.sticky {
+    display: none !important;
+  }
+
+  /* Dark mode adjustments */
+  body.dark-mode #header {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  body.dark-mode .navbar.sticky {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+  }
+
+  .navbar a:hover,
+  .navbar .active,
+  .navbar .active:focus,
+  .navbar li:hover>a {
+    color: #0d6efd !important;
+  }
+
+  .profile-menu a:hover {
+    background: rgba(13, 110, 253, 0.1) !important;
+    color: #0d6efd !important;
+  }
+
+  body.dark-mode .profile-menu a:hover {
+    background: rgba(13, 110, 253, 0.15) !important;
+    color: #0d6efd !important;
+  }
+
+  .btn-get-started {
+    font-family: "Raleway", sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    letter-spacing: 1px;
+    display: inline-block;
+    padding: 15px 35px;  /* Increased padding to match navbar */
+    border-radius: 50px;
+    transition: 0.5s;
+    margin-right: 20px;
+    color: #fff;
+    background: #0d6efd;
+  }
+
+  .btn-get-started:hover {
+    background: #000000;
+    color: #fff;
+  }
+
+  #hero .btn-get-started {
+    padding: 18px 40px;
+    font-size: 17px;
+    border-radius: 50px;
+    transition: 0.5s;
+    color: #fff;
+    background: #0d6efd;
+    white-space: nowrap;
+  }
+
+  #hero .btn-get-started:hover {
+    background: #000000;
+    color: #fff;
+  }
+
+  /* GLightbox styles */
+  .gloader {
+    display: none !important;
+  }
+
+  .goverlay {
+    display: none !important;
+  }
+
+  .glightbox-container {
+    background: none !important;
+  }
+
+  .gslide-media {
+    position: relative !important;
+  }
+
+  /* Close button styles */
+  .gclose {
+    width: 28px !important;
+    height: 28px !important;
+    position: absolute !important;
+    right: 0px !important;
+    top: 0px !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    z-index: 999999 !important;
+    transition: all 0.3s ease !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  .gclose::before,
+  .gclose::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 2px;
+    background-color: white;
+    transform-origin: center;
+  }
+
+  .gclose::before {
+    transform: rotate(45deg);
+  }
+
+  .gclose::after {
+    transform: rotate(-45deg);
+  }
+
+  .gclose:hover {
+    background: rgba(0, 0, 0, 1) !important;
+    transform: scale(1.1);
+  }
+
+  .sidebar-close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    z-index: 2;
+  }
+
+  .sidebar-close-btn:hover {
+    background: #e0e0e0;
+    transform: rotate(90deg);
+  }
+
+  .sidebar-close-btn i {
+    font-size: 18px;
+    color: #333;
+  }
+  
+  body.dark-mode .profile-dropdown-content {
+    background: #222;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+  }
+  
+  body.dark-mode .sidebar-close-btn {
+    background: #333;
+  }
+  
+  body.dark-mode .sidebar-close-btn:hover {
+    background: #444;
+  }
+  
+  body.dark-mode .sidebar-close-btn i {
+    color: #f5f5f5;
+  }
+  
+  body.dark-mode .profile-menu li {
+    border-bottom-color: #333;
+  }
+
+  .profile-menu a span {
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .profile-menu a:hover span {
+    transform: translateX(2px);
+  }
+
+  .profile-menu li:hover:after {
+    background: #e6f0ff;
+  }
+
+  .profile-menu a.active {
+    background: rgba(13, 110, 253, 0.08);
+    color: #0d6efd !important;
+  }
+
+  .profile-menu a.active i {
+    color: #0d6efd;
+  }
+
+  /* Logout special styling */
+  .profile-menu li:last-child a span {
+    color: #dc3545;
+    font-weight: 500;
+  }
+
+  body.dark-mode .profile-menu a.active {
+    background: rgba(13, 110, 253, 0.12);
+  }
+
+  /* Add override at the end of head */
+  #main-heading.small-heading {
+    font-size: 3.5rem !important;
+    transform: scale(1) !important;
+    max-width: 100% !important;
+    max-height: none !important;
+  }
+
+  /* Add custom styles for stress-detect-btn hover */
+  .stress-detect-btn:hover {
+    background-color: #000000 !important;
+    color: white !important;
+    border-color: #000000 !important;
+  }
+
+  body.dark-mode .profile-menu a.active {
+    background: rgba(13, 110, 253, 0.15) !important;
+    color: #0d6efd !important;
+  }
+
+  .conv-form-wrapper div.options div.option {
+    word-break: break-word;
+  }
+  
+  .conv-form-wrapper div.options {
+    word-wrap: break-word;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  .conv-form-wrapper div.message {
+    word-wrap: break-word;
+    max-width: 280px;
+  }
+  
+  .conv-form-wrapper div.message p {
+    max-width: 100%;
+    overflow-wrap: break-word;
+  }
+  
+  /* Additional fixes for chatbot spacing */
+  .conv-form-wrapper .inputStep,
+  .conv-form-wrapper .reply-buttons,
+  .conv-form-wrapper > form > div:last-child,
+  .conv-form-wrapper > form > input:last-child {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  
+  /* Eliminate extra spacing at the bottom of the form */
+  .conv-form-wrapper .wrapper-messages {
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+  }
+  
+  .conv-form-wrapper form select:last-of-type,
+  .conv-form-wrapper form input:last-of-type {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  
+  .conv-form-wrapper form > div:last-child {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  
+  .conv-form-wrapper form .options:last-child,
+  .conv-form-wrapper form .option:last-child {
+    margin-bottom: 0 !important;
+  }
+  
+  .chat_box {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .chat_box .my-conv-form-wrapper {
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* Add hover effect for the mental wellness section button */
+  #mental-wellness .btn:hover {
+    background-color: #0a58ca !important;
+    box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3) !important;
+    transform: translateY(-2px) !important;
+  }
+
+  .mental-health-btn:hover {
+    background-color: #000000 !important;
+    color: white !important;
+    border-color: #000000 !important;
+  }
+
+  @keyframes pulse {
+    0% {
+      opacity: 0.3;
+    }
+    100% {
+      opacity: 0.7;
+    }
+  }
+  .home-section19 {
+  gap: var(--dl-layout-space-fiveunits);
+  flex: 1;
+  width: 100%;
+  display: flex;
+  position: relative;
+  align-items: center;
+  padding-left: var(--dl-layout-space-oneandhalfunits);
+  padding-right: var(--dl-layout-space-oneandhalfunits);
+  flex-direction: column;
+  padding-bottom: 120px;
+  background-color: #d9d9d9;
+  justify-content: center;
+}
+
+.home-banner {
+  width: 100%;
+  display: flex;
+  padding: 70px 50px; /* Increased external padding, but still less than original 90px 70px */
+  z-index: 50;
+  max-width: 1200px; /* Restored original max-width */
+  align-items: center;
+  border-radius: 20px; /* Restored original border radius */
+  justify-content: space-between;
+  background-color: #0d6efd;
+}
+
+.home-header15 {
+  gap: var(--dl-layout-space-unit);
+  width: 100%;
+  display: flex;
+  max-width: 600px; /* Restored original max-width */
+  align-items: flex-start;
+  padding: 10px; /* Reduced internal padding around text content */
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.section-heading {
+  font-size: 45px; /* Restored original font size */
+  font-weight: bold;
+  margin-bottom: 30px; /* Restored original margin */
+  line-height: 1.2;
+  color: white;
+  padding: 0 0 10px 0; /* Reduced padding below heading */
+}
+
+.section-description {
+  font-size: 22px; /* Increased from 18px */
+  line-height: 1.6;
+  color: #cccccc;
+  margin-bottom: 25px;
+  padding: 8px 0;
+  font-weight: 400; /* Added slightly more weight */
+  letter-spacing: 0.2px; /* Slightly increased letter spacing for readability */
+}
+
+@media (max-width: 768px) {
+  .section-description {
+    font-size: 18px; /* Adjusted for mobile but still larger than before */
+  }
+}
+
+.home-buttons2 {
+  display: flex;
+  gap: 25px; /* Increased gap between buttons */
+  padding: 15px; /* Slightly increased padding around buttons */
+}
+
+.button {
+  padding: 18px 35px; /* Increased button padding */
+  border-radius: 30px;
+  font-size: 18px; /* Increased font size */
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.home-get-started5 {
+  background-color: white;
+  color: black;
+}
+
+.home-book-demo {
+  background-color: white;
+  color: #111111;
+}
+
+@media (max-width: 768px) {
+  .home-banner {
+    flex-direction: column;
+    padding: 50px 40px; /* Restored more padding for mobile */
+  }
+  
+  .home-buttons2 {
+    margin-top: 20px; /* Restored original margin */
+  }
+}
+
+.button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .home-banner {
+    flex-direction: column;
+    padding: 30px 20px; /* Further reduced padding for mobile */
+  }
+  
+  .home-buttons2 {
+    margin-top: 10px; /* Reduced margin */
+  }
+  
+  .section-heading {
+    font-size: 28px; /* Smaller font on mobile */
+  }
+  
+  .section-description {
+    font-size: 14px; /* Smaller font on mobile */
+  }
+}
+
+.home-get-started5 {
+  background-color: white;
+  color: black;
+}
+
+.home-book-demo {
+  background-color: white;
+  color: #111111;
+}
+
+@media (max-width: 768px) {
+  .home-banner {
+    flex-direction: column;
+    padding: 30px 20px; /* Further reduced padding for mobile */
+  }
+  
+  .home-buttons2 {
+    margin-top: 10px; /* Reduced margin */
+  }
+  
+  .section-heading {
+    font-size: 28px; /* Smaller font on mobile */
+  }
+  
+  .section-description {
+    font-size: 14px; /* Smaller font on mobile */
+  }
+}
+.home-description1 {
+  font-size: 20px;
+  line-height: 30px;
+}
 </style>
 
 <body>
 
 
   <!-- ChatBot -->
-  <div class="chat_icon">
-    <i class="fa fa-comments" aria-hidden="true"></i>
+  <div class="chat_icon" style="position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background-color: #0d6efd; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 1000; transition: all 0.3s ease; overflow: visible;">
+    <i class="fa fa-comments" aria-hidden="true" style="color: white; font-size: 24px;"></i>
+    <div style="position: absolute; bottom: 70px; right: 0; background-color: white; padding: 8px 15px; border-radius: 18px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); white-space: nowrap; font-size: 14px; font-weight: 500; color: #444; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; pointer-events: none; min-width: 170px; text-align: center;">
+      Chat with Planical Support
+    </div>
   </div>
 
 
-  <div class="chat_box" style="width: 500px;">
-    <div class="my-conv-form-wrapper">
-      <form action="" method="GET" class="hidden">
+  <div class="chat_box" style="width: 360px; position: fixed; bottom: 100px; right: 30px; background: white; border-radius: 16px; box-shadow: 0 5px 30px rgba(0,0,0,0.15); overflow: hidden; z-index: 999; opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.3s ease; display: flex; flex-direction: column; max-height: 65vh;">
+    <div style="padding: 15px; background: #0d6efd; color: white; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;">
+      <div style="display: flex; align-items: center;">
+        <img src="{{url_for('static', filename='logo.png')}}" alt="Planical" style="width: 24px; height: 24px; margin-right: 10px;">
+        <h5 style="margin: 0; font-size: 16px; font-weight: 600;">Planical Support</h5>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button style="background: none; border: none; color: white; cursor: pointer; padding: 0; font-size: 18px;"><i class="fa fa-refresh"></i></button>
+        <button class="chat_close" style="background: none; border: none; color: white; cursor: pointer; padding: 0; font-size: 18px;"><i class="fa fa-times"></i></button>
+      </div>
+    </div>
+    <div class="my-conv-form-wrapper" style="flex: 1; overflow-y: auto; padding: 0; display: flex; flex-direction: column;">
+      <form action="" method="GET" class="hidden" style="padding-bottom: 0 !important; margin-bottom: 0 !important; flex: 1; display: flex; flex-direction: column;">
 
-        <select data-conv-question="Hello! What problem are you facing?" name="category">
+        <select data-conv-question="Hello! What problem are you facing?" name="category" style="width: 100%; max-width: 280px; margin: 0 auto;">
           <option value="Stress">Suffering from Mental Health Issues</option>
           <option value="Not Stress">Life is Good !!</option>
         </select>
 
         <div data-conv-fork="category">
           <div data-conv-case="Stress">
-            <select data-conv-question="Tell me your problems" name="category">
+            <select data-conv-question="Tell me your problems" name="category" style="width: 100%; max-width: 280px; margin: 0 auto;">
               <option value="an">Too Much Stressed</option>
               <option value="st">Anxiety</option>
               <option value="hp">Helplessness</option>
@@ -88,41 +1406,37 @@
 
           <div data-conv-case="Not Stress" data-conv-fork="first-question4">
             <input type="text" name="companyName"
-              data-conv-question="That's Awesome !! You can enjoy our services section">
+              data-conv-question="That's Awesome !! You can enjoy our services section" style="width: 100%; max-width: 280px; margin: 0 auto;">
           </div>
         </div>
 
         <div data-conv-fork="category">
           <div data-conv-case="an" data-conv-fork="first-question5">
-            <input type="text" name="tms" data-conv-question="Immediately Check out our Services Section and surely contact in this
-          helpline no below: 080 2572 2573, +91 901 9708133 ">
+            <input type="text" name="tms" data-conv-question="Immediately Check out our Services Section and surely contact in this helpline no below: 080 2572 2573, +91 901 9708133" style="width: 100%; max-width: 280px; margin: 0 auto;">
           <!-- <a href=" https://www.thelivelovelaughfoundation.org/helpline "></a> -->
           </div>
 
           <option value="Yes">Bye</option>
 
           <div data-conv-case="st" data-conv-fork="first-question6">
-            <input type="text" name="tms" data-conv-question="Check out Music Threapy in our Services Section !!
-          It will surely help you to get out of this">
+            <input type="text" name="tms" data-conv-question="Check out Music Therapy in our Services Section !! It will surely help you to get out of this" style="width: 100%; max-width: 280px; margin: 0 auto;">
           </div>
           <div data-conv-case="hp" data-conv-fork="first-question7">
-            <input type="text" name="tms" data-conv-question="Talk to more people and make new friends and most importantly check the games
-          section and play fun quizzes. You can also do exercises from our Exercise services section">
+            <input type="text" name="tms" data-conv-question="Talk to more people and make new friends and most importantly check the games section and play fun quizzes. You can also do exercises from our Exercise services section" style="width: 100%; max-width: 280px; margin: 0 auto;">
           </div>
           <div data-conv-case="bl" data-conv-fork="first-question8">
-            <input type="text" name="tms" data-conv-question="We have so many things to make you happy!! Play the fun games and read motivational
-           Blogs. Don't forget to do exercise everyday, do check out our Exercise section">
+            <input type="text" name="tms" data-conv-question="We have so many things to make you happy!! Play the fun games and read motivational Blogs. Don't forget to do exercise everyday, do check out our Exercise section" style="width: 100%; max-width: 280px; margin: 0 auto;">
           </div>
         </div>
 
-        <input type="text" name="name" data-conv-question="Please, Enter your name">
+        <input type="text" name="name" data-conv-question="Please, Enter your name" style="width: 100%; max-width: 280px; margin: 0 auto;">
 
-        <input type="text" data-conv-question="Hi {name}, <br> It's a pleasure to meet you." data-no-answer="true">
-        <input type="text" data-conv-question="Hope you liked our Services" data-no-answer="true">
+        <input type="text" data-conv-question="Hi {name}, <br> It's a pleasure to meet you." data-no-answer="true" style="width: 100%; max-width: 280px; margin: 0 auto;">
+        <input type="text" data-conv-question="Hope you liked our Services" data-no-answer="true" style="width: 100%; max-width: 280px; margin: 0 auto;">
 
-        <input data-conv-question="Bye">
+        <input data-conv-question="Bye" style="width: 100%; max-width: 280px; margin: 0 auto;">
 
-        <select data-conv-question="Bye">
+        <select data-conv-question="Bye" style="width: 100%; max-width: 280px; margin: 0 auto 0 !important; padding-bottom: 0 !important;">
           <option value="Yes">Bye</option>
         </select>
 
@@ -138,49 +1452,84 @@
   <!-- ======= Header ======= -->
   <header id="header" class="fixed-top">
     <div class="container d-flex align-items-center justify-content-between">
-
-      <h1 class="logo"><img src="{{url_for('static', filename='logo.png')}}" alt="" class="src"><a href="#">MindCare</a>
-      </h1>
-      <!-- Uncomment below if you prefer to use an image logo -->
-      <!-- <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+      <h1 class="logo" style="margin-right: 100px;"><img src="{{url_for('static', filename='logo.png')}}" alt="" class="src"><a href="#">Planical</a></h1>
 
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
-          <li><a class="nav-link scrollto" href="#about">About</a></li>
-          <li><a class="nav-link scrollto" href="#services">Services</a></li>
-          <li><a class="nav-link scrollto" href="#testimonials">Blogs</a></li>
-          <!-- <li><a class="nav-link scrollto " href="#portfolio">Portfolio</a></li> -->
+          <li><a class="nav-link scrollto" href="{% if session.get('user') %}#services{% else %}/login{% endif %}">Features</a></li>
+          <li><a class="nav-link scrollto" href="{% if session.get('user') %}#publications{% else %}/login{% endif %}">Blogs</a></li>
           <li><a class="nav-link scrollto" href="#cta">Call to Action</a></li>
-          {% if current_user.is_authenticated and current_user.usn %}
-           <li class="dropdown"><a href="/login"><span>Welcome {{current_user.usn}}</span> <i
-                class="bi bi-chevron-down"></i></a>
-            <ul>
-              <li><a href="/logout">Logout</a></li>
-
-            </ul>
-            </li>
+          <li><a class="nav-link scrollto" href="{% if session.get('user') %}/planical-ai{% else %}/login{% endif %}">Planical AI</a></li>
+          <li><a class="nav-link scrollto" href="{% if session.get('user') %}{{ url_for('virtual_consultation') }}{% else %}/login{% endif %}">Doctor Consult</a></li>
+          <li>
+            {% if session.get('user') %}
+              <a class="getstarted scrollto" href="#services">Get Started</a>
             {% else %}
-            <li class="dropdown"><a href="#"><span>SIGN IN</span> <i class="bi bi-chevron-down"></i></a>
-              <ul>
-                <li><a href="/signup">Sign Up</a></li>
-
-                <li><a href="/login">Login</a></li>
-              </ul>
-            </li>
+              <a class="getstarted" href="/login">Get Started</a>
             {% endif %}
-
-            <li><a class="getstarted scrollto" href="#services">Get Started</a></li>
+          </li>
+          {% if session.get('user') %}
+            <li class="profile-dropdown">
+              <a class="profile-button" href="#" style="background: #0d6efd; color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 500; line-height: 1; position: relative;">
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                  {% if session['user'].get('name') %}
+                    S
+                  {% else %}
+                    U
+                  {% endif %}
+                </div>
+              </a>
+              <div class="profile-dropdown-content">
+                <div class="sidebar-close-btn">
+                  <i class="bi bi-x-lg"></i>
+                </div>
+                <div class="profile-header">
+                  <div class="profile-avatar" style="display: flex; align-items: center; justify-content: center; line-height: 1; position: relative; background: #0d6efd;">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                      {% if session['user'].get('name') %}
+                        S
+                      {% else %}
+                        U
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div class="profile-info">
+                    <h5>{% if session['user'].get('name') %}Shon S{% else %}User{% endif %}</h5>
+                    <p>{% if session['user'].get('email') %}{{ session['user'].get('email') }}{% else %}No email provided{% endif %}</p>
+                  </div>
+                </div>
+                <ul class="profile-menu">
+                  <li>
+                    <a href="/profile">
+                      <i class="bi bi-person"></i>
+                      <span>Edit Profile</span>
+                    </a>
+            </li>
+                  <li>
+                    <a href="/settings">
+                      <i class="bi bi-gear"></i>
+                      <span>Settings & Privacy</span>
+                    </a>
+            </li>
+                  <li>
+                    <a href="/help-support">
+                      <i class="bi bi-question-circle"></i>
+                      <span>Help & Support</span>
+            </a>
+          </li>
+                  <li>
+                    <a href="/logout">
+                      <i class="bi bi-box-arrow-right"></i>
+                      <span>Logout</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          {% endif %}
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->
-
-      {% block body %}
-
-
-      {% endblock body %}
-
-
     </div>
   </header><!-- End Header -->
 
@@ -196,95 +1545,173 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-6 pt-5 pt-lg-0 order-2 order-lg-1 d-flex flex-column justify-content-center">
-          <h1>MindCare </h1>
-          <h2>A one stop solution to all your mental issues ! <br> We analyze the psychological and mental health
-            conditions and provide effective solutions <h2>
+          <h1 id="main-heading" class="small-heading" style="font-size: 3.5rem !important; font-weight: 800; letter-spacing: -1px; line-height: 0.9; margin: 0 !important; padding: 0 !important; max-height: none !important; max-width: none !important; transform: scale(1) !important;">Prioritize your<br>mental health</h1>
+          <h2 style="font-size: 1.5rem; font-weight: 400; line-height: 1.4; margin-top: 5px;">Start improving your mental health and well-being today.<br>Planical shows you how.</h2>
               <div class="d-flex">
-                <a href="#services" class="btn-get-started scrollto" style="text-decoration: none;">Get Started</a>
-                <a href="" class="glightbox btn-watch-video"><i class="bi bi-play-circle"></i><span>Watch
-                    Video</span></a>
+          {% if session.get('user') %}
+            <a href="{{ url_for('virtual_consultation') }}" class="btn-get-started scrollto" style="text-decoration: none; padding: 18px 40px;">Video Consult Doctor</a>
+          {% else %}
+            <a href="/login" class="btn-get-started" style="text-decoration: none; padding: 18px 40px;">Get Started</a>
+          {% endif %}
+          <a href="https://youtu.be/XiCrniLQGYc?si=AznKdAYkgOfRcvVv" class="glightbox btn-watch-video" target="_blank"><i class="bi bi-play-circle"></i><span>Watch Video</span></a>
               </div>
         </div>
         <div class="col-lg-6 order-1 order-lg-2 hero-img">
-          <img src="assets/img/intro-img.svg" class="img-fluid animated" alt="">
+          <img src="{{url_for('static', filename='assets/img/intro-img.png')}}" class="img-fluid animated" alt="">
         </div>
       </div>
     </div>
 
   </section><!-- End Hero -->
 
-
-
-
-
-
   <main id="main">
 
-    <!-- ======= Featured Services Section ======= -->
-    <!-- <section id="featured-services" class="featured-services">
+    <!-- ======= Features Section ======= -->
+    <section id="features" class="features" style="background-color: #0d6efd;">
       <div class="container">
 
-        <div class="row">
-          <div class="col-lg-4 col-md-6">
-            <div class="icon-box">
-              <div class="icon"><i class="bi bi-laptop"></i></div>
-              <h4 class="title"><a href="">Lorem Ipsum</a></h4>
-              <p class="description">Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident</p>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 mt-4 mt-md-0">
-            <div class="icon-box">
-              <div class="icon"><i class="bi bi-card-checklist"></i></div>
-
-              <h4 class="title"><a href="">Dolor Sitema</a></h4>
-              <p class="description">Minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat tarad limino ata</p>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 mt-4 mt-lg-0">
-            <div class="icon-box">
-              <div class="icon"><i class="bi bi-clipboard-data"></i></div>
-              <h4 class="title"><a href="">Sed ut perspiciatis</a></h4>
-              <p class="description">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur</p>
-            </div>
-          </div>
+        <div class="section-title">
+          <h2 style="font-size: 40px; text-align: center; color: white; margin-bottom: 5px;">How does this website help mental health?</h2>
+          <p style="color: white; text-align: center; margin-top: 5px; margin-bottom: 15px; font-size: 16px;">The website connects users to mental health care and offers self-care<br>resources and community support.</p>
         </div>
 
       </div>
-    </section> -->
-    <!-- End Featured Services Section -->
+    </section><!-- End Features Section -->
 
+    <!-- Expert Care Providers Section -->
+    <section id="care-providers" style="background-color: #D9D9D9; padding: 80px 0; color: #222222;">
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col-lg-6">
+            <p style="color: #0d6efd; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; margin-bottom: 10px; font-size: 14px;">EXPERT CARE PROVIDERS</p>
+            <h2 style="font-size: 42px; font-weight: 700; margin-bottom: 20px; line-height: 1.2; color: #222222;">Meet our network<br>of licensed providers</h2>
+          </div>
+          <div class="col-lg-6">
+            <p style="font-size: 16px; line-height: 1.6; margin-top: 40px; color: #222222;">Our carefully vetted network of mental health professionals ensures you receive high-quality, personalized care when you need it most. Each provider is fully licensed and committed to your wellbeing.</p>
+          </div>
+        </div>
 
+        <div class="row">
+          <div class="col-lg-4 mb-4">
+            <div style="background-color: white; border-radius: 10px; padding: 35px; height: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.08);">
+              <div style="background-color: #0d6efd; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 25px;">
+                <i class="bi bi-phone" style="font-size: 28px; color: white;"></i>
+            </div>
+              <h3 style="font-size: 24px; font-weight: 600; margin-bottom: 20px; color: #222222;">24/7 Phone Support</h3>
+              <p style="color: #444444; font-size: 15px; line-height: 1.6;">Access immediate mental health support through our secure phone line. Licensed professionals available round-the-clock for your needs.</p>
+          </div>
+          </div>
 
+          <div class="col-lg-4 mb-4">
+            <div style="background-color: white; border-radius: 10px; padding: 35px; height: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.08);">
+              <div style="background-color: #0d6efd; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 25px;">
+                <i class="bi bi-globe" style="font-size: 28px; color: white;"></i>
+            </div>
+              <h3 style="font-size: 24px; font-weight: 600; margin-bottom: 20px; color: #222222;">Global Online Access</h3>
+              <p style="color: #444444; font-size: 15px; line-height: 1.6;">Connect with mental health professionals from anywhere in the world through our secure web platform. Break down geographical barriers to care.</p>
+          </div>
+            </div>
 
+          <div class="col-lg-4 mb-4">
+            <div style="background-color: white; border-radius: 10px; padding: 35px; height: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.08);">
+              <div style="background-color: #0d6efd; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 25px;">
+                <i class="bi bi-camera-video" style="font-size: 28px; color: white;"></i>
+          </div>
+              <h3 style="font-size: 24px; font-weight: 600; margin-bottom: 20px; color: #222222;">Video Counseling</h3>
+              <p style="color: #444444; font-size: 15px; line-height: 1.6;">Experience face-to-face therapy from the comfort of your home. High-quality video sessions with licensed therapists on your schedule.</p>
+        </div>
+      </div>
+        </div>
+      </div>
+    </section>
+    <!-- End Expert Care Providers Section -->
 
+    <!-- Mind Matters Section -->
+    <section id="mind-matters" style="background-color: #D9D9D9; padding: 80px 0; color: #222222;">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-5 order-1 order-lg-1">
+            <div class="position-relative" style="text-align: center;">
+              <img src="{{url_for('static', filename='assets/img/stress.svg')}}" class="img-fluid" alt="Stress Management" style="max-width: 120%; height: auto; transform: scale(1.15); margin-left: -80px; position: relative;">
+      </div>
+          </div>
+          <div class="col-lg-7 order-2 order-lg-2">
+            <p style="color: #0d6efd; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; margin-bottom: 10px; font-size: 14px;">STRESS DETECTION</p>
+            <h2 style="font-size: 42px; font-weight: 700; margin-bottom: 20px; line-height: 1.2; color: #222222;">We equip you with tools to detect and manage stress for better mental health and well-being.</h2>
+            <p style="font-size: 16px; line-height: 1.6; margin-top: 30px; margin-bottom: 30px; color: #444444;">This website offers professional support, self-care resources, and a community to help you improve your mental health and well-being.</p>
+            <a href="/i" class="stress-detect-btn" style="background-color: #0d6efd; color: white; text-decoration: none; padding: 18px 40px; font-size: 16px; font-weight: 600; border-radius: 50px; display: inline-flex; align-items: center; justify-content: center; gap: 12px; transition: all 0.3s ease; border: 2px solid transparent;">
+              <i class="bi bi-activity" style="font-size: 20px;"></i>
+              <span>Detect your Stress Level</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- End Mind Matters Section -->
 
-
+    <!-- Mental Wellness Assistant Section -->
+    <section id="mental-wellness" style="background-color: #D9D9D9; padding: 80px 0; color: #222222;">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-7">
+            <p style="color: #0d6efd; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; margin-bottom: 10px; font-size: 14px;">YOUR MENTAL WELLNESS, OUR PRIORITY</p>
+            <h2 style="font-size: 42px; font-weight: 700; margin-bottom: 20px; line-height: 1.2; color: #222222;">Great care, wherever you are</h2>
+            <p style="font-size: 16px; line-height: 1.6; margin-top: 30px; margin-bottom: 30px; color: white;">Get instant support from our AI-powered mental health assistant, designed to help you manage stress, anxiety, and emotional well-being anytime, anywhere.</p>
+            
+            <ul style="list-style: none; padding: 0; margin: 0 0 30px 0;">
+              <li style="padding: 8px 0; display: flex; align-items: center; color: #444444;">
+                <span style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; background-color: #0d6efd; border-radius: 50%; margin-right: 12px;">
+                  <i class="bi bi-check" style="color: white; font-size: 14px;"></i>
+                </span>
+                Professional-grade therapeutic conversations
+              </li>
+              <li style="padding: 8px 0; display: flex; align-items: center; color: #444444;">
+                <span style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; background-color: #0d6efd; border-radius: 50%; margin-right: 12px;">
+                  <i class="bi bi-check" style="color: white; font-size: 14px;"></i>
+                </span>
+                Secure and confidential platform
+              </li>
+              <li style="padding: 8px 0; display: flex; align-items: center; color: #444444;">
+                <span style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; background-color: #0d6efd; border-radius: 50%; margin-right: 12px;">
+                  <i class="bi bi-check" style="color: white; font-size: 14px;"></i>
+                </span>
+                Evidence-based techniques for stress relief
+              </li>
+            </ul>
+            
+            <a href="/planical-ai" 
+              style="background-color: #0d6efd; color: white; text-decoration: none; padding: 18px 40px; font-size: 16px; font-weight: 600; border-radius: 50px; display: inline-flex; align-items: center; justify-content: center; gap: 12px; transition: all 0.3s ease; border: none; cursor: pointer;"
+              onmouseover="this.setAttribute('style', 'background-color: #000000; color: white; text-decoration: none; padding: 18px 40px; font-size: 16px; font-weight: 600; border-radius: 50px; display: inline-flex; align-items: center; justify-content: center; gap: 12px; transition: all 0.3s ease; border: none; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.2);');" 
+              onmouseout="this.setAttribute('style', 'background-color: #0d6efd; color: white; text-decoration: none; padding: 18px 40px; font-size: 16px; font-weight: 600; border-radius: 50px; display: inline-flex; align-items: center; justify-content: center; gap: 12px; transition: all 0.3s ease; border: none; cursor: pointer;');">
+              <span>Get started</span>
+            </a>
+          </div>
+          <div class="col-lg-5">
+            <img src="{{url_for('static', filename='assets/img/chatbot.svg')}}" class="img-fluid" alt="Mental Health Assistant" style="max-width: 120%; height: auto; transform: scale(1.2); margin-left: 20px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));">
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- End Mental Wellness Assistant Section -->
 
     <!-- ======= About Section ======= -->
-    <section id="about" class="about">
+    <section id="about" class="about" style="background-color: #D9D9D9; padding: 100px 0; color: #222222;">
       <div class="container">
-        <div class="section-title">
-          <span>About Us</span>
-          <h2>About Us</h2>
-        </div>
-        
-        <h3 style="color: white; 
-        font-size: 23px;">MindCare is a mental health solution that aims to provide users with easy access to resources 
-          related to mental wellbeing.</h3>
-        <div class="row">
+        <div class="row align-items-center">
           <div class="col-lg-6">
-            <img src="assets/img/about.png" class="img-fluid" alt="">
+            <img src="{{url_for('static', filename='assets/img/solutions.svg')}}" class="img-fluid" alt="Solutions" style="max-width: 100%; height: auto; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));">
           </div>
-          <div class="col-lg-6 pt-4 pt-lg-0 content">
-            <ul style="color: white;">
-              <li><i class="bi bi-check-circle"></i>Check your Stress Level and also check the analysis of people suffering from mental stress across the world..</li>
-              <li><i class="bi bi-check-circle"></i>MindCare uses fun-psychological tests to cure patients. It includes Music Therapy for patients which reduces stress levels by meditating.</li>
-              <li><i class="bi bi-check-circle"></i> Here users can play brainstorming games and play fun quizzes which will help them to learn things in a fun way.
-                Yoga and Exercises are very important in order to reduce stress level which is also available on our website.</li>
-            </ul>
+          <div class="col-lg-6">
+            <p style="color: #0d6efd; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; margin-bottom: 15px; font-size: 14px;">MIND MATTERS</p>
+            <h2 style="font-size: 42px; font-weight: 700; margin-bottom: 30px; line-height: 1.2; color: #222222;">We offer engaging interactive activities to support your mental health and well-being.</h2>
+            <p style="font-size: 16px; line-height: 1.8; margin-bottom: 30px; color: #444444;">Explore a variety of interactive activities — from quizzes and games to exercises and soothing music — all designed to support your mental health and well-being.</p>
+            <a href="#services" class="btn" style="background-color: #0d6efd; color: white; text-decoration: none; padding: 15px 30px; font-size: 16px; font-weight: 600; border-radius: 50px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.3s ease;"
+               onmouseover="this.style.backgroundColor='#000000'; this.style.color='white';"
+               onmouseout="this.style.backgroundColor='#0d6efd'; this.style.color='white';">
+              <span>Get started</span>
+            </a>
           </div>
         </div>
-
       </div>
     </section><!-- End About Section -->
 
@@ -324,483 +1751,878 @@
       </div>
     </section> -->
     <!-- End Counts Section -->
-
-
-
+    <section class="home-section19">
+      <main class="home-banner">
+        <div class="home-header15">
+          <h2 class="section-heading">
+            Planical makes online <br> doctor visits easier
+          </h2>
+          <p class="home-description1 section-description font-size: 20px;">
+            Get instant mental health support through AI chat and connect with professionals anytime, anywhere.
+          </p>
+        </div>
+        <div class="home-buttons2">
+          {% if session.get('user') %}
+            <a href="{{ url_for('virtual_consultation') }}" class="home-get-started5 button" style="text-decoration: none; cursor: pointer; background-color: #0d6efd; color: white; padding: 15px 30px; border-radius: 50px; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#000000';" onmouseout="this.style.backgroundColor='#0d6efd';">
+              <span class="home-text32">Start Video Call with Doctor</span>
+            </a>
+          {% else %}
+            <a href="{{ url_for('login') }}" class="home-get-started5 button" style="text-decoration: none; cursor: pointer; background-color: #0d6efd; color: white; padding: 15px 30px; border-radius: 50px; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#000000';" onmouseout="this.style.backgroundColor='#0d6efd';">
+              <span class="home-text32">Get started</span>
+            </a>
+          {% endif %}
+          <a href="{{ url_for('help_support') }}" class="home-book-demo button" style="text-decoration: none; cursor: pointer; background-color: transparent; color: #0d6efd; padding: 15px 30px; border-radius: 50px; font-weight: 600; border: 2px solid #0d6efd; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#0d6efd'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#0d6efd';">
+            <span class="home-text33">Learn More</span>
+          </a>
+        </div>
+      </main>
+    </section>
 
 
     <!-- ======= Services Section ======= -->
-    <section id="services" class="services section-bg">
+    <section id="services" class="services" style="background-color: #f8f9fa; padding: 100px 0 80px;">
       <div class="container">
-
-        <div class="section-title">
-          <span>Services</span>
-          <h2>Services</h2>
-          <p>Get all the Solution to your Problems and Enjoy Your Life. </p>
+        <!-- Section Header -->
+        <div class="text-center mb-5">
+          <span style="color: #0d6efd; text-transform: uppercase; font-weight: 700; letter-spacing: 2px; font-size: 14px; display: block; margin-bottom: 10px;">Our Services</span>
+          <h2 style="font-size: 42px; font-weight: 800; color: #2a2a2a; margin-bottom: 25px; position: relative; display: inline-block;">
+            Comprehensive Mental Health Solutions
+            <span style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 80px; height: 4px; background: #0d6efd; border-radius: 2px;"></span>
+          </h2>
+          <p style="font-size: 18px; color: #666; max-width: 700px; margin: 0 auto 50px; line-height: 1.7;">
+            Discover tools and resources designed to enhance your mental wellbeing and provide effective solutions for various challenges.
+          </p>
         </div>
 
-        <div class="row gy-5" style="display:flex; justify-content: space-around; margin-bottom: 30px;">
-
-          <div class="col-xl-4 col-md-6" data-aos="zoom-in" data-aos-delay="500">
-            <div class="service-item">
-              <div class="img">
-                <img src="services/analysis.jpg" class="img-fluid" alt="">
+        <!-- Main Services -->
+        <div class="row g-4 mb-5">
+          <div class="col-lg-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+            <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: all 0.3s ease; height: 100%;" onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 15px 35px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.05)';">
+              <div style="position: relative; overflow: hidden;">
+                <img src="{{url_for('static', filename='services/analysis.jpg')}}" alt="Analysis" style="width: 100%; height: 300px; object-fit: cover; transition: all 0.5s ease;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';">
+                <div style="position: absolute; top: 20px; left: 20px; background-color: #0d6efd; color: white; padding: 8px 16px; border-radius: 30px; font-weight: 600; font-size: 14px;">
+                  <i class="bi bi-graph-up me-2"></i>Data Analytics
               </div>
-              <div class="details position-relative">
-                <div class="icon">
-                  <i class="bi-activity"></i>
                 </div>
-                <a href="{{url_for('analysis')}}" class="stretched-link">
-                  <h3>Analysis</h3>
-                </a>
-                <p>Pictorial/Graphical representation of various stress related data which include types of stress, reasons for stress, subreddit posts versus the social karma points, etc.</p>
-                <a href="{{url_for('analysis')}}" class="stretched-link"></a>
+              <div style="padding: 30px;">
+                <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 15px; color: #2a2a2a;">
+                  <i class="bi bi-activity me-2" style="color: #0d6efd;"></i>Stress Analysis
+                </h3>
+                <p style="color: #666; font-size: 16px; line-height: 1.7; margin-bottom: 25px;">
+                  Visual representations of various stress-related data including types of stress, common causes, and impact analysis. Gain insights through comprehensive data visualization.
+                </p>
+                <a href="{{url_for('analysis')}}" style="display: inline-flex; align-items: center; color: #0d6efd; font-weight: 600; text-decoration: none; font-size: 16px; transition: all 0.3s ease;" onmouseover="this.style.gap='12px';" onmouseout="this.style.gap='8px';">
+                  Explore Analysis <i class="bi bi-arrow-right ms-2"></i>
+              </a>
               </div>
             </div>
           </div>
 
-          <div class="col-xl-4 col-md-6" data-aos="zoom-in" data-aos-delay="500">
-            <div class="service-item">
-              <div class="img">
-                <img src="services/stress-detect.jpg" class="img-fluid" alt="">
+          <div class="col-lg-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+            <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: all 0.3s ease; height: 100%;" onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 15px 35px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.05)';">
+              <div style="position: relative; overflow: hidden;">
+                <img src="{{url_for('static', filename='services/stress-detect2.svg')}}" alt="Stress Detection" style="width: 100%; height: 300px; object-fit: cover; transition: all 0.5s ease;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';">
+                <div style="position: absolute; top: 20px; left: 20px; background-color: #0d6efd; color: white; padding: 8px 16px; border-radius: 30px; font-weight: 600; font-size: 14px;">
+                  <i class="bi bi-heart-pulse me-2"></i>Health Metrics
               </div>
-              <div class="details position-relative">
-                <div class="icon">
-                  <i class="bi bi-bounding-box-circles"></i>
                 </div>
-                <a href="/i" class="stretched-link">
-                  <h3>Stress Detection</h3>
-                </a>
-                <p>Predict your stress level by taking Sleeping Hours, Blood Pressure Rate, Respiration Rate and Maximum Heart Rate as input.</p>
-                <a href="/i" class="stretched-link"></a>
+              <div style="padding: 30px;">
+                <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 15px; color: #2a2a2a;">
+                  <i class="bi bi-clipboard2-pulse me-2" style="color: #0d6efd;"></i>Stress Detection
+                </h3>
+                <p style="color: #666; font-size: 16px; line-height: 1.7; margin-bottom: 25px;">
+                  Accurately predict your stress level using key biometrics including sleeping hours, blood pressure, respiration rate, and maximum heart rate for personalized insights.
+                </p>
+                <a href="/i" style="display: inline-flex; align-items: center; color: #0d6efd; font-weight: 600; text-decoration: none; font-size: 16px; transition: all 0.3s ease;" onmouseover="this.style.gap='12px';" onmouseout="this.style.gap='8px';">
+                  Check Your Levels <i class="bi bi-arrow-right ms-2"></i>
+            </a>
               </div>
             </div>
           </div>
         </div>
 
-
-
-
-
-
-        <div class="section-title" style="margin-top: 10px;">
-          <span>Solutions</span>
-          <h2>Solutions</h2>
+        <!-- Solutions Header -->
+        <div class="text-center mb-5 mt-5" data-aos="fade-up">
+          <span style="color: #0d6efd; text-transform: uppercase; font-weight: 700; letter-spacing: 2px; font-size: 14px; display: block; margin-bottom: 10px;">Wellness Solutions</span>
+          <h2 style="font-size: 36px; font-weight: 800; color: #2a2a2a; margin-bottom: 25px; position: relative; display: inline-block;">
+            Practical Mental Health Tools
+            <span style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 60px; height: 4px; background: #0d6efd; border-radius: 2px;"></span>
+          </h2>
+          <p style="font-size: 17px; color: #666; max-width: 700px; margin: 0 auto 50px; line-height: 1.7;">
+            Explore our range of therapeutic and engaging activities designed to boost your mental wellbeing
+          </p>
         </div>
 
-
-        <div class="row gy-5">
-
-          <div class="col-xl-4 col-md-6" data-aos="zoom-in" data-aos-delay="500">
-            <div class="service-item">
-              <div class="img">
-                <img src="services/music.jpg" class="img-fluid" alt="">
+        <!-- Solutions Cards -->
+        <div class="row g-4">
+          <!-- Music Therapy -->
+          <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+            <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: all 0.3s ease; height: 100%; position: relative;" onmouseover="this.style.transform='translateY(-7px)'; this.style.boxShadow='0 15px 35px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.05)';">
+              <div style="position: relative; overflow: hidden; height: 200px;">
+                <img src="{{url_for('static', filename='services/music3.svg')}}" alt="Music Therapy" style="width: 100%; height: 100%; object-fit: cover; transition: all 0.5s ease;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';">
+                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.6));"></div>
+                <div style="position: absolute; bottom: 20px; left: 20px;">
+                  <span style="background-color: #0d6efd; color: white; padding: 5px 15px; border-radius: 30px; font-size: 12px; font-weight: 600;">
+                    <i class="bi bi-music-note-beamed me-1"></i>Therapeutic
+                  </span>
               </div>
-              <div class="details position-relative">
-                <div class="icon">
-                  <i class="bi bi-bounding-box-circles"></i>
                 </div>
-                <a href="{{url_for('music')}}" class="stretched-link">
-                  <h3>Music Therapy</h3>
+              <div style="padding: 25px;">
+                <h3 style="font-size: 22px; font-weight: 700; margin-bottom: 15px; color: #2a2a2a;">
+                  <i class="bi bi-music-player me-2" style="color: #0d6efd;"></i>Music Therapy
+                </h3>
+                <p style="color: #666; font-size: 15px; line-height: 1.6; margin-bottom: 25px;">
+                  Experience the healing power of music therapy. Improve your mood and reduce stress with our curated therapeutic playlists.
+                </p>
+                <a href="{{url_for('music')}}" class="d-block w-100" style="background: #f8f9fa; color: #0d6efd; text-align: center; padding: 12px 0; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.3s ease;" onmouseover="this.style.background='#0d6efd'; this.style.color='white';" onmouseout="this.style.background='#f8f9fa'; this.style.color='#0d6efd';">
+                  Listen Now
                 </a>
-                <p>Music is a Therapy which acts as a medicine. Visit this section and improve your mood as Music has the healing power..</p>
-                <a href="{{url_for('music')}}" class="stretched-link"></a>
               </div>
             </div>
-          </div><!-- End Service Item -->
+          </div>
 
-          <div class="col-xl-4 col-md-6" data-aos="zoom-in" data-aos-delay="600">
-            <div class="service-item">
-              <div class="img">
-                <img src="services/games.png" class="img-fluid" alt="">
+          <!-- Games -->
+          <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+            <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: all 0.3s ease; height: 100%; position: relative;" onmouseover="this.style.transform='translateY(-7px)'; this.style.boxShadow='0 15px 35px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.05)';">
+              <div style="position: relative; overflow: hidden; height: 200px;">
+                <img src="{{url_for('static', filename='services/games.svg')}}" alt="Quiz and Games" style="width: 100%; height: 100%; object-fit: cover; transition: all 0.5s ease;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';">
+                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.6));"></div>
+                <div style="position: absolute; bottom: 20px; left: 20px;">
+                  <span style="background-color: #0d6efd; color: white; padding: 5px 15px; border-radius: 30px; font-size: 12px; font-weight: 600;">
+                    <i class="bi bi-controller me-1"></i>Interactive
+                  </span>
               </div>
-              <div class="details position-relative">
-                <div class="icon">
-                  <i class="bi bi-calendar4-week"></i>
                 </div>
-                <a href="{{url_for('quizandgame')}}" class="stretched-link">
-                  <h3>Quiz and Fun Games</h3>
+              <div style="padding: 25px;">
+                <h3 style="font-size: 22px; font-weight: 700; margin-bottom: 15px; color: #2a2a2a;">
+                  <i class="bi bi-puzzle me-2" style="color: #0d6efd;"></i>Quiz & Fun Games
+                </h3>
+                <p style="color: #666; font-size: 15px; line-height: 1.6; margin-bottom: 25px;">
+                  Boost your knowledge and test your concentration with engaging quizzes and mentally stimulating games.
+                </p>
+                <a href="{{url_for('quizandgame')}}" class="d-block w-100" style="background: #f8f9fa; color: #0d6efd; text-align: center; padding: 12px 0; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.3s ease;" onmouseover="this.style.background='#0d6efd'; this.style.color='white';" onmouseout="this.style.background='#f8f9fa'; this.style.color='#0d6efd';">
+                  Play Now
                 </a>
-                <p>Quizzes will help the user to increase their knowledge and brainstorming skills. Our Game will help the user to test their concentration power.</p>
-                <a href="{{url_for('quizandgame')}}" class="stretched-link"></a>
               </div>
             </div>
-          </div><!-- End Service Item -->
+          </div>
 
-          <div class="col-xl-4 col-md-6" data-aos="zoom-in" data-aos-delay="700">
-            <div class="service-item">
-              <div class="img">
-                <img src="services/yoga.jpg" class="img-fluid" alt="">
+          <!-- Exercises -->
+          <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
+            <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: all 0.3s ease; height: 100%; position: relative;" onmouseover="this.style.transform='translateY(-7px)'; this.style.boxShadow='0 15px 35px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.05)';">
+              <div style="position: relative; overflow: hidden; height: 200px;">
+                <img src="{{url_for('static', filename='services/yoga1.svg')}}" alt="Yoga Exercises" style="width: 100%; height: 100%; object-fit: cover; transition: all 0.5s ease;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';">
+                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.6));"></div>
+                <div style="position: absolute; bottom: 20px; left: 20px;">
+                  <span style="background-color: #0d6efd; color: white; padding: 5px 15px; border-radius: 30px; font-size: 12px; font-weight: 600;">
+                    <i class="bi bi-heart me-1"></i>Physical Wellness
+                  </span>
               </div>
-              <div class="details position-relative">
-                <div class="icon">
-                  <i class="bi bi-chat-square-text"></i>
                 </div>
-                <a href="{{url_for('exercises')}}" class="stretched-link">
-                  <h3>Exercises</h3>
+              <div style="padding: 25px;">
+                <h3 style="font-size: 22px; font-weight: 700; margin-bottom: 15px; color: #2a2a2a;">
+                  <i class="bi bi-person-standing me-2" style="color: #0d6efd;"></i>Mind-Body Exercises
+                </h3>
+                <p style="color: #666; font-size: 15px; line-height: 1.6; margin-bottom: 25px;">
+                  Achieve mental and physical flexibility through guided yoga and mindfulness exercises for holistic wellness.
+                </p>
+                <a href="{{url_for('exercises')}}" class="d-block w-100" style="background: #f8f9fa; color: #0d6efd; text-align: center; padding: 12px 0; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.3s ease;" onmouseover="this.style.background='#0d6efd'; this.style.color='white';" onmouseout="this.style.background='#f8f9fa'; this.style.color='#0d6efd';">
+                  Start Exercising
                 </a>
-                <p>Health is not about the weight you lose but about the life you gain.
-                  Your body and mind both will be flexible and relaxed by doing Yoga</p>
-                <a href="{{url_for('exercises')}}" class="stretched-link"></a>
               </div>
             </div>
-          </div><!-- End Service Item -->
-
+          </div>
         </div>
 
+    </section>
+    <!-- End Services Section -->
+    <section id="publications" class="publications" style="background-color: #f8f9fa; padding: 80px 0;">
+      <div class="container">
+        <div class="section-title" style="text-align: center; margin-bottom: 50px;">
+          <h2 style="font-size: 48px; font-weight: 700; color: #2a2a2a; margin-bottom: 25px;">Featured Publications</h2>
+          <p style="font-size: 18px; color: #444444; line-height: 1.6; max-width: 800px; margin: 0 auto;">
+            Explore our most impactful research and articles that are making a difference in mental health awareness and treatment.
+          </p>
+        </div>
 
+        <div class="row">
+          <!-- Publication 1 -->
+          <div class="col-lg-4 col-md-6 mb-4">
+            <a href="https://psychcentral.com/anxiety/how-to-reduce-anxiety-quickly" target="_blank" style="text-decoration: none;">
+              <div style="background-color: white; border-radius: 15px; padding: 30px; height: 100%; transition: all 0.3s ease; border: 1px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transform: scale(1); cursor: pointer;" onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.05)';">
+                <div style="margin-bottom: 20px; border-radius: 8px; overflow: hidden;">
+                  <img src="https://images.unsplash.com/photo-1586473219010-2ffc57b0d282?q=80&w=1964&auto=format&fit=crop" alt="Anxiety Research" style="width: 100%; height: 180px; object-fit: cover;">
+                </div>
+                <h3 style="color: #2a2a2a; font-size: 20px; font-weight: 700; margin-bottom: 10px;">10 Effective Ways to Reduce Anxiety Quickly</h3>
+                <p style="color: #666666; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
+                  Explore practical techniques like deep breathing, grounding exercises, and physical activity that can help manage anxiety symptoms effectively.
+                </p>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div style="display: flex; align-items: center;">
+                    <img src="https://i0.wp.com/post.psychcentral.com/wp-content/uploads/sites/4/2021/09/Simone-Scully-500x500-circle.png?" alt="Simone Marie" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #0d6efd;">
+                    <div style="margin-left: 10px;">
+                      <p style="margin: 0; color: #2a2a2a; font-size: 14px; font-weight: 600;">Simone Marie</p>
+          </div>
+        </div>
+                  <p style="margin: 0; color: #666666; font-size: 12px;">November 18, 2024</p>
+                </div>
+                </div>
+              </a>
+            </div>
 
+          <!-- Publication 2 -->
+          <div class="col-lg-4 col-md-6 mb-4">
+            <a href="https://psychcentral.com/depression/depression-treatment" style="text-decoration: none;">
+              <div style="background-color: white; border-radius: 15px; padding: 30px; height: 100%; transition: all 0.3s ease; border: 1px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transform: scale(1); cursor: pointer;" onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.05)';">
+              <div style="margin-bottom: 20px; border-radius: 8px; overflow: hidden;">
+                <img src="https://plus.unsplash.com/premium_photo-1668062843172-0129f25a1276?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Depression Study" style="width: 100%; height: 180px; object-fit: cover;">
+      </div>
+              <h3 style="color: #2a2a2a; font-size: 20px; font-weight: 700; margin-bottom: 10px;">Treating Depression: What Are My Options?</h3>
+              <p style="color: #666666; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
+                Therapy, medications, brain stimulation, and self-help strategies are just some of the many approaches to depression treatment.
+              </p>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center;">
+                  <img src="https://i0.wp.com/post.psychcentral.com/wp-content/uploads/sites/4/2021/02/Professional-Portrait-Courtney.png?" alt="Courtney Telloian" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #ff8c00;">
+                  <div style="margin-left: 10px;">
+                    <p style="margin: 0; color: #2a2a2a; font-size: 14px; font-weight: 600;">Courtney Telloian</p>
+                  </div>
+                </div>
+                <p style="margin: 0; color: #666666; font-size: 12px;">February 5, 2025</p>
+              </div>
+                </div>
+              </a>
+            </div>
 
-
-
-
-
-
-    </section><!-- End Services Section -->
-
+        <!-- Publication 3 -->
+        <div class="col-lg-4 col-md-6 mb-4">
+          <a href="https://psychcentral.com/anxiety/panic-attack-symptoms" target="_blank" style="text-decoration: none;">
+            <div style="background-color: white; border-radius: 15px; padding: 30px; height: 100%; transition: all 0.3s ease; border: 1px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transform: scale(1); cursor: pointer;" onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.05)';">
+            <div style="margin-bottom: 20px; border-radius: 8px; overflow: hidden;">
+              <img src="https://images.unsplash.com/photo-1721815731590-d4aae3a7fc9f?q=80&w=2012&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Panic Attack" style="width: 100%; height: 180px; object-fit: cover;">
+      </div>
+            <h3 style="color: #2a2a2a; font-size: 20px; font-weight: 700; margin-bottom: 10px;">What Does a Panic Attack Feel Like? 12 Symptoms</h3>
+            <p style="color: #666666; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
+              Your heart's racing, it's hard to breathe, and you can't think straight — these could be some of the intense symptoms of a panic attack.
+            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: flex; align-items: center;">
+                <img src="https://i0.wp.com/post.psychcentral.com/wp-content/uploads/sites/4/2021/02/Sandra-bio-photo.jpg?" alt="Dr. Ananya Gupta" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #00a896;">
+                <div style="margin-left: 10px;">
+                  <p style="margin: 0; color: #2a2a2a; font-size: 14px; font-weight: 600;">Sandra Silva</p>
+    </div>
+              </div>
+              <p style="margin: 0; color: #666666; font-size: 12px;">July 12, 2022</p>
+            </div>
+                </div>
+              </a>
+      </div>
+            </div>
+  </div>
+</section>
+<!-- End Featured Publications Section -->
     <!-- ======= Testimonials Section ======= -->
-    <section id="testimonials" class="testimonials ">
+    <section id="testimonials" class="testimonials" style="background-color: #d9d9d9; padding: 80px 0;">
       <div class="container">
+        <div class="section-title" style="text-align: center; margin-bottom: 50px;">
+          <h2 style="font-size: 48px; font-weight: 700; color: #2a2a2a; margin-bottom: 25px;">What users say </h2>
+          <p style="font-size: 18px; color: #444444; line-height: 1.6; max-width: 800px; margin: 0 auto;">
+            Experiences from readers who found comfort, clarity, and support through these mental health blogs. See how helpful insights turned into everyday relief.
+          </p>
+            </div>
 
-        <div class="section-title">
-          <span>Blogs</span>
-          <h2>Blogs</h2>
-          <p>Sit sint consectetur velit quisquam cupiditate impedit suscipit alias</p>
+        <div class="row">
+          <!-- Testimonial 1 -->
+          <div class="col-lg-4 col-md-6 mb-4">
+            <a href="https://psychcentral.com/anxiety/how-to-reduce-anxiety-quickly" target="_blank" style="text-decoration: none;">
+              <div style="background-color: white; border-radius: 15px; padding: 30px; height: 100%; transition: all 0.3s ease; border: 1px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transform: scale(1); cursor: pointer;" onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.05)';">
+                <p style="color: #2a2a2a; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
+                  Psych Central's "10 Effective Ways to Reduce Anxiety Quickly" gave me instant tools to manage my stress. It really helped calm my mind when anxiety felt too much.
+                </p>
+                <div style="display: flex; align-items: center;">
+                  <img src="https://images.unsplash.com/photo-1572957946666-2e386e1e913d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Rajesh Nair" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; object-fit: cover; border: 2px solid #2a2a2a;">
+                  <div>
+                    <h4 style="margin: 0; color: #2a2a2a; font-size: 18px;">Rajesh Nair</h4>
+                    <p style="margin: 0; color: #666666; font-size: 14px;">Financial Analyst</p>
+                </div>
+            </div>
+                </div>
+              </a>
+            </div>
+
+          <!-- Testimonial 2 -->
+          <div class="col-lg-4 col-md-6 mb-4">
+            <a href="https://www.verywellmind.com/anxiety-7508391" style="text-decoration: none;">
+              <div style="background-color: white; border-radius: 15px; padding: 30px; height: 100%; transition: all 0.3s ease; border: 1px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transform: scale(1); cursor: pointer;" onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.05)';">
+                <p style="color: #2a2a2a; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
+                  Long coding hours left me feeling anxious and drained, but Verywell Mind's anxiety tips helped me manage stress, stay focused, and feel more in control of my workday.
+                </p>
+                <div style="display: flex; align-items: center;">
+                  <img src="https://plus.unsplash.com/premium_photo-1723154625709-cf9f084e5fcc?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Arjun Iyer" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; object-fit: cover; border: 2px solid #2a2a2a;">
+                  <div>
+                    <h4 style="margin: 0; color: #2a2a2a; font-size: 18px;">Arjun Iyer</h4>
+                    <p style="margin: 0; color: #666666; font-size: 14px;">Software Engineer</p>
+                </div>
+            </div>
+          </div>
+              </a>
         </div>
 
-        <div class="testimonials-slider swiper" data-aos="fade-up" data-aos-delay="100">
-          <div class="swiper-wrapper">
-
-            <div class="swiper-slide">
-              <a href="https://thereseborchard.com/" style="text-decoration: none;">
-                <div class="testimonial-item">
-                  <p style="color: black;">
-                    <i class="bx bxs-quote-alt-left quote-icon-left"></i>
-                    Therese Bouchard is a mental health advocate and writer, and has been named a top 10 influencer in
-                    the mental health community.
-                    Her blog covers mental health and holistic health, with topics that include depression, generalized
-                    anxiety disorder, and nutrition.
-                  </p>
-                  <img src="blogs/1.jpg" class="testimonial-img" alt="">
-                  <h3 id="person-name">Therese Bouchard</h3>
-                  <!-- <h4>Ceo &amp; Founder</h4> -->
+          <!-- Testimonial 3 -->
+          <div class="col-lg-4 col-md-6 mb-4">
+            <a href="#" style="text-decoration: none;">
+              <div style="background-color: white; border-radius: 15px; padding: 30px; height: 100%; transition: all 0.3s ease; border: 1px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transform: scale(1); cursor: pointer;" onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.05)';">
+                <p style="color: #2a2a2a; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
+                  "As a nurse, Planical has been a lifesaver. The stress management exercises help me stay calm, even during demanding shifts. Highly recommend it!"
+                </p>
+                <div style="display: flex; align-items: center;">
+                  <img src="https://akm-img-a-in.tosshub.com/businesstoday/images/story/201610/shachi-irde_660_100516091558.jpg" alt="Sneha Kapoor" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; object-fit: cover; border: 2px solid #2a2a2a;">
+                  <div>
+                    <h4 style="margin: 0; color: #2a2a2a; font-size: 18px;">Sneha Kapoor</h4>
+                    <p style="margin: 0; color: #666666; font-size: 14px;">Nurse</p>
+        </div>
+      </div>
                 </div>
               </a>
+        </div>
+
+          <!-- Testimonial 4 -->
+          <div class="col-lg-4 col-md-6 mb-4">
+            <a href="#" style="text-decoration: none;">
+              <div style="background-color: white; border-radius: 15px; padding: 30px; height: 100%; transition: all 0.3s ease; border: 1px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transform: scale(1); cursor: pointer;" onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.05)';">
+                <p style="color: #2a2a2a; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
+                  "After managing my home-based catering business, I rely on Planical's relaxation music to unwind. It's my perfect escape for peace and calmness!"
+                </p>
+                <div style="display: flex; align-items: center;">
+                  <img src="https://images.unsplash.com/photo-1646979201277-aca83fa543c3?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Priya Patel" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; object-fit: cover; border: 2px solid #2a2a2a;">
+                  <div>
+                    <h4 style="margin: 0; color: #2a2a2a; font-size: 18px;">Priya Patel</h4>
+                    <p style="margin: 0; color: #666666; font-size: 14px;">Home Chef</p>
+              </div>
             </div>
-
-            <!-- End testimonial item -->
-
-            <div class="swiper-slide">
-              <a href="https://www.talkspace.com/blog/" style="text-decoration: none;">
-                <div class="testimonial-item">
-                  <p style="color: black;">
-                    <i class="bx bxs-quote-alt-left quote-icon-left"></i>
-                    Talkspace is one of the top mental health blogs around.
-
-                    The service aims to make therapy accessible and affordable, and shares useful and practical advice
-                    and tips on how to manage mental health through their blog.
-                  </p>
-                  <img src="blogs/2.png" class="testimonial-img" alt="">
-                  <h3 id="person-name">
-                    Bisma Anwar</h3>
-                  <!-- <h4>Ceo &amp; Founder</h4> -->
                 </div>
               </a>
-            </div>
-
-            <!-- End testimonial item -->
-
-            <div class="swiper-slide">
-              <a href="https://chipur.com/" style="text-decoration: none;">
-                <div class="testimonial-item">
-                  <p style="color: black;">
-                    <i class="bx bxs-quote-alt-left quote-icon-left"></i>
-                    Chipur is a blog dedicated to helping people with anxiety, depression, and bipolar through learning.
-
-                    The blog was founded by Bill White, a mental health professional, and features hundreds of articles
-                    on mood disorders and the science behind them.
-                  </p>
-                  <img src="blogs/person.png" class="testimonial-img" alt="">
-                  <h3 id="person-name">Bill White</h3>
-                  <!-- <h4>Ceo &amp; Founder</h4> -->
-                </div>
-              </a>
-            </div>
-
-            <!-- End testimonial item -->
-
-            <div class="swiper-slide">
-              <a href="https://purplepersuasion.wordpress.com/" style="text-decoration: none;">
-                <div class="testimonial-item">
-                  <p style="color: black;">
-                    <i class="bx bxs-quote-alt-left quote-icon-left"></i>
-                    Purple Persuasion is a mental health blog by Charlotte Walker, a service user with bipolar disorder.
-
-                    Charlotte created the blog to connect with others in similar situations, and it documents her
-                    journey and thoughts on living with bipolar.
-                  </p>
-                  <img src="blogs/3.png" class="testimonial-img" alt="">
-                  <h3 id="person-name"> Purple Persuasion</h3>
-                  <!-- <h4>Ceo &amp; Founder</h4> -->
-                </div>
-              </a>
-            </div>
-            <!-- End testimonial item -->
-
-            <div class="swiper-slide">
-              <a href="https://www.blurtitout.org/2022/08/25/sleep-problems/" style="text-decoration: none;">
-                <div class="testimonial-item">
-                  <p style="color: black;">
-                    <i class="bx bxs-quote-alt-left quote-icon-left"></i>
-                    The Blurt Foundation is a social enterprise that’s dedicated to helping people with depression.
-
-                    Over on the blog, the Blurt team shares insights into living with depression and anxiety, as well as
-                    practical tips like meal planning when you have low energy.
-
-                  </p>
-                  <img src="blogs/person.png" class="testimonial-img" alt="">
-                  <h3 id="person-name">Blurt Team</h3>
-                  <!-- <h4>Ceo &amp; Founder</h4> -->
-                </div>
-              </a>
-            </div>
-
-            <!-- End testimonial item -->
-
           </div>
-          <div class="swiper-pagination"></div>
+
+          <!-- Testimonial 5 -->
+          <div class="col-lg-4 col-md-6 mb-4">
+            <a href="#" style="text-decoration: none;">
+              <div style="background-color: white; border-radius: 15px; padding: 30px; height: 100%; transition: all 0.3s ease; border: 1px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transform: scale(1); cursor: pointer;" onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.05)';">
+                <p style="color: #2a2a2a; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
+                  "Planical has truly transformed my mental well-being. The guided meditation sessions help me stay calm & focused, even during hectic workdays. Highly recommend it!"
+                </p>
+                <div style="display: flex; align-items: center;">
+                  <img src="https://plus.unsplash.com/premium_photo-1689977871600-e755257fb5f8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Rahul Mehta" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; object-fit: cover; border: 2px solid #2a2a2a;">
+                  <div>
+                    <h4 style="margin: 0; color: #2a2a2a; font-size: 18px;">Rahul Mehta</h4>
+                    <p style="margin: 0; color: #666666; font-size: 14px;">Marketing Consultant</p>
+              </div>
+            </div>
+                </div>
+              </a>
+          </div>
+
+          <!-- Testimonial 6 -->
+          <div class="col-lg-4 col-md-6 mb-4">
+            <a href="#" style="text-decoration: none;">
+              <div style="background-color: white; border-radius: 15px; padding: 30px; height: 100%; transition: all 0.3s ease; border: 1px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transform: scale(1); cursor: pointer;" onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.05)';">
+                <p style="color: #2a2a2a; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
+                  "As a teacher, managing stress is essential. Thanks to Planical's stress management exercises, I feel more composed and patient with my students."
+                </p>
+                <div style="display: flex; align-items: center;">
+                  <img src="https://plus.unsplash.com/premium_photo-1681483539443-50ced66c7f56?q=80&w=1988&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Kavita Desai" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; object-fit: cover; border: 2px solid #2a2a2a;">
+                  <div>
+                    <h4 style="margin: 0; color: #2a2a2a; font-size: 18px;">Kavita Desai</h4>
+                    <p style="margin: 0; color: #666666; font-size: 14px;">Teacher</p>
+              </div>
+            </div>
+          </div>
+            </a>
         </div>
 
       </div>
-    </section><!-- End Testimonials Section -->
+        </div>
+    </section>
+    <!-- End Testimonials Section -->
 
     <!-- ======= Cta Section ======= -->
-    <section id="cta" class="cta section-bg"
-      style="
-    background-repeat: no-repeat;
-    background-attachment: fixed;background-image: url(https://envato-shoebox-0.imgix.net/68fd/b18f-a556-446f-a60d-4c8a83d1a9e0/_Z0A5665.jpg?auto=compress%2Cformat&fit=max&mark=https%3A%2F%2Felements-assets.envato.com%2Fstatic%2Fwatermark2.png&markalign=center%2Cmiddle&markalpha=18&w=1600&s=a5dbc5b48a5f6c54c13cb6af8aed9312);">
-      <div class=" container">
+    <section id="cta" class="cta" style="
+      position: relative;
+      padding: 80px 0;
+      background: #0d6efd;
+      overflow: hidden;">
+      
+      <!-- Animated overlay for visual interest (subtle gradient) -->
+      <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0.1) 100%);"></div>
+      
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-8 col-md-12 mx-auto text-center">
+            <div style="background-color: rgba(0, 0, 0, 0.2); padding: 40px; border-radius: 20px; backdrop-filter: blur(5px); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);">
+              <h2 style="color: white; font-size: 42px; font-weight: 700; margin-bottom: 25px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Need Immediate Mental Health Support?</h2>
+              <p style="color: rgba(255, 255, 255, 0.9); font-size: 20px; line-height: 1.6; margin-bottom: 30px; max-width: 800px; margin-left: auto; margin-right: auto;">
+                Our helpline is available 24/7. Trained professionals are ready to provide immediate support, guidance, and resources for your mental health needs.
+              </p>
+              <div class="d-flex flex-wrap justify-content-center gap-4">
+                <a href="https://www.thelivelovelaughfoundation.org/helpline" target="_blank" class="btn-get-started" style="
+                  display: inline-block;
+                  background: #ffffff;
+                  color: #0d6efd;
+                  padding: 15px 35px;
+                  border-radius: 50px;
+                  font-weight: 600;
+                  transition: all 0.3s ease;
+                  text-decoration: none;
+                  font-size: 18px;
+                  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                  <i class="bi bi-telephone-fill me-2"></i> Call Helpline
+                </a>
+                <a href="/planical-ai" class="btn-learn-more" style="
+                  display: inline-block;
+                  background: transparent;
+                  color: white;
+                  padding: 14px 33px;
+                  border-radius: 50px;
+                  font-weight: 500;
+                  transition: all 0.3s ease;
+                  text-decoration: none;
+                  font-size: 18px;
+                  border: 2px solid rgba(255, 255, 255, 0.8);
+                  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);">
+                  <i class="bi bi-chat-dots-fill me-2"></i> Chat With AI
+                </a>
+              </div>
 
-        <div class="text-center">
-          <h3>Call To Action</h3>
-          <p> Visit this site to get access to all the helpline numbers of all the doctors and contact 
-            them in case of any emergency.
-          </p>
-          <a class="cta-btn" href="https://www.thelivelovelaughfoundation.org/helpline" style="text-decoration: none;">Call To Action</a>
+              <!-- Additional features -->
+              <div class="row mt-5">
+                <div class="col-md-4 mb-4 mb-md-0">
+                  <div style="background-color: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 15px; height: 100%;">
+                    <i class="bi bi-shield-check" style="font-size: 32px; color: #ffffff; margin-bottom: 15px; display: block;"></i>
+                    <h5 style="color: white; font-size: 18px; margin-bottom: 10px;">Confidential Support</h5>
+                    <p style="color: rgba(255, 255, 255, 0.8); font-size: 14px; line-height: 1.5;">All conversations are private and secure</p>
+              </div>
+            </div>
+                <div class="col-md-4 mb-4 mb-md-0">
+                  <div style="background-color: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 15px; height: 100%;">
+                    <i class="bi bi-clock" style="font-size: 32px; color: #ffffff; margin-bottom: 15px; display: block;"></i>
+                    <h5 style="color: white; font-size: 18px; margin-bottom: 10px;">24/7 Availability</h5>
+                    <p style="color: rgba(255, 255, 255, 0.8); font-size: 14px; line-height: 1.5;">Help is available anytime, day or night</p>
+          </div>
+                </div>
+                <div class="col-md-4">
+                  <div style="background-color: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 15px; height: 100%;">
+                    <i class="bi bi-people" style="font-size: 32px; color: #ffffff; margin-bottom: 15px; display: block;"></i>
+                    <h5 style="color: white; font-size: 18px; margin-bottom: 10px;">Professional Team</h5>
+                    <p style="color: rgba(255, 255, 255, 0.8); font-size: 14px; line-height: 1.5;">Trained mental health professionals</p>
+                </div>
+              </div>
+              </div>
+              </div>
+              </div>
+          </div>
         </div>
-
-      </div>
     </section>
     <!-- End Cta Section -->
 
-    <!-- ======= Team Section ======= -->
-    <!-- <section id="team" class="team ">
+    <!-- FAQ Section -->
+    <section id="faq" class="faq" style="background-color: #d9d9d9; color: black; padding: 60px 0;">
       <div class="container">
-
-        <div class="section-title">
-          <span>Team</span>
-          <h2>Team</h2>
-          <p style="color: white;">Sit sint consectetur velit quisquam cupiditate impedit suscipit alias</p>
-        </div>
-
-        <div class="row">
-          <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
-            <div class="member">
-              <img src="assets/img/team/team-1.jpg" alt="">
-              <h4>Walter White</h4>
-              <span>Chief Executive Officer</span>
-              <p>
-                Magni qui quod omnis unde et eos fuga et exercitationem. Odio veritatis perspiciatis quaerat qui aut aut
-                aut
-              </p>
-              <div class="social">
-                <a href=""><i class="bi bi-twitter"></i></a>
-                <a href=""><i class="bi bi-facebook"></i></a>
-                <a href=""><i class="bi bi-instagram"></i></a>
-                <a href=""><i class="bi bi-linkedin"></i></a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
-            <div class="member">
-              <img src="assets/img/team/team-2.jpg" alt="">
-              <h4>Sarah Jhinson</h4>
-              <span>Product Manager</span>
-              <p>
-                Repellat fugiat adipisci nemo illum nesciunt voluptas repellendus. In architecto rerum rerum temporibus
-              </p>
-              <div class="social">
-                <a href=""><i class="bi bi-twitter"></i></a>
-                <a href=""><i class="bi bi-facebook"></i></a>
-                <a href=""><i class="bi bi-instagram"></i></a>
-                <a href=""><i class="bi bi-linkedin"></i></a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
-            <div class="member">
-              <img src="assets/img/team/team-3.jpg" alt="">
-              <h4>William Anderson</h4>
-              <span>CTO</span>
-              <p>
-                Voluptas necessitatibus occaecati quia. Earum totam consequuntur qui porro et laborum toro des clara
-              </p>
-              <div class="social">
-                <a href=""><i class="bi bi-twitter"></i></a>
-                <a href=""><i class="bi bi-facebook"></i></a>
-                <a href=""><i class="bi bi-instagram"></i></a>
-                <a href=""><i class="bi bi-linkedin"></i></a>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
+        <div class="section-title" style="margin-bottom: 40px;">
+          <h2 style="font-size: 36px; font-weight: 700; color: black;">Frequently Asked Questions</h2>
       </div>
-    </section> -->
-    <!-- End Team Section -->
+        <div class="faq-list" style="max-width: 800px; margin: 0 auto;">
+          <ul style="list-style: none; padding: 0;">
+            <li style="margin-bottom: 20px; border-bottom: 1px solid #bbb;">
+              <a data-bs-toggle="collapse" class="collapsed" href="#faq1" style="display: block; text-decoration: none; color: black; font-size: 18px; padding: 15px 0;">
+                <span>What is Planical?</span>
+                <i class="bi bi-chevron-down" style="float: right; transition: transform 0.3s;"></i>
+              </a>
+              <div id="faq1" class="collapse" data-bs-parent=".faq-list" style="padding: 10px 0; color: black;">
+                <p>Planical is a mental health platform dedicated to helping individuals improve their well-being through expert guidance, self-help resources, therapy sessions, and mindfulness tools.</p>
+              </div>
+            </li>
+            <li style="margin-bottom: 20px; border-bottom: 1px solid #bbb;">
+              <a data-bs-toggle="collapse" href="#faq2" class="collapsed" style="display: block; text-decoration: none; color: black; font-size: 18px; padding: 15px 0;">
+                <span>Who can use Planical?</span>
+                <i class="bi bi-chevron-down" style="float: right; transition: transform 0.3s;"></i>
+              </a>
+              <div id="faq2" class="collapse" data-bs-parent=".faq-list" style="padding: 10px 0; color: black;">
+                <p>Anyone looking for mental health support, stress management techniques, or professional therapy can benefit from Planical. Our platform is designed for individuals of all ages seeking to improve their emotional and mental well-being.</p>
+            </div>
+            </li>
+            <li style="margin-bottom: 20px; border-bottom: 1px solid #bbb;">
+              <a data-bs-toggle="collapse" href="#faq3" class="collapsed" style="display: block; text-decoration: none; color: black; font-size: 18px; padding: 15px 0;">
+                <span>Is Planical free to use?</span>
+                <i class="bi bi-chevron-down" style="float: right; transition: transform 0.3s;"></i>
+              </a>
+              <div id="faq3" class="collapse" data-bs-parent=".faq-list" style="padding: 10px 0; color: black;">
+                <p>Yes! Planical is completely free. All self-help articles, guided meditations, stress management exercises, and therapy sessions are available at no cost.</p>
+          </div>
+            </li>
+          </ul>
+              </div>
+            </div>
+    </section>
+    <!-- End FAQ Section -->
 
-    <!-- ======= Contact Section ======= -->
-    <!-- <section id="contact" class="contact">
+    <!-- Modern Footer -->
+    <div id="modern-footer" style="background-color: #D9D9D9; color: white; padding: 80px 0 40px; margin-top: 0; display: block;">
       <div class="container">
-
-        <div class="section-title">
-          <span>Contact</span>
-          <h2>Contact</h2>
-          <p>Sit sint consectetur velit quisquam cupiditate impedit suscipit alias</p>
-        </div>
-
         <div class="row">
-
-          <div class="col-lg-5 d-flex align-items-stretch">
-            <div class="info">
-              <div class="address">
-                <i class="bi bi-geo-alt"></i>
-                <h4>Location:</h4>
-                <p>A108 Adam Street, New York, NY 535022</p>
-              </div>
-
-              <div class="email">
-                <i class="bi bi-envelope"></i>
-                <h4>Email:</h4>
-                <p>info@example.com</p>
-              </div>
-
-              <div class="phone">
-                <i class="bi bi-phone"></i>
-                <h4>Call:</h4>
-                <p>+1 5589 55488 55s</p>
-              </div>
-
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d12097.433213460943!2d-74.0062269!3d40.7101282!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xb89d1fe6bc499443!2sDowntown+Conference+Center!5e0!3m2!1smk!2sbg!4v1539943755621"
-                frameborder="0" style="border:0; width: 100%; height: 290px;" allowfullscreen></iframe>
-            </div>
-
+          <!-- Brand Column -->
+          <div class="col-lg-3 col-md-6 mb-5 mb-lg-0">
+            <h2 style="font-size: 28px; font-weight: 700; margin-bottom: 20px; color: black;">Planical</h2>
+            <p style="font-size: 15px; color: #222222; margin-bottom: 25px; line-height: 1.6;">
+              Empowering minds, one step at a time. We provide resources, guidance, and support to help you prioritize your mental well-being.
+            </p>
+            <div style="display: flex; gap: 12px; margin-top: 20px;">
+              <a href="https://linkedin.com/in/shondsouza" target="_blank" style="background-color: #d9d9d9; color: black; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                <i class="bi bi-linkedin"></i>
+              </a>
+              <a href="https://instagram.com/shondsza" target="_blank" style="background-color: #d9d9d9; color: black; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                <i class="bi bi-instagram"></i>
+              </a>
+              <a href="https://github.com/shondsouza" target="_blank" style="background-color: #d9d9d9; color: black; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                <i class="bi bi-github"></i>
+              </a>
           </div>
-
-          <div class="col-lg-7 mt-5 mt-lg-0 d-flex align-items-stretch">
-            <form action="{{url_for('static', filename='forms/contact.php')}}" method="post" role="form" class="php-email-form">
-              <div class="row">
-                <div class="form-group col-md-6">
-                  <label for="name">Your Name</label>
-                  <input type="text" name="name" class="form-control" id="name" required>
-                </div>
-                <div class="form-group col-md-6 mt-3 mt-md-0">
-                  <label for="name">Your Email</label>
-                  <input type="email" class="form-control" name="email" id="email" required>
-                </div>
-              </div>
-              <div class="form-group mt-3">
-                <label for="name">Subject</label>
-                <input type="text" class="form-control" name="subject" id="subject" required>
-              </div>
-              <div class="form-group mt-3">
-                <label for="name">Message</label>
-                <textarea class="form-control" name="message" rows="10" required></textarea>
-              </div>
-              <div class="my-3">
-                <div class="loading">Loading</div>
-                <div class="error-message"></div>
-                <div class="sent-message">Your message has been sent. Thank you!</div>
-              </div>
-              <div class="text-center"><button type="submit">Send Message</button></div>
-            </form>
-          </div>
-
         </div>
 
-      </div>
-    </section> -->
-    <!-- End Contact Section -->
+          <!-- Solutions Column -->
+          <div class="col-lg-2 offset-lg-1 col-md-6 mb-5 mb-lg-0">
+            <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 25px; color: black;">Solutions</h3>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              <li style="margin-bottom: 14px;"><a href="#" style="color: #2a2a2a; text-decoration: none; transition: color 0.3s ease; font-size: 15px;">Therapy Resources</a></li>
+              <li style="margin-bottom: 14px;"><a href="#" style="color: #2a2a2a; text-decoration: none; transition: color 0.3s ease; font-size: 15px;">Guided Meditation</a></li>
+              <li style="margin-bottom: 14px;"><a href="#" style="color: #2a2a2a; text-decoration: none; transition: color 0.3s ease; font-size: 15px;">Self-Care Tools</a></li>
+              <li style="margin-bottom: 14px;"><a href="#" style="color: #2a2a2a; text-decoration: none; transition: color 0.3s ease; font-size: 15px;">Mood Tracking</a></li>
+              <li style="margin-bottom: 14px;"><a href="#" style="color: #2a2a2a; text-decoration: none; transition: color 0.3s ease; font-size: 15px;">Mindfulness Exercises</a></li>
+            </ul>
+        </div>
 
+          <!-- Company Column -->
+          <div class="col-lg-2 col-md-6 mb-5 mb-lg-0">
+            <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 25px; color: black;">Company</h3>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              <li style="margin-bottom: 14px;"><a href="#" style="color: #2a2a2a; text-decoration: none; transition: color 0.3s ease; font-size: 15px;">About Us</a></li>
+              <li style="margin-bottom: 14px;"><a href="#" style="color: #2a2a2a; text-decoration: none; transition: color 0.3s ease; font-size: 15px;">Our Mission</a></li>
+              <li style="margin-bottom: 14px;"><a href="#" style="color: #2a2a2a; text-decoration: none; transition: color 0.3s ease; font-size: 15px;">Success Stories</a></li>
+              <li style="margin-bottom: 14px;"><a href="#" style="color: #2a2a2a; text-decoration: none; transition: color 0.3s ease; font-size: 15px;">Join Our Team</a></li>
+              <li style="margin-bottom: 14px;"><a href="#" style="color: #2a2a2a; text-decoration: none; transition: color 0.3s ease; font-size: 15px;">Blog & Insights</a></li>
+            </ul>
+        </div>
+
+          <!-- Contact Column -->
+          <div class="col-lg-2 col-md-6 mb-5 mb-lg-0">
+            <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 25px; color: black;">Contact</h3>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              <li style="margin-bottom: 14px; display: flex; align-items: center;">
+                <i class="bi bi-envelope" style="color: black; margin-right: 10px; font-size: 14px;"></i>
+                <a href="mailto:info@planical.com" style="color: #2a2a2a; text-decoration: none; transition: color 0.3s ease; font-size: 15px;">info@planical.com</a>
+              </li>
+              <li style="margin-bottom: 14px; display: flex; align-items: center;">
+                <i class="bi bi-telephone" style="color: black; margin-right: 10px; font-size: 14px;"></i>
+                <a href="tel:+919986786453" style="color: #2a2a2a; text-decoration: none; transition: color 0.3s ease; font-size: 15px;">+91 123 456 7890</a>
+              </li>
+              <li style="margin-bottom: 14px; display: flex; align-items: flex-start;">
+                <i class="bi bi-geo-alt" style="color: black; margin-right: 10px; font-size: 14px; margin-top: 4px;"></i>
+                <span style="color: #2a2a2a; font-size: 15px; line-height: 1.5;">Mental Health Ave, India</span>
+              </li>
+            </ul>
+    </div>
+
+        <!-- Copyright Section -->
+        <div style="border-top: 1px solid #2a2a2a; margin-top: 60px; padding-top: 30px; display: flex; justify-content: space-between; flex-wrap: wrap;">
+          <div style="color: black; font-size: 14px;">
+            Copyright © 2025 <b>Planical</b>. All Rights Reserved.
+      </div>
+          <div style="color: black; font-size: 14px;">
+            Designed by <a href="https://github.com/shondsouza" target="_blank" style="color: blue; text-decoration: none; transition: color 0.3s ease;">Shon Dsouza</a>
+      </div>
+    </div>
+            </div>
+              </div>
   </main><!-- End #main -->
 
-  <!-- ======= Footer ======= -->
-
-
-
-  <footer id="footer">
-
-    <div class="footer-top">
-
-      <div class="container">
-
-        <div class="row  justify-content-center">
-          <div class="col-lg-6">
-            <h3>MindCare</h3>
-            <p>You can contact us in the social media handles mentioned below. We will try to answer all your 
-              queries. 
-            </p>
-          </div>
-        </div>
-
-
-        <div class="social-links">
-          <a href="https://twitter.com/tandrima_singha" target="blank" class="twitter"><i class="bx bxl-twitter"></i></a>
-          <a href="https://www.linkedin.com/in/tandrima-singha-20b2091b6/" target="blank" class="linkedin"><i class="bx bxl-linkedin"></i></a>
-          <a href="https://github.com/jayeshshaw" target="blank" class="github"><i class="bx bxl-github"></i></a>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="container footer-bottom clearfix">
-      <div class="copyright">
-        &copy; Copyright <strong><span>MindCare</span></strong>. All Rights Reserved
-      </div>
-      <div class="credits">  Designed by <a href="https://github.com/jayeshshaw">Jayesh & Tandrima</a>
-      </div>
-    </div>
-  </footer>
-  <!-- End Footer -->
-
-  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
-      class="bi bi-arrow-up-short"></i></a>
-
   <!-- Vendor JS Files -->
-  <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
-  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script src="{{url_for('static', filename='assets/vendor/purecounter/purecounter_vanilla.js')}}"></script>
+  <script src="{{url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+  <script src="{{url_for('static', filename='assets/vendor/glightbox/js/glightbox.min.js')}}"></script>
+  <script src="{{url_for('static', filename='assets/vendor/isotope-layout/isotope.pkgd.min.js')}}"></script>
+  <script src="{{url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.js')}}"></script>
+  <script src="{{url_for('static', filename='assets/vendor/php-email-form/validate.js')}}"></script>
 
   <!-- Template Main JS File -->
-  <script src="assets/js/main.js"></script>
+  <script src="{{url_for('static', filename='assets/js/main.js')}}"></script>
 
-  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/aos/aos.js"></script>
-  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script src="{{url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+  <script src="{{url_for('static', filename='assets/vendor/aos/aos.js')}}"></script>
+  <script src="{{url_for('static', filename='assets/vendor/glightbox/js/glightbox.min.js')}}"></script>
+  <script src="{{url_for('static', filename='assets/vendor/isotope-layout/isotope.pkgd.min.js')}}"></script>
+  <script src="{{url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.js')}}"></script>
+  <script src="{{url_for('static', filename='assets/vendor/php-email-form/validate.js')}}"></script>
 
   <!-- Template Main JS File -->
-  <script src="assets/js/main-home.js"></script>
+  <script src="{{url_for('static', filename='assets/js/main-home.js')}}"></script>
+
+  <script>
+    // Dark mode toggle functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      // Chat icon functionality
+      const chatIcon = document.querySelector('.chat_icon');
+      const chatLabel = chatIcon.querySelector('div');
+      const chatBox = document.querySelector('.chat_box');
+      const chatClose = document.querySelector('.chat_close');
+      
+      chatIcon.addEventListener('mouseenter', () => {
+        chatLabel.style.opacity = '1';
+        chatLabel.style.transform = 'translateY(0)';
+        chatIcon.style.transform = 'scale(1.08)';
+      });
+      
+      chatIcon.addEventListener('mouseleave', () => {
+        chatLabel.style.opacity = '0';
+        chatLabel.style.transform = 'translateY(10px)';
+        chatIcon.style.transform = 'scale(1)';
+      });
+      
+      chatIcon.addEventListener('click', () => {
+        // Toggle chat box visibility
+        if (chatBox.style.visibility === 'visible') {
+          // Close the chat box if it's already open
+          chatBox.style.opacity = '0';
+          chatBox.style.visibility = 'hidden';
+          chatBox.style.transform = 'translateY(20px)';
+        } else {
+          // Open the chat box if it's closed
+          chatBox.style.opacity = '1';
+          chatBox.style.visibility = 'visible';
+          chatBox.style.transform = 'translateY(0)';
+        }
+      });
+      
+      chatClose.addEventListener('click', () => {
+        chatBox.style.opacity = '0';
+        chatBox.style.visibility = 'hidden';
+        chatBox.style.transform = 'translateY(20px)';
+      });
+      
+      // Profile dropdown functionality
+      const profileButtons = document.querySelectorAll('.profile-button');
+      
+      profileButtons.forEach(button => {
+        // Add hover effect to change background color
+        button.addEventListener('mouseenter', () => {
+          button.style.backgroundColor = '#000000';
+        });
+        
+        button.addEventListener('mouseleave', () => {
+          button.style.backgroundColor = '#0d6efd';
+        });
+        
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const dropdown = button.closest('.profile-dropdown');
+          if (dropdown) {
+            // Toggle the active class on the dropdown
+            dropdown.classList.toggle('active');
+            
+            const dropdownContent = dropdown.querySelector('.profile-dropdown-content');
+            if (dropdownContent) {
+              // Set styles based on active state
+              if (dropdown.classList.contains('active')) {
+              dropdownContent.style.opacity = '1';
+              dropdownContent.style.visibility = 'visible';
+              dropdownContent.style.transform = 'translateX(0)';
+              dropdownContent.style.pointerEvents = 'auto';
+              } else {
+                dropdownContent.style.opacity = '0';
+                dropdownContent.style.visibility = 'hidden';
+                dropdownContent.style.transform = 'translateX(100%)';
+                dropdownContent.style.pointerEvents = 'none';
+              }
+            }
+          }
+        });
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.profile-dropdown')) {
+          const dropdowns = document.querySelectorAll('.profile-dropdown');
+          dropdowns.forEach(dropdown => {
+            dropdown.classList.remove('active');
+            
+            const dropdownContent = dropdown.querySelector('.profile-dropdown-content');
+            if (dropdownContent) {
+              dropdownContent.style.opacity = '0';
+              dropdownContent.style.visibility = 'hidden';
+              dropdownContent.style.transform = 'translateX(100%)';
+              dropdownContent.style.pointerEvents = 'none';
+            }
+          });
+        }
+      });
+      
+      // Close button functionality
+      const closeButtons = document.querySelectorAll('.sidebar-close-btn');
+      closeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const dropdown = button.closest('.profile-dropdown');
+          if (dropdown) {
+            dropdown.classList.remove('active');
+            
+            const dropdownContent = dropdown.querySelector('.profile-dropdown-content');
+            if (dropdownContent) {
+              dropdownContent.style.opacity = '0';
+              dropdownContent.style.visibility = 'hidden';
+              dropdownContent.style.transform = 'translateX(100%)';
+              dropdownContent.style.pointerEvents = 'none';
+            }
+          }
+        });
+      });
+
+      // Rest of your existing dark mode code...
+      const darkModeToggles = document.querySelectorAll('#darkModeToggle');
+      const body = document.body;
+      
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+      
+      const updateToggleState = (isDark) => {
+        darkModeToggles.forEach(toggle => {
+          const icon = toggle.querySelector('i');
+          if (isDark) {
+            icon.classList.replace('bi-moon', 'bi-sun');
+          } else {
+            icon.classList.replace('bi-sun', 'bi-moon');
+          }
+        });
+      };
+      
+      if (savedTheme === 'dark' || (!savedTheme && prefersDarkScheme.matches)) {
+        body.classList.add('dark-mode');
+        updateToggleState(true);
+      }
+      
+      darkModeToggles.forEach(toggle => {
+        toggle.addEventListener('click', (e) => {
+          e.preventDefault();
+        body.classList.toggle('dark-mode');
+          const isDark = body.classList.contains('dark-mode');
+          updateToggleState(isDark);
+          localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+      });
+    });
+
+    // Mobile navigation toggle
+    document.addEventListener('DOMContentLoaded', () => {
+      const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+      const navbarUl = document.querySelector('.navbar ul');
+
+      mobileNavToggle.addEventListener('click', () => {
+        navbarUl.classList.toggle('active');
+        mobileNavToggle.classList.toggle('bi-list');
+        mobileNavToggle.classList.toggle('bi-x');
+      });
+    });
+
+    // Find all profile buttons and update their HTML
+    document.addEventListener('DOMContentLoaded', () => {
+      const profileButtons = document.querySelectorAll('.profile-button');
+      profileButtons.forEach(button => {
+        const img = button.querySelector('img');
+        if (img) {
+          img.onerror = function() {
+            this.src = "{{url_for('static', filename='assets/img/user.png')}}";
+          };
+        }
+      });
+    });
+
+    // Update the GLightbox initialization
+    const lightbox = GLightbox({
+      selector: '.glightbox',
+      touchNavigation: true,
+      loop: false,
+      autoplayVideos: true,
+      preload: false,
+      closeButton: true,
+      closeOnOutsideClick: true,
+      openEffect: 'none',
+      closeEffect: 'none',
+      draggable: false,
+      zoomable: false,
+      plyr: {
+        css: 'https://cdn.plyr.io/3.6.12/plyr.css',
+        js: 'https://cdn.plyr.io/3.6.12/plyr.js',
+        config: {
+          ratio: '16:9',
+          youtube: {
+            noCookie: true,
+            rel: 0,
+            showinfo: 0,
+            iv_load_policy: 3,
+            modestbranding: 1,
+            playsinline: 1
+          }
+        }
+      },
+      onOpen: () => {
+        // Remove any existing overlays
+        document.querySelectorAll('.goverlay').forEach(el => el.style.display = 'none');
+        
+        // Ensure close button is clickable
+        const closeButton = document.querySelector('.gclose');
+        if (closeButton) {
+          closeButton.style.pointerEvents = 'auto';
+          closeButton.addEventListener('click', () => {
+            lightbox.close();
+          });
+        }
+      },
+      onClose: () => {
+        // Pause video
+        const player = lightbox.plyr;
+        if (player) {
+          player.pause();
+        }
+        
+        // Clean up elements
+        document.querySelectorAll('.glightbox-container, .goverlay').forEach(el => {
+          if (el && el.parentNode) {
+            el.parentNode.removeChild(el);
+          }
+        });
+      }
+    });
+
+    // Add click event listener for close button
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.gclose')) {
+        lightbox.close();
+      }
+    });
+
+    // Close button functionality
+    const closeButtons = document.querySelectorAll('.sidebar-close-btn');
+    closeButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const dropdownContent = button.closest('.profile-dropdown-content');
+        if (dropdownContent) {
+          dropdownContent.style.opacity = '0';
+          dropdownContent.style.visibility = 'hidden';
+          dropdownContent.style.transform = 'translateX(100%)';
+          dropdownContent.style.pointerEvents = 'none';
+        }
+      });
+    });
+  </script>
 
 </body>
 
+</html>
 </html>

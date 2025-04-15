@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planical AI </title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <!-- Force no caching -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
+<body>
+    <nav>
+        <img src="/images/logo.png" alt="Planical AI Logo" class="logo">
+    </nav>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>Planical AI </h1>
+        </div>
+        
+        <div class="messages-container" id="messages">
+            <div class="welcome-message">
+                <h2>Welcome to Planical AI</h2>
+                <p>How are you feeling today? I'm here to listen and help.</p>
+                <p class="hint">Try asking about stress, anxiety, depression, or just say hello!</p>
+            </div>
+        </div>
+        
+        <div class="input-area">
+            <input 
+                type="text" 
+                id="messageInput" 
+                placeholder="Type your message here..." 
+                autocomplete="off"
+            />
+            <button id="sendButton">Send</button>
+        </div>
+    </div>
+
+    <!-- Use the debug script and bypass caching with timestamp -->
+    <script src="/debug.js?v=20243104"></script>
+</body>
+</html>

@@ -1,0 +1,463 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+}
+
+.game-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.game-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: #0d6efd;
+    font-weight: 700;
+}
+
+.game-header p {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.wrapper {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 30px rgba(13, 110, 253, 0.1);
+    max-width: 90%;
+    width: 30em;
+}
+
+.stats-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.5rem;
+    background: #f8f9fa;
+    border-radius: 1rem;
+    border: 2px solid #e9ecef;
+}
+
+.stat-box {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1.1rem;
+    color: #0d6efd;
+    font-weight: 500;
+}
+
+.stat-box i {
+    font-size: 1.4rem;
+}
+
+.game-container {
+    position: relative;
+    width: 100%;
+    display: grid;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.card-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transform-origin: center right;
+    transition: transform 0.6s;
+}
+
+.card-before,
+.card-after {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1rem;
+    background: #ffffff;
+    transition: transform 0.6s ease-out;
+    backface-visibility: hidden;
+    border: 3px solid #0d6efd;
+}
+
+.card-before {
+    background: linear-gradient(135deg, #0d6efd, #0a58ca);
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.card-after {
+    background-color: #ffffff;
+    transform: rotateY(180deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-after i {
+    transition: transform 0.3s ease;
+}
+
+.card-container.flipped {
+    transform: translateX(-100%) rotateY(-180deg);
+}
+
+.card-container.flipped .card-after i {
+    transform: scale(1.1);
+}
+
+.controls-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(13, 110, 253, 0.95), rgba(10, 88, 202, 0.95));
+    z-index: 1000;
+}
+
+.result-container {
+    text-align: center;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    background: white;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    position: relative;
+}
+
+#result {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #0d6efd;
+    margin-bottom: 1.5rem;
+}
+
+.button-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.primary-btn, .secondary-btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 1.1rem;
+    border-radius: 0.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    min-width: 150px;
+    justify-content: center;
+}
+
+.primary-btn {
+    background: #0d6efd;
+    color: white;
+    border: none;
+}
+
+.primary-btn:hover {
+    background: #0b5ed7;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+}
+
+.secondary-btn {
+    background: white;
+    color: #0d6efd;
+    border: 2px solid #0d6efd;
+}
+
+.secondary-btn:hover {
+    background: #f8f9fa;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(13, 110, 253, 0.1);
+}
+
+.hide {
+    display: none;
+}
+
+@media screen and (max-width: 700px) {
+    .wrapper {
+        padding: 1.5rem;
+    }
+    
+    .game-header h1 {
+        font-size: 2rem;
+    }
+    
+    .stats-container {
+        padding: 0.8rem;
+    }
+    
+    .stat-box {
+        font-size: 1rem;
+    }
+}
+
+.header-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.info-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    background: white;
+    color: #0d6efd;
+    border: 2px solid #0d6efd;
+    font-weight: 500;
+}
+
+.info-btn:hover {
+    background: #f8f9fa;
+    transform: translateY(-2px);
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    max-width: 90%;
+    width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h2 {
+    color: #0d6efd;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 1.8rem;
+}
+
+.instructions {
+    margin-bottom: 2rem;
+}
+
+.instructions p {
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #444;
+    font-size: 1.1rem;
+}
+
+.instructions i {
+    color: #0d6efd;
+    font-size: 1.3rem;
+}
+
+#close-modal {
+    width: 100%;
+    justify-content: center;
+}
+
+.modal.hide {
+    display: none;
+}
+
+/* Add animation for icons */
+@keyframes iconPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.card-container.matched .card-after i {
+    animation: iconPop 0.5s ease;
+}
+
+.start-screen {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 90%;
+    width: 500px;
+    position: relative;
+    overflow: hidden;
+}
+
+.start-screen::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(to right, #0d6efd, #0a58ca);
+}
+
+.start-header {
+    margin-bottom: 2rem;
+}
+
+.start-icon {
+    font-size: 3.5rem;
+    color: #0d6efd;
+    margin-bottom: 1rem;
+    animation: pulse 2s infinite;
+}
+
+.start-header h2 {
+    color: #2a2a2a;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.start-header p {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.game-features {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+}
+
+.feature {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.feature i {
+    font-size: 1.8rem;
+    color: #0d6efd;
+    background: rgba(13, 110, 253, 0.1);
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    transition: transform 0.3s ease;
+}
+
+.feature:hover i {
+    transform: scale(1.1);
+}
+
+.feature span {
+    color: #444;
+    font-weight: 500;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.primary-btn {
+    background: linear-gradient(135deg, #0d6efd, #0a58ca);
+    color: white;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: all 0.3s ease;
+    width: auto;
+    min-width: 200px;
+    justify-content: center;
+}
+
+.primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(13, 110, 253, 0.2);
+}
+
+.primary-btn i {
+    font-size: 1.2rem;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .start-screen {
+        padding: 2rem;
+    }
+
+    .game-features {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .start-header h2 {
+        font-size: 1.8rem;
+    }
+
+    .feature i {
+        font-size: 1.5rem;
+        width: 3rem;
+        height: 3rem;
+    }
+} 

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Numbers Puzzle</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .game-container {
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        max-width: 800px;
+        width: 95%;
+        margin: 20px auto;
+      }
+
+      .game-header {
+        margin-bottom: 30px;
+      }
+
+      .game-header h1 {
+        color: #2c3e50;
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+
+      .stats-container {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-bottom: 20px;
+      }
+
+      .stat-box {
+        background: #f8f9fa;
+        padding: 15px 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      .stat-box i {
+        margin-right: 8px;
+        color: #3498db;
+      }
+
+      #puzzle {
+        display: grid;
+        gap: 10px;
+        margin: 30px auto;
+        max-width: 500px;
+      }
+
+      .tile {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(145deg, #3498db, #2980b9);
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        font-weight: 600;
+        cursor: pointer;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .tile:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .empty {
+        background: #f0f0f0;
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .button {
+        padding: 12px 25px;
+        font-size: 16px;
+        font-weight: 500;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin: 10px;
+        color: white;
+      }
+
+      #shuffle {
+        background: #3498db;
+      }
+
+      #shuffle:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+      }
+
+      .exit-btn {
+        background: #e74c3c;
+      }
+
+      .exit-btn:hover {
+        background: #c0392b;
+        transform: translateY(-2px);
+      }
+
+      #menu {
+        text-align: center;
+        margin: 20px 0;
+      }
+
+      #start {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+      }
+
+      #levelInput {
+        padding: 10px;
+        font-size: 16px;
+        width: 100px;
+        border: 2px solid #3498db;
+        border-radius: 8px;
+        text-align: center;
+      }
+
+      input[type="submit"] {
+        background: #2ecc71;
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      input[type="submit"]:hover {
+        background: #27ae60;
+        transform: translateY(-2px);
+      }
+
+      #completedLevel, #gameOver {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        z-index: 1000;
+      }
+
+      #completedLevel h1, #gameOver h1 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+      }
+
+      #next {
+        background: #2ecc71;
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      #next:hover {
+        background: #27ae60;
+        transform: translateY(-2px);
+      }
+
+      @media (max-width: 600px) {
+        .game-container {
+          padding: 15px;
+        }
+
+        .game-header h1 {
+          font-size: 2em;
+        }
+
+        .stats-container {
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        .tile {
+          width: 60px;
+          height: 60px;
+          font-size: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="game-container">
+      <div class="game-header">
+        <h1>Number Puzzle</h1>
+        <div class="stats-container">
+          <div class="stat-box">
+            <i class="fas fa-walking"></i>
+            <span>Moves: <span id="count">0</span></span>
+          </div>
+          <div class="stat-box">
+            <i class="fas fa-clock"></i>
+            <span>Time: <span id="hours">00</span>:<span id="minutes">00</span>:<span id="seconds">00</span></span>
+          </div>
+        </div>
+        <button id="shuffle" class="button">
+          <i class="fas fa-random"></i> Shuffle
+        </button>
+      </div>
+
+      <div id="menu">
+        <form id="start">
+          <label for="levelInput">Select Level (2-8):</label>
+          <input type="number" min="2" max="8" id="levelInput" required>
+          <input type="submit" value="Start Game">
+        </form>
+      </div>
+
+      <div id="completedLevel">
+        <h1><i class="fas fa-trophy"></i> Well Done!</h1>
+        <p>You've completed this level!</p>
+        <button id="next" class="button">
+          <i class="fas fa-arrow-right"></i> Next Level
+        </button>
+      </div>
+
+      <div id="gameOver">
+        <h1><i class="fas fa-star"></i> Congratulations!</h1>
+        <p>You've completed all levels!</p>
+        <button onclick="window.location.href='/quizandgame'" class="button exit-btn">
+          <i class="fas fa-door-open"></i> Exit Game
+        </button>
+      </div>
+    </div>
+
+    <script>
+      let moves = 0;
+      let level = 0;
+      let timer = null;
+      let seconds = 0;
+      let minutes = 0;
+      let hours = 0;
+
+      document.getElementById('start').addEventListener('submit', function(e) {
+        e.preventDefault();
+        level = parseInt(document.getElementById('levelInput').value);
+        if (level >= 2 && level <= 8) {
+          startGame(level);
+          document.getElementById('menu').style.display = 'none';
+          startTimer();
+        }
+      });
+
+      document.getElementById('shuffle').addEventListener('click', function() {
+        if (level > 0) {
+          resetTimer();
+          startTimer();
+          shuffleTiles();
+          moves = 0;
+          document.getElementById('count').textContent = moves;
+        }
+      });
+
+      document.getElementById('next').addEventListener('click', function() {
+        if (level < 8) {
+          level++;
+          startGame(level);
+          document.getElementById('completedLevel').style.display = 'none';
+        } else {
+          clearInterval(timer);
+          document.getElementById('completedLevel').style.display = 'none';
+          document.getElementById('gameOver').style.display = 'block';
+        }
+      });
+
+      function startGame(size) {
+        resetTimer();
+        startTimer();
+
+        const puzzle = document.createElement('div');
+        puzzle.id = 'puzzle';
+        puzzle.style.gridTemplateColumns = `repeat(${size}, 100px)`;
+        
+        const tiles = Array.from({length: size * size - 1}, (_, i) => i + 1);
+        tiles.push('');
+        
+        shuffleTiles(tiles);
+        
+        tiles.forEach(tile => {
+          const tileDiv = document.createElement('div');
+          tileDiv.className = 'tile' + (tile === '' ? ' empty' : '');
+          tileDiv.textContent = tile;
+          tileDiv.addEventListener('click', () => moveTile(tileDiv));
+          puzzle.appendChild(tileDiv);
+        });
+        
+        const existingPuzzle = document.getElementById('puzzle');
+        if (existingPuzzle) {
+          existingPuzzle.remove();
+        }
+        document.body.appendChild(puzzle);
+      }
+
+      function shuffleTiles() {
+        const tiles = Array.from(document.getElementsByClassName('tile'));
+        const values = tiles.map(tile => tile.textContent);
+        
+        for (let i = values.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [values[i], values[j]] = [values[j], values[i]];
+        }
+        
+        tiles.forEach((tile, index) => {
+          tile.textContent = values[index];
+          tile.className = 'tile' + (values[index] === '' ? ' empty' : '');
+        });
+      }
+
+      function moveTile(tile) {
+        const puzzle = document.getElementById('puzzle');
+        const emptyTile = document.querySelector('.empty');
+        const tileIndex = Array.from(puzzle.children).indexOf(tile);
+        const emptyIndex = Array.from(puzzle.children).indexOf(emptyTile);
+        
+        if (isAdjacent(tileIndex, emptyIndex, level)) {
+          swapTiles(tile, emptyTile);
+          moves++;
+          document.getElementById('count').textContent = moves;
+          
+          if (checkWin()) {
+            clearInterval(timer);
+            document.getElementById('completedLevel').style.display = 'block';
+          }
+        }
+      }
+
+      function isAdjacent(index1, index2, size) {
+        const row1 = Math.floor(index1 / size);
+        const col1 = index1 % size;
+        const row2 = Math.floor(index2 / size);
+        const col2 = index2 % size;
+        
+        return (Math.abs(row1 - row2) === 1 && col1 === col2) ||
+               (Math.abs(col1 - col2) === 1 && row1 === row2);
+      }
+
+      function swapTiles(tile1, tile2) {
+        const temp = tile1.textContent;
+        tile1.textContent = tile2.textContent;
+        tile2.textContent = temp;
+        
+        tile1.classList.toggle('empty');
+        tile2.classList.toggle('empty');
+      }
+
+      function checkWin() {
+        const tiles = Array.from(document.getElementsByClassName('tile'));
+        const values = tiles.map(tile => tile.textContent);
+        const sortedValues = [...values].sort((a, b) => {
+          if (a === '') return 1;
+          if (b === '') return -1;
+          return parseInt(a) - parseInt(b);
+        });
+        
+        return values.every((value, index) => value === sortedValues[index]);
+      }
+
+      function startTimer() {
+        if (timer) {
+          clearInterval(timer);
+        }
+        timer = setInterval(updateTimer, 1000);
+      }
+
+      function updateTimer() {
+        seconds++;
+        if (seconds === 60) {
+          seconds = 0;
+          minutes++;
+          if (minutes === 60) {
+            minutes = 0;
+            hours++;
+          }
+        }
+        
+        document.getElementById('seconds').textContent = padNumber(seconds);
+        document.getElementById('minutes').textContent = padNumber(minutes);
+        document.getElementById('hours').textContent = padNumber(hours);
+      }
+
+      function resetTimer() {
+        if (timer) {
+          clearInterval(timer);
+        }
+        seconds = 0;
+        minutes = 0;
+        hours = 0;
+        document.getElementById('seconds').textContent = '00';
+        document.getElementById('minutes').textContent = '00';
+        document.getElementById('hours').textContent = '00';
+      }
+
+      function padNumber(number) {
+        return number.toString().padStart(2, '0');
+      }
+
+      document.getElementById('completedLevel').style.display = 'none';
+      document.getElementById('gameOver').style.display = 'none';
+    </script>
+  </body>
+</html> 

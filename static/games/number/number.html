@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Numbers Puzzle</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='games/number/number.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Exo" rel="stylesheet">
+
+  </head>
+  <body>
+    <div id="counter">Moves: <span id="count">0</span></div>
+    <div id="timer">Time: <span id="hours">00</span>:<span id="minutes">00</span>:<span id="seconds">00</span></div>
+    <br>
+    <button id="shuffle">Shuffle</button>
+    <div id="menu">
+      <h1>Numbers Puzzle</h1>
+      <form id="start">
+        <label for="levelInput">Level:</label>
+        <input type="number" min="2" max="8" id="levelInput" required>
+        <input type="submit" value="Start">
+      </form>
+    </div>
+    <div id="completedLevel">
+      <h1>Well Done, all tiles have been sorted!</h1>
+      <button id="next">Proceed To Next Level</button>
+    </div>
+
+    <div id="gameOver">
+      <h1>Congratulations, You Completed The Game!</h1>
+      <button onclick="window.location.href='{{ url_for('quizandgame') }}'" class="exit-btn">Exit Game</button>
+    </div>
+  </body>
+  <script src="{{ url_for('static', filename='games/number/number.js') }}"></script>
+</html>

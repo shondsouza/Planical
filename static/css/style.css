@@ -295,25 +295,36 @@ input[type="submit"]{
 /*ChatBot*/
 .chat_icon{
 	position: fixed;
-	bottom: 0;
-	right: 70px;
+	bottom: 20px;
+	right: 20px;
 	z-index: 1000;
 	padding: 0;
-	font-size: 80px;
+	font-size: 60px;
 	color: rgb(172, 169, 169);
 	cursor: pointer;
+	transition: all 0.3s ease;
 }
+
+.chat_icon:hover {
+	transform: scale(1.1);
+	color: #06b79a;
+}
+
 .chat_box{
 	width: 400px;
 	height: 80vh;
 	position: fixed;
 	bottom: 100px;
-	right: 30px;
+	right: 20px;
 	background:#dedede;
 	z-index: 1000;
 	transition: all 0.3s ease-out;
 	transform: scaleY(0);
+	transform-origin: bottom right;
+	border-radius: 10px;
+	box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
+
 .chat_box.active{
 	transform: scaleY(1);
 }

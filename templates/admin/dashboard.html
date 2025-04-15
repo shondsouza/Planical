@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Admin Dashboard - Planical</title>
+  
+  <!-- Favicons -->
+  <link href="{{url_for('static', filename='logo1.png')}}" rel="icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
+  
+  <!-- Main CSS File -->
+  <link href="{{url_for('static', filename='assets/css/style.css')}}" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f8fa;
+    }
+    
+    .dashboard-header {
+      background: linear-gradient(135deg, #212529 0%, #343a40 100%);
+      color: white;
+      padding: 2rem 0;
+      margin-bottom: 2rem;
+    }
+    
+    .card {
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08);
+      margin-bottom: 1.5rem;
+    }
+    
+    .card-header {
+      background-color: #fff;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      padding: 1rem 1.5rem;
+      font-weight: 600;
+    }
+    
+    .stats-card {
+      text-align: center;
+      padding: 1.5rem;
+    }
+    
+    .stats-card .icon {
+      display: inline-flex;
+      width: 4rem;
+      height: 4rem;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+    }
+    
+    .stats-card .icon.bg-primary {
+      background-color: rgba(13, 110, 253, 0.1);
+      color: #0d6efd;
+    }
+    
+    .stats-card .icon.bg-success {
+      background-color: rgba(25, 135, 84, 0.1);
+      color: #198754;
+    }
+    
+    .stats-card .icon.bg-warning {
+      background-color: rgba(255, 193, 7, 0.1);
+      color: #ffc107;
+    }
+    
+    .stats-card .icon.bg-info {
+      background-color: rgba(13, 202, 240, 0.1);
+      color: #0dcaf0;
+    }
+    
+    .stats-card .count {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    
+    .stats-card .title {
+      font-size: 0.875rem;
+      color: #6c757d;
+      margin-bottom: 0;
+    }
+    
+    .table {
+      margin-bottom: 0;
+    }
+    
+    .table th {
+      border-top: none;
+      font-weight: 600;
+      color: #6c757d;
+    }
+    
+    .btn-sm {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+    }
+    
+    .status-badge {
+      padding: 0.35rem 0.65rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    
+    .status-pending {
+      background-color: rgba(255, 193, 7, 0.1);
+      color: #ffc107;
+    }
+    
+    .status-approved {
+      background-color: rgba(25, 135, 84, 0.1);
+      color: #198754;
+    }
+    
+    .status-rejected {
+      background-color: rgba(220, 53, 69, 0.1);
+      color: #dc3545;
+    }
+    
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #e9ecef;
+      color: #6c757d;
+      font-weight: 600;
+      margin-right: 0.75rem;
+    }
+    
+    .doctor-info {
+      display: flex;
+      align-items: center;
+    }
+    
+    .nav-pills .nav-link {
+      color: #495057;
+      border-radius: 0.5rem;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.5rem;
+      transition: all 0.2s ease;
+    }
+    
+    .nav-pills .nav-link:hover {
+      background-color: rgba(13, 110, 253, 0.05);
+    }
+    
+    .nav-pills .nav-link.active {
+      background-color: #0d6efd;
+      color: white;
+    }
+    
+    .nav-pills .nav-link i {
+      margin-right: 0.5rem;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center justify-content-between">
+      <h1 class="logo"><img src="{{url_for('static', filename='logo.png')}}" alt="" class="src"><a href="/">Planical</a></h1>
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link" href="/">Home</a></li>
+          <li><a class="nav-link active" href="/admin-dashboard">Admin Dashboard</a></li>
+          <li><a class="nav-link" href="/profile">Profile</a></li>
+          <li><a class="nav-link" href="/logout">Logout</a></li>
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+    </div>
+  </header><!-- End Header -->
+
+  <!-- ======= Dashboard Header ======= -->
+  <section class="dashboard-header">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1>Admin Dashboard</h1>
+          <p class="mb-0">Manage users, doctors, and system settings</p>
+        </div>
+        <div>
+          <span class="badge bg-success">Admin</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main id="main" class="py-4">
+    <div class="container">
+      <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3">
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="d-flex align-items-center mb-4">
+                <div class="avatar bg-primary text-white">
+                  {{ session.get('user', {}).get('first_name', 'A')[:1] }}
+                </div>
+                <div>
+                  <h6 class="mb-0">{{ session.get('user', {}).get('name', 'Admin') }}</h6>
+                  <small class="text-muted">Administrator</small>
+                </div>
+              </div>
+              
+              <div class="nav flex-column nav-pills">
+                <a class="nav-link active" href="#dashboard" data-bs-toggle="pill">
+                  <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+                <a class="nav-link" href="#doctor-approvals" data-bs-toggle="pill">
+                  <i class="bi bi-clipboard-check"></i> Doctor Approvals
+                </a>
+                <a class="nav-link" href="#users" data-bs-toggle="pill">
+                  <i class="bi bi-people"></i> User Management
+                </a>
+                <a class="nav-link" href="#settings" data-bs-toggle="pill">
+                  <i class="bi bi-gear"></i> Settings
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-lg-9">
+          <div class="tab-content">
+            <!-- Dashboard Tab -->
+            <div class="tab-pane fade show active" id="dashboard">
+              <!-- Stats Cards -->
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="card stats-card">
+                    <div class="icon bg-primary">
+                      <i class="bi bi-people-fill"></i>
+                    </div>
+                    <h2 class="count" id="total-users">0</h2>
+                    <p class="title">Total Users</p>
+                  </div>
+                </div>
+                
+                <div class="col-md-3">
+                  <div class="card stats-card">
+                    <div class="icon bg-success">
+                      <i class="bi bi-person-badge"></i>
+                    </div>
+                    <h2 class="count" id="total-doctors">0</h2>
+                    <p class="title">Doctors</p>
+                  </div>
+                </div>
+                
+                <div class="col-md-3">
+                  <div class="card stats-card">
+                    <div class="icon bg-warning">
+                      <i class="bi bi-hourglass-split"></i>
+                    </div>
+                    <h2 class="count" id="pending-approvals">0</h2>
+                    <p class="title">Pending Approvals</p>
+                  </div>
+                </div>
+                
+                <div class="col-md-3">
+                  <div class="card stats-card">
+                    <div class="icon bg-info">
+                      <i class="bi bi-camera-video-fill"></i>
+                    </div>
+                    <h2 class="count" id="total-consultations">0</h2>
+                    <p class="title">Consultations</p>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Recent Activities -->
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <div>Recent Activities</div>
+                  <div>
+                    <button class="btn btn-sm btn-outline-secondary">View All</button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Activity</th>
+                          <th>User</th>
+                          <th>Date</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody id="activities-table">
+                        <!-- Activities will be populated dynamically -->
+                        <tr>
+                          <td colspan="4" class="text-center py-3">Loading activities...</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Doctor Approvals Tab -->
+            <div class="tab-pane fade" id="doctor-approvals">
+              <div class="card">
+                <div class="card-header">
+                  <div>Doctor Approval Requests</div>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table align-middle">
+                      <thead>
+                        <tr>
+                          <th>Doctor</th>
+                          <th>Email</th>
+                          <th>Date Requested</th>
+                          <th>Status</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody id="doctor-approvals-table">
+                        <!-- Doctor approval requests will be populated dynamically -->
+                        <tr>
+                          <td colspan="5" class="text-center py-3">Loading doctor approval requests...</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Users Tab -->
+            <div class="tab-pane fade" id="users">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <div>All Users</div>
+                  <div>
+                    <input type="text" class="form-control form-control-sm" placeholder="Search users" id="user-search">
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table align-middle">
+                      <thead>
+                        <tr>
+                          <th>User</th>
+                          <th>Email</th>
+                          <th>Role</th>
+                          <th>Status</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody id="users-table">
+                        <!-- Users will be populated dynamically -->
+                        <tr>
+                          <td colspan="5" class="text-center py-3">Loading users...</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Settings Tab -->
+            <div class="tab-pane fade" id="settings">
+              <div class="card">
+                <div class="card-header">
+                  <div>System Settings</div>
+                </div>
+                <div class="card-body">
+                  <form id="settings-form">
+                    <div class="mb-3">
+                      <label class="form-label">Site Title</label>
+                      <input type="text" class="form-control" value="Planical - Mental Healthcare Platform">
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label class="form-label">Admin Email</label>
+                      <input type="email" class="form-control" value="{{ session.get('user', {}).get('email', '') }}">
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label class="form-label">Doctor Registration</label>
+                      <select class="form-select">
+                        <option value="open">Open (Anyone can register as a doctor)</option>
+                        <option value="approval" selected>Requires Admin Approval</option>
+                        <option value="closed">Closed (Admin must create doctor accounts)</option>
+                      </select>
+                    </div>
+                    
+                    <div class="form-check form-switch mb-3">
+                      <input class="form-check-input" type="checkbox" id="maintenance-mode" checked>
+                      <label class="form-check-label" for="maintenance-mode">Enable Maintenance Mode</label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Save Settings</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" style="background-color: #f8f9fa; padding: 30px 0; text-align: center;">
+    <div class="container">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Planical</span></strong>. All Rights Reserved
+      </div>
+      <div class="credits">
+        Admin Dashboard
+      </div>
+    </div>
+  </footer><!-- End Footer -->
+
+  <!-- Vendor JS Files -->
+  <script src="{{url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Update stats from server data
+      updateStats();
+      
+      // Display real doctor approval requests
+      displayDoctorApprovals();
+      
+      // Display real users
+      displayUsers();
+      
+      // Display activities
+      displayActivities();
+      
+      // Add event listener for settings form
+      const settingsForm = document.getElementById('settings-form');
+      if (settingsForm) {
+        settingsForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          // Save settings logic
+          alert('Settings saved successfully!');
+        });
+      }
+      
+      // Add event listener for user search
+      const userSearch = document.getElementById('user-search');
+      if (userSearch) {
+        userSearch.addEventListener('input', function() {
+          // Filter users based on search term
+          const searchTerm = this.value.toLowerCase();
+          const rows = document.querySelectorAll('#users-table tr');
+          
+          rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(searchTerm) ? '' : 'none';
+          });
+        });
+      }
+    });
+    
+    // Update stats with real data
+    function updateStats() {
+      // Get stats from Flask's passed data
+      const stats = JSON.parse('{% if stats %}{{ stats|tojson }}{% else %}{"total_users": 0, "total_doctors": 0, "pending_approvals": 0}{% endif %}');
+      
+      // Update DOM with real data
+      document.getElementById('total-users').textContent = stats.total_users || 0;
+      document.getElementById('total-doctors').textContent = stats.total_doctors || 0;
+      document.getElementById('pending-approvals').textContent = stats.pending_approvals || 0;
+      // We don't have data for consultations yet, so leave it as mock data
+      document.getElementById('total-consultations').textContent = '83';
+    }
+    
+    // Function to display recent activities
+    function displayActivities() {
+      const activitiesTable = document.getElementById('activities-table');
+      
+      // Get activities from Flask's passed data, or use empty array if none provided
+      const activities = JSON.parse('{% if recent_activities %}{{ recent_activities|tojson }}{% else %}[]{% endif %}');
+      
+      // If no activities from server, add some default ones
+      if (activities.length === 0) {
+        // Default activities remain the same as before
+        activities.push(
+          {
+            type: 'Doctor Approval',
+            user: 'Dr. Sarah Johnson',
+            date: '2023-05-15',
+            status: 'approved'
+          },
+          {
+            type: 'New Registration',
+            user: 'Michael Chen',
+            date: '2023-05-14',
+            status: 'completed'
+          },
+          {
+            type: 'Consultation',
+            user: 'Emma Wilson',
+            date: '2023-05-14',
+            status: 'completed'
+          },
+          {
+            type: 'Doctor Rejection',
+            user: 'Dr. Robert Smith',
+            date: '2023-05-13',
+            status: 'rejected'
+          },
+          {
+            type: 'Password Reset',
+            user: 'James Brown',
+            date: '2023-05-12',
+            status: 'completed'
+          }
+        );
+      }
+      
+      let activitiesHTML = '';
+      
+      if (activities.length === 0) {
+        activitiesHTML = `<tr><td colspan="4" class="text-center py-3">No recent activities found.</td></tr>`;
+      } else {
+        activities.forEach(activity => {
+          let statusBadge = '';
+          
+          switch(activity.status) {
+            case 'approved':
+              statusBadge = '<span class="badge bg-success">Approved</span>';
+              break;
+            case 'rejected':
+              statusBadge = '<span class="badge bg-danger">Rejected</span>';
+              break;
+            case 'pending':
+              statusBadge = '<span class="badge bg-warning text-dark">Pending</span>';
+              break;
+            case 'completed':
+              statusBadge = '<span class="badge bg-info">Completed</span>';
+              break;
+            default:
+              statusBadge = '<span class="badge bg-secondary">Unknown</span>';
+          }
+          
+          activitiesHTML += `
+            <tr>
+              <td>${activity.type}</td>
+              <td>${activity.user}</td>
+              <td>${activity.date}</td>
+              <td>${statusBadge}</td>
+            </tr>
+          `;
+        });
+      }
+      
+      activitiesTable.innerHTML = activitiesHTML;
+    }
+    
+    // Function to display real doctor approval requests
+    function displayDoctorApprovals() {
+      const doctorApprovalsTable = document.getElementById('doctor-approvals-table');
+      const pendingDoctors = JSON.parse('{% if pending_doctors %}{{ pending_doctors|tojson }}{% else %}[]{% endif %}');
+      const approvedDoctors = JSON.parse('{% if doctors_approved %}{{ doctors_approved|tojson }}{% else %}[]{% endif %}');
+      const rejectedDoctors = JSON.parse('{% if doctors_rejected %}{{ doctors_rejected|tojson }}{% else %}[]{% endif %}');
+      
+      // Combine all doctors for the table
+      const allDoctors = [
+        ...(pendingDoctors || []).map(d => ({...d, status: 'pending'})),
+        ...(approvedDoctors || []).map(d => ({...d, status: 'approved'})),
+        ...(rejectedDoctors || []).map(d => ({...d, status: 'rejected'}))
+      ];
+      
+      let approvalsHTML = '';
+      
+      if (allDoctors.length === 0) {
+        approvalsHTML = `<tr><td colspan="5" class="text-center py-3">No doctor approval requests found.</td></tr>`;
+      } else {
+        allDoctors.forEach(doctor => {
+          let statusBadge = '';
+          let actionButtons = '';
+          
+          switch(doctor.status) {
+            case 'pending':
+              statusBadge = '<span class="status-badge status-pending">Pending</span>';
+              actionButtons = `
+                <button class="btn btn-sm btn-success me-1" onclick="approveDoctor('${doctor.id}')">Approve</button>
+                <button class="btn btn-sm btn-danger" onclick="rejectDoctor('${doctor.id}')">Reject</button>
+              `;
+              break;
+            case 'approved':
+              statusBadge = '<span class="status-badge status-approved">Approved</span>';
+              actionButtons = `
+                <button class="btn btn-sm btn-danger" onclick="revokeDoctor('${doctor.id}')">Revoke</button>
+              `;
+              break;
+            case 'rejected':
+              statusBadge = '<span class="status-badge status-rejected">Rejected</span>';
+              actionButtons = `
+                <button class="btn btn-sm btn-success" onclick="approveDoctor('${doctor.id}')">Approve</button>
+              `;
+              break;
+          }
+          
+          approvalsHTML += `
+            <tr>
+              <td>
+                <div class="doctor-info">
+                  <div class="avatar">${doctor.name ? doctor.name.charAt(0) : '?'}</div>
+                  <div>${doctor.name || 'Unknown'}</div>
+                </div>
+              </td>
+              <td>${doctor.email || 'N/A'}</td>
+              <td>${doctor.created_date || 'N/A'}</td>
+              <td>${statusBadge}</td>
+              <td>${actionButtons}</td>
+            </tr>
+          `;
+        });
+      }
+      
+      doctorApprovalsTable.innerHTML = approvalsHTML;
+    }
+    
+    // Function to display real users
+    function displayUsers() {
+      const usersTable = document.getElementById('users-table');
+      const users = JSON.parse('{% if all_users %}{{ all_users|tojson }}{% else %}[]{% endif %}');
+      
+      let usersHTML = '';
+      
+      if (users.length === 0) {
+        usersHTML = `<tr><td colspan="5" class="text-center py-3">No users found.</td></tr>`;
+      } else {
+        users.forEach(user => {
+          let roleBadge = '';
+          let statusBadge = '';
+          
+          // Set role badge
+          switch(user.role) {
+            case 'admin':
+              roleBadge = '<span class="badge bg-danger">Admin</span>';
+              break;
+            case 'doctor':
+              roleBadge = '<span class="badge bg-primary">Doctor</span>';
+              break;
+            case 'patient':
+              roleBadge = '<span class="badge bg-success">Patient</span>';
+              break;
+            default:
+              roleBadge = '<span class="badge bg-secondary">Unknown</span>';
+          }
+          
+          // Set status badge based on approval_status or emailVerified
+          if (user.role === 'doctor') {
+            switch(user.approval_status) {
+              case 'approved':
+                statusBadge = '<span class="badge bg-success">Active</span>';
+                break;
+              case 'pending':
+                statusBadge = '<span class="badge bg-warning text-dark">Pending</span>';
+                break;
+              case 'rejected':
+                statusBadge = '<span class="badge bg-danger">Rejected</span>';
+                break;
+              default:
+                statusBadge = '<span class="badge bg-secondary">Unknown</span>';
+            }
+          } else {
+            // For non-doctors, show verification status
+            statusBadge = user.emailVerified ? 
+              '<span class="badge bg-success">Active</span>' : 
+              '<span class="badge bg-warning text-dark">Unverified</span>';
+          }
+          
+          usersHTML += `
+            <tr>
+              <td>
+                <div class="doctor-info">
+                  <div class="avatar">${user.name ? user.name.charAt(0) : '?'}</div>
+                  <div>${user.name || 'Unknown'}</div>
+                </div>
+              </td>
+              <td>${user.email || 'N/A'}</td>
+              <td>${roleBadge}</td>
+              <td>${statusBadge}</td>
+              <td>
+                <button class="btn btn-sm btn-outline-primary me-1" onclick="editUser('${user.id}')">Edit</button>
+                ${user.role !== 'admin' ? `<button class="btn btn-sm btn-outline-danger" onclick="deleteUser('${user.id}')">Delete</button>` : ''}
+              </td>
+            </tr>
+          `;
+        });
+      }
+      
+      usersTable.innerHTML = usersHTML;
+    }
+    
+    // Function to approve a doctor - sends AJAX request to server
+    function approveDoctor(doctorId) {
+      if (confirm('Are you sure you want to approve this doctor?')) {
+        fetch(`/approve-doctor/${doctorId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Doctor approved successfully!');
+            // Reload page to refresh data
+            window.location.reload();
+          } else {
+            alert(`Error: ${data.message}`);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred. Please try again.');
+        });
+      }
+    }
+    
+    // Function to reject a doctor - sends AJAX request to server
+    function rejectDoctor(doctorId) {
+      const reason = prompt('Please provide a reason for rejection:');
+      if (reason) {
+        fetch(`/reject-doctor/${doctorId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ reason: reason })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Doctor rejected successfully!');
+            // Reload page to refresh data
+            window.location.reload();
+          } else {
+            alert(`Error: ${data.message}`);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred. Please try again.');
+        });
+      }
+    }
+    
+    // Function to revoke a doctor's approval
+    function revokeDoctor(doctorId) {
+      // This would normally be an API call to revoke the doctor's approval
+      if (confirm('Are you sure you want to revoke this doctor\'s approval?')) {
+        fetch(`/revoke-doctor/${doctorId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Doctor approval revoked successfully!');
+            // Reload page to refresh data
+            window.location.reload();
+          } else {
+            alert(`Error: ${data.message}`);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred. Please try again.');
+        });
+      }
+    }
+    
+    // Function to edit a user
+    function editUser(userId) {
+      // This would normally redirect to a user edit page or show a modal
+      alert(`Edit user with ID ${userId}`);
+    }
+    
+    // Function to delete a user
+    function deleteUser(userId) {
+      // This would normally be an API call to delete the user
+      if (confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+        fetch(`/delete-user/${userId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('User deleted successfully!');
+            // Refresh users table
+            displayUsers();
+          } else {
+            alert(`Error: ${data.message}`);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred. Please try again.');
+        });
+      }
+    }
+  </script>
+</body>
+</html> 

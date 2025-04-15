@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Create Admin Account</title>
+  
+  <!-- Favicons -->
+  <link href="{{url_for('static', filename='logo1.png')}}" rel="icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
+  
+  <!-- Main CSS File -->
+  <link href="{{url_for('static', filename='assets/css/style.css')}}" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f8fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 0 15px;
+    }
+    
+    .admin-create-card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      width: 100%;
+      max-width: 500px;
+    }
+    
+    .admin-create-header {
+      background: linear-gradient(135deg, #212529 0%, #343a40 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+    
+    .admin-create-body {
+      padding: 30px;
+    }
+    
+    .admin-create-footer {
+      background-color: #f8f9fa;
+      padding: 20px 30px;
+      text-align: center;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .admin-icon {
+      width: 70px;
+      height: 70px;
+      margin-bottom: 15px;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+    }
+    
+    .form-floating {
+      margin-bottom: 20px;
+    }
+    
+    .btn-primary {
+      background-color: #212529;
+      border-color: #212529;
+      padding: 10px 20px;
+      font-weight: 500;
+    }
+    
+    .btn-primary:hover {
+      background-color: #343a40;
+      border-color: #343a40;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="admin-create-card">
+    <div class="admin-create-header">
+      <div class="admin-icon">
+        <i class="bi bi-shield-lock"></i>
+      </div>
+      <h1>Admin Setup</h1>
+      <p class="mb-0">Create the first administrator account</p>
+    </div>
+    
+    <div class="admin-create-body">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      
+      {% if admin_exists %}
+        <div class="alert alert-warning">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          An admin account already exists. Creating another admin account requires existing admin privileges.
+        </div>
+      {% else %}
+        <div class="alert alert-info">
+          <i class="bi bi-info-circle-fill me-2"></i>
+          This form will create the first administrator account for your Planical platform. This account will have full access to all system features.
+        </div>
+      {% endif %}
+      
+      <form method="POST" action="{{ url_for('create_admin') }}">
+        <div class="form-floating">
+          <input type="text" class="form-control" id="name" name="name" placeholder="Full Name" required>
+          <label for="name">Full Name</label>
+        </div>
+        
+        <div class="form-floating">
+          <input type="email" class="form-control" id="email" name="email" placeholder="Email Address" required>
+          <label for="email">Email Address</label>
+        </div>
+        
+        <div class="form-floating">
+          <input type="password" class="form-control" id="password" name="password" placeholder="Password" minlength="6" required>
+          <label for="password">Password</label>
+          <div class="form-text">Password must be at least 6 characters long.</div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary w-100">Create Admin Account</button>
+      </form>
+    </div>
+    
+    <div class="admin-create-footer">
+      <a href="{{ url_for('home') }}" class="text-muted">
+        <i class="bi bi-arrow-left"></i> Back to Home
+      </a>
+    </div>
+  </div>
+  
+  <!-- Vendor JS Files -->
+  <script src="{{url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+</body>
+</html> 

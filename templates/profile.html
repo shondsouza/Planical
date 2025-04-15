@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>My Profile</title>
+  
+  <!-- Favicons -->
+  <link href="{{url_for('static', filename='logo1.png')}}" rel="icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/boxicons/css/boxicons.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/remixicon/remixicon.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/aos/aos.css')}}" rel="stylesheet">
+  
+  <!-- Template Main CSS File -->
+  <link href="{{url_for('static', filename='assets/css/style.css')}}" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-color: #0d6efd;
+      --primary-light: #e6f0ff;
+      --primary-dark: #0252c9;
+      --secondary-color: #6c757d;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+      --success-color: #28a745;
+      --info-color: #17a2b8;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
+      --border-radius: 15px;
+      --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      --transition: all 0.3s ease;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f8fa;
+      color: var(--dark-color);
+    }
+    
+    /* Profile Hero Section */
+    .profile-hero {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 60px 0 100px;
+      position: relative;
+      margin-bottom: -70px;
+    }
+    
+    .profile-hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    .profile-avatar-container {
+      position: relative;
+      margin-bottom: -50px;
+    }
+    
+    .profile-avatar-large {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0d6efd 0%, #0052cc 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 50px;
+      font-weight: 600;
+      margin: 0 auto;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      border: 5px solid white;
+      transition: transform 0.3s ease;
+    }
+    
+    .profile-avatar-large:hover {
+      transform: scale(1.05);
+    }
+    
+    .avatar-badge {
+      position: absolute;
+      bottom: 5px;
+      right: 50%;
+      transform: translateX(50px);
+      background-color: var(--success-color);
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      border: 2px solid white;
+    }
+    
+    .profile-card {
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+      border: none;
+      transition: var(--transition);
+      overflow: hidden;
+    }
+    
+    .profile-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-header {
+      background-color: white;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      padding: 1.25rem 1.5rem;
+    }
+    
+    .card-title {
+      font-weight: 600;
+      color: var(--dark-color);
+      margin-bottom: 0;
+      display: flex;
+      align-items: center;
+    }
+    
+    .card-title i {
+      color: var(--primary-color);
+      margin-right: 10px;
+    }
+    
+    .profile-stats {
+      display: flex;
+      justify-content: space-between;
+      text-align: center;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .stat-item {
+      flex: 1;
+      padding: 0 10px;
+      border-right: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .stat-item:last-child {
+      border-right: none;
+    }
+    
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 0.25rem;
+    }
+    
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--secondary-color);
+    }
+    
+    .activity-icon {
+      width: 45px;
+      height: 45px;
+      min-width: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      font-size: 1.25rem;
+    }
+    
+    .progress-item {
+      margin-bottom: 20px;
+    }
+    
+    .progress {
+      height: 10px;
+      border-radius: 50px;
+      background-color: #e9ecef;
+      overflow: hidden;
+    }
+    
+    .progress-bar {
+      border-radius: 50px;
+    }
+    
+    .nav-tabs {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      margin-bottom: 1.5rem;
+    }
+    
+    .nav-tabs .nav-link {
+      color: var(--secondary-color);
+      font-weight: 500;
+      padding: 0.75rem 1.25rem;
+      border: none;
+      border-bottom: 3px solid transparent;
+      transition: var(--transition);
+      margin-right: 1rem;
+    }
+    
+    .nav-tabs .nav-link:hover {
+      color: var(--primary-color);
+      border-color: transparent;
+    }
+    
+    .nav-tabs .nav-link.active {
+      color: var(--primary-color);
+      font-weight: 600;
+      background-color: transparent;
+      border-color: var(--primary-color);
+    }
+    
+    .tab-content {
+      padding: 1.5rem 0;
+    }
+    
+    .activity-item {
+      padding: 1.25rem;
+      border-radius: var(--border-radius);
+      background-color: white;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 1rem;
+      transition: var(--transition);
+    }
+    
+    .activity-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+    
+    .activity-content {
+      flex: 1;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      border-radius: 50px;
+      padding: 0.5rem 1.5rem;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+      border-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+    }
+    
+    .btn-outline-primary {
+      color: var(--primary-color);
+      border-color: var(--primary-color);
+      border-radius: 50px;
+      padding: 0.5rem 1.5rem;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+    
+    .btn-outline-primary:hover {
+      background-color: var(--primary-color);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(13, 110, 253, 0.2);
+    }
+    
+    .form-control, .form-select {
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      border-color: #e0e0e0;
+    }
+    
+    .form-control:focus, .form-select:focus {
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+      border-color: var(--primary-color);
+    }
+    
+    .badge {
+      padding: 0.5rem 0.75rem;
+      border-radius: 50px;
+      font-weight: 500;
+    }
+    
+    .info-label {
+      font-weight: 600;
+      color: var(--dark-color);
+      margin-bottom: 0.5rem;
+    }
+    
+    .info-value {
+      color: var(--secondary-color);
+      margin-bottom: 1.5rem;
+    }
+    
+    .data-item {
+      padding: 1rem;
+      border-radius: 8px;
+      background-color: var(--primary-light);
+      margin-bottom: 1rem;
+    }
+    
+    .data-label {
+      font-weight: 500;
+      color: var(--secondary-color);
+      margin-bottom: 0.25rem;
+      font-size: 0.875rem;
+    }
+    
+    .data-value {
+      font-weight: 600;
+      color: var(--dark-color);
+      font-size: 1rem;
+    }
+    
+    .border-light {
+      border-color: rgba(0, 0, 0, 0.05) !important;
+    }
+    
+    .table-activity thead th {
+      font-weight: 600;
+      color: var(--primary-color);
+      border-top: none;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+    
+    .table-activity td {
+      padding: 1rem;
+      vertical-align: middle;
+    }
+    
+    @media (max-width: 768px) {
+      .profile-hero {
+        padding: 40px 0 80px;
+      }
+      
+      .profile-avatar-large {
+        width: 100px;
+        height: 100px;
+        font-size: 36px;
+      }
+      
+      .avatar-badge {
+        width: 25px;
+        height: 25px;
+        font-size: 12px;
+        transform: translateX(35px);
+      }
+      
+      .stat-value {
+        font-size: 1.25rem;
+      }
+      
+      .stat-label {
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center justify-content-between">
+      <h1 class="logo"><img src="{{url_for('static', filename='logo.png')}}" alt="" class="src"><a href="/">Planical</a></h1>
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link" href="/">Home</a></li>
+          <li><a class="nav-link active" href="#">Profile</a></li>
+          <li><a class="nav-link" href="/logout">Logout</a></li>
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+    </div>
+  </header><!-- End Header -->
+
+  <!-- ======= Profile Hero Section ======= -->
+  <section class="profile-hero">
+    <div class="container text-center">
+      <h1>Welcome, {{ session['user'].get('first_name', 'User') }}!</h1>
+      <p class="lead">Manage your profile and track your mental wellness journey</p>
+    </div>
+  </section>
+
+  <section id="profile" class="py-5">
+    <div class="container">
+    <div class="row">
+        <!-- Left Column - Profile Info -->
+        <div class="col-lg-4 mb-4">
+          <!-- Profile Avatar -->
+          <div class="profile-avatar-container text-center mb-4">
+            <div class="profile-avatar-large">
+              {{ session['user'].get('name', 'U')[0] | upper }}
+            </div>
+            <div class="avatar-badge">
+              <i class="bi bi-check"></i>
+            </div>
+          </div>
+          
+          <!-- Profile Info Card -->
+          <div class="card profile-card mb-4">
+            <div class="card-body text-center">
+              <h3 class="mb-1">{{ session['user'].get('name', 'User') }}</h3>
+              <p class="text-muted mb-3">{{ session['user'].get('email', '') }}</p>
+              
+              <div class="d-flex justify-content-center gap-2 mb-3">
+                <button class="btn btn-primary" id="editProfileBtn">
+                  <i class="bi bi-pencil me-2"></i>Edit Profile
+                </button>
+                <a href="#" class="btn btn-outline-primary">
+                  <i class="bi bi-shield-lock me-2"></i>Security
+                </a>
+        </div>
+        
+              <div class="profile-stats">
+                <div class="stat-item">
+                  <div class="stat-value">16</div>
+                  <div class="stat-label">Sessions</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">42</div>
+                  <div class="stat-label">Days</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">78%</div>
+                  <div class="stat-label">Progress</div>
+                </div>
+              </div>
+              
+              <div class="user-info p-3">
+                <div class="d-flex align-items-center mb-3">
+                  <i class="bi bi-calendar-check me-3 text-primary fs-5"></i>
+                  <div>
+                    <div class="data-label">Member since</div>
+                    <div class="data-value">April 2023</div>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center mb-3">
+                  <i class="bi bi-person-badge me-3 text-primary fs-5"></i>
+                  <div>
+                    <div class="data-label">Age</div>
+                    <div class="data-value">{{ session['user'].get('age', 'Not provided') }}</div>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-award me-3 text-primary fs-5"></i>
+                  <div>
+                    <div class="data-label">Status</div>
+                    <div class="data-value">Active Member</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Wellness Progress Card -->
+          <div class="card profile-card">
+            <div class="card-header">
+              <h5 class="card-title"><i class="bi bi-speedometer2"></i> Wellness Progress</h5>
+            </div>
+            <div class="card-body">
+              <div class="progress-item">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <div>
+                    <h6 class="mb-0">Meditation Sessions</h6>
+                    <small class="text-muted">16 of 25 sessions</small>
+                  </div>
+                  <span class="fw-bold text-primary">65%</span>
+                </div>
+                <div class="progress">
+                  <div class="progress-bar bg-primary" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+              
+              <div class="progress-item">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <div>
+                    <h6 class="mb-0">Exercise Completion</h6>
+                    <small class="text-muted">10 of 24 exercises</small>
+                  </div>
+                  <span class="fw-bold text-info">42%</span>
+              </div>
+              <div class="progress">
+                <div class="progress-bar bg-info" role="progressbar" style="width: 42%" aria-valuenow="42" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+              
+              <div class="progress-item">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <div>
+                    <h6 class="mb-0">Stress Reduction</h6>
+                    <small class="text-muted">78% improvement</small>
+                  </div>
+                  <span class="fw-bold text-warning">78%</span>
+              </div>
+              <div class="progress">
+                <div class="progress-bar bg-warning" role="progressbar" style="width: 78%" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              </div>
+              
+              <div class="text-center mt-4">
+                <a href="#" class="btn btn-outline-primary">
+                  <i class="bi bi-graph-up me-2"></i>View Full Report
+                </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+        <!-- Right Column - Main Content -->
+      <div class="col-lg-8">
+          <div class="card profile-card">
+          <div class="card-body">
+              <!-- Profile Tabs -->
+            <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+              <li class="nav-item" role="presentation">
+                  <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">
+                    <i class="bi bi-grid me-2"></i>Overview
+                  </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="activity-tab" data-bs-toggle="tab" data-bs-target="#activity" type="button" role="tab" aria-controls="activity" aria-selected="false">
+                    <i class="bi bi-clock-history me-2"></i>Activity
+                  </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false">
+                    <i class="bi bi-gear me-2"></i>Settings
+                  </button>
+              </li>
+            </ul>
+              
+              <div class="tab-content" id="profileTabsContent">
+                <!-- Overview Tab -->
+              <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+                  <div class="row">
+                    <div class="col-md-6 mb-4">
+                      <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                          <h5 class="card-title mb-4"><i class="bi bi-person text-primary me-2"></i>Personal Information</h5>
+                          
+                          <div class="mb-3">
+                            <div class="info-label">Full Name</div>
+                            <div class="info-value">{{ session['user'].get('name', 'Not provided') }}</div>
+                          </div>
+                          
+                          <div class="mb-3">
+                            <div class="info-label">Email</div>
+                            <div class="info-value">{{ session['user'].get('email', 'Not provided') }}</div>
+                          </div>
+                          
+                          <div class="mb-3">
+                            <div class="info-label">Phone</div>
+                            <div class="info-value">Not provided</div>
+                          </div>
+                          
+                          <div>
+                            <div class="info-label">Age</div>
+                            <div class="info-value">{{ session['user'].get('age', 'Not provided') }}</div>
+                          </div>
+                  </div>
+                  </div>
+                </div>
+                    
+                    <div class="col-md-6 mb-4">
+                      <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                          <h5 class="card-title mb-4"><i class="bi bi-check-circle text-primary me-2"></i>Achievements</h5>
+                          
+                          <div class="d-flex align-items-center p-3 bg-light rounded mb-3">
+                            <div class="me-3 text-primary">
+                              <i class="bi bi-stars fs-3"></i>
+                  </div>
+                            <div>
+                              <h6 class="mb-1">First Week Complete</h6>
+                              <p class="text-muted mb-0 small">Completed your first week of wellness activities</p>
+                  </div>
+                </div>
+                          
+                          <div class="d-flex align-items-center p-3 bg-light rounded mb-3">
+                            <div class="me-3 text-warning">
+                              <i class="bi bi-clock-history fs-3"></i>
+                  </div>
+                            <div>
+                              <h6 class="mb-1">Meditation Master</h6>
+                              <p class="text-muted mb-0 small">Completed 10 meditation sessions</p>
+                  </div>
+                </div>
+                          
+                          <div class="d-flex align-items-center p-3 bg-light rounded">
+                            <div class="me-3 text-success">
+                              <i class="bi bi-graph-up-arrow fs-3"></i>
+                            </div>
+                            <div>
+                              <h6 class="mb-1">Stress Reducer</h6>
+                              <p class="text-muted mb-0 small">Reduced stress levels by 25%</p>
+                            </div>
+                  </div>
+                  </div>
+                </div>
+                  </div>
+                  </div>
+                  
+                  <h5 class="mt-2 mb-4"><i class="bi bi-activity text-primary me-2"></i>Recent Activity</h5>
+                  
+                  <div class="activity-timeline">
+                    <div class="d-flex mb-4 activity-item">
+                      <div class="activity-icon bg-success text-white rounded me-3">
+                    <i class="bi bi-music-note-beamed"></i>
+                  </div>
+                  <div class="activity-content">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                          <h6 class="mb-0">Completed Meditation Session</h6>
+                          <span class="badge bg-light text-primary">2 hours ago</span>
+                        </div>
+                    <p class="text-muted mb-0">15 min relaxation meditation</p>
+                  </div>
+                </div>
+                    
+                    <div class="d-flex mb-4 activity-item">
+                      <div class="activity-icon bg-info text-white rounded me-3">
+                    <i class="bi bi-journal-text"></i>
+                  </div>
+                  <div class="activity-content">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                          <h6 class="mb-0">Completed Stress Assessment</h6>
+                          <span class="badge bg-light text-primary">Yesterday</span>
+                        </div>
+                    <p class="text-muted mb-0">Stress level: Moderate</p>
+                  </div>
+                </div>
+                    
+                    <div class="d-flex activity-item">
+                      <div class="activity-icon bg-warning text-white rounded me-3">
+                    <i class="bi bi-person-plus"></i>
+                  </div>
+                  <div class="activity-content">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                          <h6 class="mb-0">Account Created</h6>
+                          <span class="badge bg-light text-primary">April 1, 2023</span>
+                        </div>
+                    <p class="text-muted mb-0">Welcome to Planical!</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Activity Tab -->
+                <div class="tab-pane fade" id="activity" role="tabpanel" aria-labelledby="activity-tab">
+                  <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="mb-0"><i class="bi bi-clock-history text-primary me-2"></i>Activity Log</h5>
+                    <div class="d-flex gap-2">
+                      <button class="btn btn-sm btn-outline-primary"><i class="bi bi-funnel me-1"></i>Filter</button>
+                      <button class="btn btn-sm btn-outline-primary"><i class="bi bi-download me-1"></i>Export</button>
+                </div>
+              </div>
+              
+                <div class="table-responsive">
+                    <table class="table table-hover table-activity">
+                    <thead>
+                      <tr>
+                        <th>Activity</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                          <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                          <td>
+                            <div class="d-flex align-items-center">
+                              <div class="activity-icon bg-primary text-white rounded p-2 me-3" style="width: 36px; height: 36px;">
+                                <i class="bi bi-music-note-beamed"></i>
+                              </div>
+                              <div>
+                                <h6 class="mb-0">Meditation Session</h6>
+                                <small class="text-muted">15 min relaxation</small>
+                              </div>
+                            </div>
+                          </td>
+                        <td>April 2, 2023</td>
+                        <td><span class="badge bg-success">Completed</span></td>
+                          <td>
+                            <button class="btn btn-sm btn-outline-primary rounded-circle"><i class="bi bi-three-dots"></i></button>
+                          </td>
+                      </tr>
+                      <tr>
+                          <td>
+                            <div class="d-flex align-items-center">
+                              <div class="activity-icon bg-info text-white rounded p-2 me-3" style="width: 36px; height: 36px;">
+                                <i class="bi bi-clipboard-data"></i>
+                              </div>
+                              <div>
+                                <h6 class="mb-0">Stress Assessment</h6>
+                                <small class="text-muted">April 1, 2023</small>
+                              </div>
+                            </div>
+                          </td>
+                        <td>April 1, 2023</td>
+                        <td><span class="badge bg-success">Completed</span></td>
+                          <td>
+                            <button class="btn btn-sm btn-outline-primary rounded-circle"><i class="bi bi-three-dots"></i></button>
+                          </td>
+                      </tr>
+                      <tr>
+                          <td>
+                            <div class="d-flex align-items-center">
+                              <div class="activity-icon bg-warning text-white rounded p-2 me-3" style="width: 36px; height: 36px;">
+                                <i class="bi bi-person-plus"></i>
+                              </div>
+                              <div>
+                                <h6 class="mb-0">Account Created</h6>
+                                <small class="text-muted">April 1, 2023</small>
+                              </div>
+                            </div>
+                          </td>
+                          <td>April 1, 2023</td>
+                        <td><span class="badge bg-info">System</span></td>
+                          <td>
+                            <button class="btn btn-sm btn-outline-primary rounded-circle"><i class="bi bi-three-dots"></i></button>
+                          </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              
+                <!-- Settings Tab -->
+              <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                <h5 class="card-title">Edit Profile</h5>
+                  <form action="/update-profile" method="POST">
+                  <div class="row mb-3">
+                      <div class="col-md-6">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ session['user'].get('name', '') }}">
+                    </div>
+                      <div class="col-md-6">
+                      <label for="age" class="form-label">Age</label>
+                        <input type="number" class="form-control" id="age" name="age" value="{{ session['user'].get('age', '') }}">
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                      <div class="col-md-6">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" value="{{ session['user'].get('email', '') }}" readonly>
+                        <small class="text-muted">Email cannot be changed</small>
+                    </div>
+                    </div>
+                      <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+                
+                  <hr class="my-4">
+                
+                  <h5 class="card-title">Change Password</h5>
+                  <form action="/update-password" method="POST">
+                  <div class="row mb-3">
+                      <div class="col-md-6">
+                      <label for="currentPassword" class="form-label">Current Password</label>
+                        <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                      <div class="col-md-6">
+                      <label for="newPassword" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                    </div>
+                      <div class="col-md-6">
+                        <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                  </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Password</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" style="background-color: #f8f9fa; padding: 30px 0; text-align: center;">
+    <div class="container">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Planical</span></strong>. All Rights Reserved
+      </div>
+      <div class="credits">
+        Designed by <a href="https://github.com/shondsouza" target="_blank">Shon Dsouza</a>
+      </div>
+    </div>
+  </footer><!-- End Footer -->
+
+  <!-- Vendor JS Files -->
+  <script src="{{url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+  <script src="{{url_for('static', filename='assets/vendor/glightbox/js/glightbox.min.js')}}"></script>
+  
+  <!-- Template Main JS File -->
+  <script src="{{url_for('static', filename='assets/js/main.js')}}"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Make Settings tab active if URL has #settings
+      if (window.location.hash === '#settings') {
+        document.getElementById('settings-tab').click();
+      }
+      
+      // Make Activity tab active if URL has #activity
+      if (window.location.hash === '#activity') {
+        document.getElementById('activity-tab').click();
+      }
+      
+      // Edit Profile button click
+      document.getElementById('editProfileBtn').addEventListener('click', function() {
+        document.getElementById('settings-tab').click();
+      });
+    });
+  </script>
+</body>
+
+</html> 

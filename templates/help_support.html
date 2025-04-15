@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Help & Support - Planical</title>
+  
+  <!-- Favicons -->
+  <link href="{{url_for('static', filename='logo1.png')}}" rel="icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/boxicons/css/boxicons.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/remixicon/remixicon.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/aos/aos.css')}}" rel="stylesheet">
+  
+  <!-- Template Main CSS File -->
+  <link href="{{url_for('static', filename='assets/css/style.css')}}" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-color: #0d6efd;
+      --primary-light: #e6f0ff;
+      --primary-dark: #0252c9;
+      --secondary-color: #6c757d;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+      --success-color: #28a745;
+      --info-color: #17a2b8;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: var(--dark-color);
+    }
+    
+    .help-hero {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 80px 0;
+      position: relative;
+    }
+    
+    .help-hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    .support-card {
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      overflow: hidden;
+      height: 100%;
+      border: none;
+    }
+    
+    .support-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-icon {
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: white;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .accordion-button:not(.collapsed) {
+      color: var(--primary-color);
+      background-color: var(--primary-light);
+      font-weight: 600;
+    }
+    
+    .accordion-button:focus {
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+    }
+    
+    .contact-form .form-control {
+      border-radius: 8px;
+      padding: 12px 15px;
+      border: 1px solid #e0e0e0;
+      margin-bottom: 20px;
+    }
+    
+    .contact-form .form-control:focus {
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+      border-color: var(--primary-color);
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+      border-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+    }
+    
+    .support-icon {
+      font-size: 24px;
+      margin-right: 10px;
+      color: var(--primary-color);
+    }
+    
+    .resource-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+    
+    .resource-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+      border-color: var(--primary-light);
+    }
+    
+    .badge-emergency {
+      background-color: #dc3545;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .badge-guide {
+      background-color: #17a2b8;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .badge-tutorial {
+      background-color: #28a745;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .help-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--primary-light);
+      color: var(--primary-color);
+      margin-right: 15px;
+    }
+    
+    .sticky-nav {
+      position: sticky;
+      top: 100px;
+    }
+    
+    .nav-pills .nav-link {
+      border-radius: 8px;
+      padding: 12px 20px;
+      margin-bottom: 10px;
+      color: var(--dark-color);
+      transition: all 0.3s ease;
+    }
+    
+    .nav-pills .nav-link:hover {
+      background-color: #f8f9fa;
+    }
+    
+    .nav-pills .nav-link.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .nav-pills .nav-link i {
+      margin-right: 10px;
+    }
+    
+    .emergency-box {
+      background-color: #ffebee;
+      border: 1px solid #ffcdd2;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .emergency-box h4 {
+      color: #d32f2f;
+      margin-bottom: 15px;
+    }
+    
+    .emergency-contact {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      padding: 15px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .emergency-icon {
+      width: 50px;
+      height: 50px;
+      min-width: 50px;
+      border-radius: 50%;
+      background-color: #d32f2f;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-right: 15px;
+    }
+    
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      padding-top: 30px;
+      height: 0;
+      overflow: hidden;
+      border-radius: 12px;
+      margin-bottom: 30px;
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center justify-content-between">
+      <h1 class="logo"><img src="{{url_for('static', filename='logo.png')}}" alt="" class="src"><a href="/">Planical</a></h1>
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link" href="/">Home</a></li>
+          {% if session.get('user') %}
+          <li><a class="nav-link" href="/profile">Profile</a></li>
+          <li><a class="nav-link active" href="/help-support">Help & Support</a></li>
+          <li><a class="nav-link" href="/logout">Logout</a></li>
+          {% else %}
+          <li><a class="nav-link" href="/login">Login</a></li>
+          <li><a class="nav-link" href="/signup">Sign Up</a></li>
+          {% endif %}
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+    </div>
+  </header><!-- End Header -->
+
+  <!-- ======= Hero Section ======= -->
+  <section class="help-hero">
+    <div class="container text-center" data-aos="fade-up">
+      <h1>Help & Support Center</h1>
+      <p class="lead">Find answers, get assistance, and access resources to improve your mental wellbeing</p>
+      <div class="row justify-content-center mt-4">
+        <div class="col-lg-6">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search for help topics..." id="helpSearchInput">
+            <button class="btn btn-light" type="button" id="helpSearchButton">
+              <i class="bi bi-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section><!-- End Hero -->
+
+  <main id="main" class="py-5">
+    <div class="container">
+      <div class="row">
+        <!-- Left Sidebar Navigation -->
+        <div class="col-lg-3 mb-4">
+          <div class="sticky-nav">
+            <h5 class="mb-3">Quick Navigation</h5>
+            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+              <a class="nav-link active" id="v-pills-emergency-tab" data-bs-toggle="pill" href="#v-pills-emergency" role="tab" aria-controls="v-pills-emergency" aria-selected="true">
+                <i class="bi bi-exclamation-triangle-fill"></i> Emergency Help
+              </a>
+              <a class="nav-link" id="v-pills-faq-tab" data-bs-toggle="pill" href="#v-pills-faq" role="tab" aria-controls="v-pills-faq" aria-selected="false">
+                <i class="bi bi-question-circle-fill"></i> FAQs
+              </a>
+              <a class="nav-link" id="v-pills-guides-tab" data-bs-toggle="pill" href="#v-pills-guides" role="tab" aria-controls="v-pills-guides" aria-selected="false">
+                <i class="bi bi-book-fill"></i> User Guides
+              </a>
+              <a class="nav-link" id="v-pills-videos-tab" data-bs-toggle="pill" href="#v-pills-videos" role="tab" aria-controls="v-pills-videos" aria-selected="false">
+                <i class="bi bi-play-circle-fill"></i> Tutorial Videos
+              </a>
+              <a class="nav-link" id="v-pills-resources-tab" data-bs-toggle="pill" href="#v-pills-resources" role="tab" aria-controls="v-pills-resources" aria-selected="false">
+                <i class="bi bi-journal-medical"></i> Mental Health Resources
+              </a>
+              <a class="nav-link" id="v-pills-contact-tab" data-bs-toggle="pill" href="#v-pills-contact" role="tab" aria-controls="v-pills-contact" aria-selected="false">
+                <i class="bi bi-envelope-fill"></i> Contact Support
+              </a>
+            </div>
+            
+            <div class="mt-4 p-4 bg-light rounded">
+              <h6><i class="bi bi-headset"></i> Need direct assistance?</h6>
+              <p class="small">Our support team is available Monday-Friday, 9am-5pm IST.</p>
+              <a href="#v-pills-contact" class="btn btn-primary btn-sm w-100">Contact Us</a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="col-lg-9">
+          <div class="tab-content" id="v-pills-tabContent">
+            <!-- Emergency Help Section -->
+            <div class="tab-pane fade show active" id="v-pills-emergency" role="tabpanel" aria-labelledby="v-pills-emergency-tab">
+              <div class="emergency-box">
+                <h4><i class="bi bi-exclamation-triangle-fill me-2"></i> Emergency Mental Health Support</h4>
+                <p>If you or someone you know is experiencing a mental health crisis or having thoughts of suicide, please reach out for immediate help:</p>
+                
+                <div class="emergency-contact">
+                  <div class="emergency-icon">
+                    <i class="bi bi-telephone-fill"></i>
+                  </div>
+                  <div>
+                    <h5>National Suicide Prevention Lifeline</h5>
+                    <p class="mb-0">1-800-273-8255 (available 24/7)</p>
+                  </div>
+                </div>
+                
+                <div class="emergency-contact">
+                  <div class="emergency-icon">
+                    <i class="bi bi-chat-fill"></i>
+                  </div>
+                  <div>
+                    <h5>Crisis Text Line</h5>
+                    <p class="mb-0">Text HOME to 741741 (available 24/7)</p>
+                  </div>
+                </div>
+                
+                <div class="emergency-contact">
+                  <div class="emergency-icon" style="background-color: #0d6efd;">
+                    <i class="bi bi-globe"></i>
+                  </div>
+                  <div>
+                    <h5>International Association for Suicide Prevention</h5>
+                    <p class="mb-0"><a href="https://www.iasp.info/resources/Crisis_Centres/" target="_blank">Find a Crisis Center Near You</a></p>
+                  </div>
+                </div>
+                
+                <div class="alert alert-warning mt-3">
+                  <i class="bi bi-info-circle-fill me-2"></i> If there is immediate danger, please call your local emergency services (such as 911 in the US) or go to your nearest emergency room.
+                </div>
+              </div>
+              
+              <h4 class="mb-4">Non-Emergency Mental Health Resources</h4>
+              
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <div class="support-card card">
+                    <div class="card-body">
+                      <div class="card-icon" style="background-color: #0d6efd;">
+                        <i class="bi bi-calendar-check-fill"></i>
+                      </div>
+                      <h5 class="card-title">Find a Therapist</h5>
+                      <p class="card-text">Search for licensed mental health professionals in your area who can provide ongoing support.</p>
+                      <a href="https://www.psychologytoday.com/us/therapists" target="_blank" class="btn btn-outline-primary">Find Therapists</a>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                  <div class="support-card card">
+                    <div class="card-body">
+                      <div class="card-icon" style="background-color: #28a745;">
+                        <i class="bi bi-people-fill"></i>
+                      </div>
+                      <h5 class="card-title">Support Groups</h5>
+                      <p class="card-text">Connect with others who understand what you're going through in a supportive environment.</p>
+                      <a href="https://www.nami.org/Support-Education/Support-Groups" target="_blank" class="btn btn-outline-primary">Find Support Groups</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- FAQs Section -->
+            <div class="tab-pane fade" id="v-pills-faq" role="tabpanel" aria-labelledby="v-pills-faq-tab">
+              <h3 class="mb-4">Frequently Asked Questions</h3>
+              
+              <div class="accordion" id="faqAccordion">
+                <!-- General Questions -->
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                      What is Planical and how can it help me?
+                    </button>
+                  </h2>
+                  <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                      <p>Planical is a comprehensive mental health platform designed to help you manage stress, anxiety, and improve your overall mental wellbeing. Our platform offers various tools and resources including:</p>
+                      <ul>
+                        <li>Stress detection and analysis</li>
+                        <li>Relaxation music and meditation guides</li>
+                        <li>Interactive games for cognitive stimulation</li>
+                        <li>AI-powered chat support for mental health concerns</li>
+                        <li>Educational resources and articles on mental wellness</li>
+                      </ul>
+                      <p>By using these tools regularly, you can develop better mental health habits and find support when you need it.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Account Questions -->
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                      How do I create an account and get started?
+                    </button>
+                  </h2>
+                  <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                      <p>Creating an account with Planical is simple:</p>
+                      <ol>
+                        <li>Click on the "Sign Up" button at the top of the page</li>
+                        <li>Fill in your name, age, email address, and choose a password</li>
+                        <li>Verify your email address by clicking the link sent to your inbox</li>
+                        <li>Log in with your new credentials</li>
+                        <li>Explore the various features and start your mental wellness journey</li>
+                      </ol>
+                      <p>Once you're logged in, we recommend starting with the stress assessment to get personalized recommendations based on your current mental state.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Features Questions -->
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                      How does the stress detection feature work?
+                    </button>
+                  </h2>
+                  <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                      <p>Our stress detection feature uses a scientifically validated questionnaire to assess your current stress levels. Here's how it works:</p>
+                      <ol>
+                        <li>Navigate to the Stress Detection section</li>
+                        <li>Answer a series of questions about your thoughts, feelings, and behaviors</li>
+                        <li>Our algorithm analyzes your responses</li>
+                        <li>You receive an assessment indicating whether you're experiencing normal or high stress levels</li>
+                        <li>Based on your results, we provide personalized recommendations for managing your stress</li>
+                      </ol>
+                      <p>The assessment is not a diagnostic tool, but it can help you understand your stress levels and guide you toward appropriate resources.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Security Questions -->
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingFour">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                      Is my personal data secure and private?
+                    </button>
+                  </h2>
+                  <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                      <p>We take your privacy and data security very seriously at Planical:</p>
+                      <ul>
+                        <li>All personal data is encrypted and stored securely</li>
+                        <li>We use Firebase Authentication to ensure secure login processes</li>
+                        <li>Your assessment results and usage data are only accessible to you</li>
+                        <li>We do not sell or share your personal information with third parties</li>
+                        <li>All communications with our servers are encrypted using HTTPS</li>
+                      </ul>
+                      <p>For more details about how we handle your data, please refer to our Privacy Policy.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Planical AI Questions -->
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingFive">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                      What is Planical AI and how do I use it?
+                    </button>
+                  </h2>
+                  <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                      <p>Planical AI is our conversational assistant designed to provide mental health support and information:</p>
+                      <ul>
+                        <li>Access Planical AI by clicking on the "Planical AI" link in the navigation menu</li>
+                        <li>Type your questions or concerns in the chat interface</li>
+                        <li>Receive compassionate, informative responses based on mental health best practices</li>
+                        <li>Ask about coping strategies, mental health concepts, or get guidance on using Planical features</li>
+                      </ul>
+                      <p>While Planical AI is a helpful resource, it's important to remember that it's not a replacement for professional mental health care. For serious concerns, please consult with a qualified healthcare provider.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Technical Issues -->
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingSix">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                      I'm experiencing technical issues. What should I do?
+                    </button>
+                  </h2>
+                  <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                      <p>If you're experiencing technical issues with Planical, try these troubleshooting steps:</p>
+                      <ol>
+                        <li>Refresh your browser page</li>
+                        <li>Clear your browser cache and cookies</li>
+                        <li>Try using a different browser (Chrome, Firefox, Safari, etc.)</li>
+                        <li>Check your internet connection</li>
+                        <li>Log out and log back in to your account</li>
+                      </ol>
+                      <p>If you're still experiencing issues after trying these steps, please contact our support team through the Contact Support form with details about the problem you're encountering, including any error messages, the device you're using, and the browser version.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- User Guides Section -->
+            <div class="tab-pane fade" id="v-pills-guides" role="tabpanel" aria-labelledby="v-pills-guides-tab">
+              <h3 class="mb-4">User Guides</h3>
+              
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <div class="resource-card">
+                    <span class="badge-guide mb-2">Getting Started</span>
+                    <h5><i class="bi bi-book me-2"></i>New User Guide</h5>
+                    <p>Learn the basics of Planical and how to set up your account for success.</p>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Read Guide</a>
+                  </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                  <div class="resource-card">
+                    <span class="badge-guide mb-2">Feature Guide</span>
+                    <h5><i class="bi bi-activity me-2"></i>Stress Analysis Guide</h5>
+                    <p>Understand how to use and interpret the stress analysis dashboard.</p>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Read Guide</a>
+                  </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                  <div class="resource-card">
+                    <span class="badge-guide mb-2">Feature Guide</span>
+                    <h5><i class="bi bi-music-note-beamed me-2"></i>Relaxation Music Guide</h5>
+                    <p>Learn how to use the music therapy features for stress relief and relaxation.</p>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Read Guide</a>
+                  </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                  <div class="resource-card">
+                    <span class="badge-guide mb-2">Feature Guide</span>
+                    <h5><i class="bi bi-controller me-2"></i>Mental Games & Exercises Guide</h5>
+                    <p>Discover how cognitive games can help improve mental clarity and focus.</p>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Read Guide</a>
+                  </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                  <div class="resource-card">
+                    <span class="badge-guide mb-2">Advanced</span>
+                    <h5><i class="bi bi-robot me-2"></i>Using Planical AI Effectively</h5>
+                    <p>Tips and best practices for getting the most out of our AI assistant.</p>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Read Guide</a>
+                  </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                  <div class="resource-card">
+                    <span class="badge-guide mb-2">Privacy & Security</span>
+                    <h5><i class="bi bi-shield-lock me-2"></i>Protecting Your Data</h5>
+                    <p>Learn how we safeguard your personal information and data.</p>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Read Guide</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Tutorial Videos Section -->
+            <div class="tab-pane fade" id="v-pills-videos" role="tabpanel" aria-labelledby="v-pills-videos-tab">
+              <h3 class="mb-4">Tutorial Videos</h3>
+              
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <div class="video-container">
+                    <iframe width="100%" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                  </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                  <div class="video-container">
+                    <iframe width="100%" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Mental Health Resources Section -->
+            <div class="tab-pane fade" id="v-pills-resources" role="tabpanel" aria-labelledby="v-pills-resources-tab">
+              <h3 class="mb-4">Mental Health Resources</h3>
+              
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <div class="resource-card">
+                    <span class="badge-guide mb-2">Getting Started</span>
+                    <h5><i class="bi bi-book me-2"></i>New User Guide</h5>
+                    <p>Learn the basics of Planical and how to set up your account for success.</p>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Read Guide</a>
+                  </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                  <div class="resource-card">
+                    <span class="badge-guide mb-2">Feature Guide</span>
+                    <h5><i class="bi bi-activity me-2"></i>Stress Analysis Guide</h5>
+                    <p>Understand how to use and interpret the stress analysis dashboard.</p>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Read Guide</a>
+                  </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                  <div class="resource-card">
+                    <span class="badge-guide mb-2">Feature Guide</span>
+                    <h5><i class="bi bi-music-note-beamed me-2"></i>Relaxation Music Guide</h5>
+                    <p>Learn how to use the music therapy features for stress relief and relaxation.</p>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Read Guide</a>
+                  </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                  <div class="resource-card">
+                    <span class="badge-guide mb-2">Feature Guide</span>
+                    <h5><i class="bi bi-controller me-2"></i>Mental Games & Exercises Guide</h5>
+                    <p>Discover how cognitive games can help improve mental clarity and focus.</p>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Read Guide</a>
+                  </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                  <div class="resource-card">
+                    <span class="badge-guide mb-2">Advanced</span>
+                    <h5><i class="bi bi-robot me-2"></i>Using Planical AI Effectively</h5>
+                    <p>Tips and best practices for getting the most out of our AI assistant.</p>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Read Guide</a>
+                  </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                  <div class="resource-card">
+                    <span class="badge-guide mb-2">Privacy & Security</span>
+                    <h5><i class="bi bi-shield-lock me-2"></i>Protecting Your Data</h5>
+                    <p>Learn how we safeguard your personal information and data.</p>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Read Guide</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Contact Support Section -->
+            <div class="tab-pane fade" id="v-pills-contact" role="tabpanel" aria-labelledby="v-pills-contact-tab">
+              <h3 class="mb-4">Contact Support</h3>
+              
+              <form>
+                <div class="mb-3">
+                  <label for="name" class="form-label">Name</label>
+                  <input type="text" class="form-control" id="name">
+                </div>
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input type="email" class="form-control" id="email">
+                </div>
+                <div class="mb-3">
+                  <label for="message" class="form-label">Message</label>
+                  <textarea class="form-control" id="message" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html> 

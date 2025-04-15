@@ -4,130 +4,538 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
-    <!-- <link rel="stylesheet" href="./style.css"> -->
-    <title>User Login</title>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Sign Up - Planical</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <link rel="icon" href="https://source.unsplash.com/1600x900/?healthcare">
+    <link rel="icon" href="https://source.unsplash.com/100x100/?healthcare">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <style>
+    :root {
+        --primary-color: #0d6efd;
+        --primary-dark: #0b5ed7;
+        --secondary-color: #9ca3af;
+        --text-color: #f3f4f6;
+        --bg-color: #111827;
+        --card-bg: #1f2937;
+        --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        --success-color: #0d6efd;
+        --danger-color: #ef4444;
+        --animation-time: 0.3s;
+        --font-primary: 'Poppins', sans-serif;
+        --font-secondary: 'Poppins', sans-serif;
+        --font-weight-light: 300;
+        --font-weight-regular: 400;
+        --font-weight-medium: 500;
+        --font-weight-semibold: 600;
+        --font-weight-bold: 700;
+        --input-bg: #374151;
+        --input-border: #4b5563;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
     body {
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
+        min-height: 100vh;
         margin: 0;
-        font-family: 'Open Sans', sans-serif;
-        background: #222;
-        background-image: url('https://source.unsplash.com/1600x900/?login');
-        font-size: 120%;
+        font-family: var(--font-primary);
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.8)), url('https://source.unsplash.com/1600x900/?dark,tech');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        color: var(--text-color);
     }
 
-    .card {
-        background: #000000d0;
-        color: white;
-        padding: 2em;
-        border-radius: 30px;
+    .auth-container {
+        display: flex;
         width: 100%;
-        max-width: 500px;
-        margin: 0.75em;
+        max-width: 900px;
+        min-height: 550px;
+        height: auto;
+        background-color: var(--card-bg);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+        border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .search {
+    .auth-image {
+        flex: 1;
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.7), rgba(13, 110, 253, 0.2)), url('https://source.unsplash.com/600x900/?tech,dark');
+        background-size: cover;
+        background-position: center;
         display: flex;
-        align-items: center;
-        justify-content: center;
+        align-items: flex-end;
+        padding: 2rem;
+        position: relative;
     }
 
-    .butn {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 10px;
-        align-content: center;
+    .auth-image::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 50%);
     }
 
-    button {
-        padding: 10px;
-        background-color: white;
-        border: none;
-        color: black;
-        cursor: pointer;
-
-        margin: 10px;
-        padding: 15px 32px;
-        border-radius: 10%;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-    }
-
-    input.search-bar {
-        border: none;
-        outline: none;
-        /* padding: 0.4em; */
-        border-radius: 15px;
-        background: #7c7c7c2b;
+    .auth-image-text {
+        position: relative;
         color: white;
-        font-family: inherit;
-        font-size: 95%;
-        width: calc(100% - 100px);
+        z-index: 2;
     }
 
-    button:hover {
-        background: whitesmoke;
+    .auth-image h2 {
+        font-size: 2rem;
+        font-weight: var(--font-weight-bold);
+        font-family: var(--font-secondary);
+        margin-bottom: 1rem;
     }
 
+    .auth-image p {
+        font-size: 1rem;
+        opacity: 0.9;
+    }
 
-    .flex {
+    .auth-form {
+        flex: 1;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow-y: auto;
+        background-color: var(--card-bg);
+    }
+
+    .auth-logo {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .auth-logo img {
+        width: 40px;
+        height: 40px;
+        margin-right: 10px;
+    }
+
+    .auth-logo h1 {
+        font-size: 1.5rem;
+        font-weight: var(--font-weight-bold);
+        font-family: var(--font-secondary);
+        color: white;
+        margin: 0;
+    }
+
+    .auth-welcome {
+        margin-bottom: 0.7rem;
+    }
+
+    .auth-welcome h2 {
+        font-size: 1.5rem;
+        font-weight: var(--font-weight-semibold);
+        font-family: var(--font-secondary);
+        margin-bottom: 0.3rem;
+        color: var(--text-color);
+    }
+
+    .auth-welcome p {
+        color: var(--secondary-color);
+        font-weight: var(--font-weight-regular);
+        font-size: 0.9rem;
+    }
+
+    .form-group {
+        margin-bottom: 0.6rem;
+        position: relative;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 0.9rem;
+        font-weight: var(--font-weight-medium);
+        margin-bottom: 0.5rem;
+        color: var(--text-color);
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        font-size: 1rem;
+        background-color: var(--input-bg);
+        color: var(--text-color);
+        border: 1px solid var(--input-border);
+        border-radius: 8px;
+        transition: all var(--animation-time);
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+    }
+
+    .form-control::placeholder {
+        color: var(--secondary-color);
+    }
+
+    .form-icon {
+        position: absolute;
+        top: 42px;
+        right: 15px;
+        color: var(--secondary-color);
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 12px 15px;
+        font-size: 1rem;
+        font-weight: var(--font-weight-medium);
+        font-family: var(--font-secondary);
+        text-align: center;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all var(--animation-time);
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+        width: 100%;
+    }
+
+    .btn-primary:hover {
+        background-color: #000000;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .auth-separator {
+        display: flex;
+        align-items: center;
+        margin: 0.7rem 0;
+    }
+
+    .auth-separator hr {
+        flex: 1;
+        border: none;
+        height: 1px;
+        background-color: var(--input-border);
+    }
+
+    .auth-separator span {
+        padding: 0 10px;
+        font-size: 0.8rem;
+        color: var(--secondary-color);
+    }
+
+    .alert {
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .alert-success {
+        background-color: rgba(74, 222, 128, 0.1);
+        border: 1px solid rgba(74, 222, 128, 0.2);
+        color: var(--success-color);
+    }
+
+    .alert-danger {
+        background-color: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        color: var(--danger-color);
+    }
+
+    .shake {
+        animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes shake {
+        10%, 90% { transform: translate3d(-1px, 0, 0); }
+        20%, 80% { transform: translate3d(2px, 0, 0); }
+        30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+        40%, 60% { transform: translate3d(4px, 0, 0); }
+    }
+
+    .form-check {
         display: flex;
         align-items: center;
     }
 
-    .description {
-        text-transform: capitalize;
-        margin-left: 8px;
+    .form-check-input {
+        margin-top: 0;
+        margin-right: 4px;
+    }
+
+    .form-check-label {
+        font-size: 0.75rem;
+        margin-bottom: 0;
+        color: var(--text-color);
+    }
+
+    .text-center {
+        font-size: 0.85rem;
+    }
+
+    .account-link {
+        font-size: 1.1rem;
+        font-weight: var(--font-weight-medium);
+        margin-top: 1rem;
+        color: var(--text-color);
+    }
+
+    .account-link a {
+        color: var(--primary-color);
+        font-weight: var(--font-weight-semibold);
+        text-decoration: none;
+    }
+
+    .account-link a:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+        .auth-container {
+            flex-direction: column;
+            height: auto;
+            max-width: 500px;
+            margin: 0.5rem;
+        }
+
+        .auth-image {
+            display: none;
+        }
+
+        .auth-form {
+            padding: 1.25rem;
+        }
+        
+        body {
+            align-items: flex-start;
+            padding: 0.5rem 0;
+        }
     }
 </style>
 
 <body>
-
-    {% include "message.html" %}
-    <div class="card login">
-        <div class="butn" style="padding: 0; margin: 0;">
-            <h3>Sign Up ! </h3>
+    <div class="auth-container">
+        <div class="auth-image">
+            <div class="auth-image-text">
+                <h2>Join Planical</h2>
+                <p>Start your journey to better mental health and wellness today.</p>
+            </div>
         </div>
-
-        <form action="/signup" method="post">
-
-            <div class="form-group">
-                <input type="text" class="form-control mt-2" placeholder="Enter  Username" name="usn" required>
-              </div>
-    
-              <div class="form-group">
-                <input type="password" class="form-control mt-2" placeholder="Enter  Password" name="pas" required>
-              </div>
-    
-              
-            <button type="submit" class="btn btn-info" style="
-            margin: 0 auto;
-            display: block;">SignIn</button>
-
-
-        </form>
-        <a class="text-light" href="/login">Click Here to Login </a>
+        <div class="auth-form">
+            <div class="auth-logo">
+                <img src="{{ url_for('static', filename='logo1.png') }}" alt="Planical Logo">
+                <h1>Planical</h1>
+            </div>
+            
+            <div class="auth-welcome">
+                <h2>Create account</h2>
+                <p>Enter your information to sign up</p>
+            </div>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form id="signupForm" method="POST">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter your full name" required>
+                    <i class="fas fa-user form-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" class="form-control" id="age" name="age" min="13" max="120" placeholder="Enter your age" required>
+                    <i class="fas fa-birthday-cake form-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                    <i class="fas fa-envelope form-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Create a password" required>
+                    <i class="fas fa-lock form-icon"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                    <i class="fas fa-lock form-icon"></i>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Create Account</button>
+                
+                <div class="auth-separator">
+                    <hr>
+                    <span>OR</span>
+                    <hr>
+                </div>
+                
+                <p class="text-center account-link">Already have an account? <a href="{{ url_for('login') }}">Sign in</a></p>
+            </form>
+        </div>
     </div>
-</body>
-<script src="./script.js"></script>
 
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = JSON.parse('{{ firebase_config|tojson|safe }}');
+        if (!firebase.apps || !firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        
+        // Initialize Firestore
+        const db = firebase.firestore();
+        
+        // Password strength indicator
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            // You can add password strength visualization here
+        });
+        
+        // Form validation with visual feedback
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const age = document.getElementById('age').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Reset any existing visual feedback
+            const formControls = document.querySelectorAll('.form-control');
+            formControls.forEach(input => {
+                input.classList.remove('shake');
+            });
+            
+            // Validate inputs
+            let isValid = true;
+            
+            if (!name) {
+                document.getElementById('name').classList.add('shake');
+                isValid = false;
+            }
+            
+            if (!age || age < 13 || age > 120) {
+                document.getElementById('age').classList.add('shake');
+                isValid = false;
+            }
+            
+            if (!email) {
+                document.getElementById('email').classList.add('shake');
+                isValid = false;
+            }
+            
+            if (!password) {
+                document.getElementById('password').classList.add('shake');
+                isValid = false;
+            }
+            
+            if (password !== confirmPassword) {
+                document.getElementById('confirmPassword').classList.add('shake');
+                alert("Passwords don't match!");
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                return;
+            }
+            
+            // If validation passes, proceed with signup
+            firebase.auth().createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    // Send email verification without custom URL
+                    return user.sendEmailVerification()
+                        .then(() => {
+                            // Store user data in Firestore
+                            return db.collection('users').doc(user.uid).set({
+                                name: name,
+                                age: parseInt(age),
+                                email: email,
+                                emailVerified: false,
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                        });
+                })
+                .then(() => {
+                    // Show success message and redirect
+                    const successDiv = document.createElement('div');
+                    successDiv.className = 'alert alert-success';
+                    successDiv.textContent = 'Account created! Please check your email for verification.';
+                    
+                    const form = document.getElementById('signupForm');
+                    form.insertBefore(successDiv, form.firstChild);
+                    
+                    // Redirect after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = "{{ url_for('verify_email') }}";
+                    }, 2000);
+                })
+                .catch((error) => {
+                    // Handle errors
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'alert alert-danger';
+                    errorDiv.textContent = error.message;
+                    
+                    const form = document.getElementById('signupForm');
+                    form.insertBefore(errorDiv, form.firstChild);
+                    
+                    setTimeout(() => {
+                        errorDiv.style.opacity = '0';
+                        setTimeout(() => {
+                            errorDiv.remove();
+                        }, 300);
+                    }, 3000);
+                });
+        });
+        
+        // Remove shake animation after it completes
+        const inputs = document.querySelectorAll('.form-control');
+        inputs.forEach(input => {
+            input.addEventListener('animationend', function() {
+                this.classList.remove('shake');
+            });
+        });
+    </script>
+</body>
 
 </html>

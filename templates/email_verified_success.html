@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <title>Email Verified - Planical</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="icon" href="https://source.unsplash.com/1600x900/?healthcare">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: 'Open Sans', sans-serif;
+        background: #222;
+        background-image: url('https://source.unsplash.com/1600x900/?healthcare');
+        font-size: 120%;
+    }
+
+    .container {
+        background: #000000d0;
+        color: white;
+        padding: 2em;
+        border-radius: 30px;
+        width: 100%;
+        max-width: 500px;
+        margin: 0.75em;
+        text-align: center;
+    }
+
+    h2 {
+        margin-bottom: 1em;
+        color: #4CAF50;
+    }
+
+    p {
+        margin-bottom: 1.5em;
+    }
+
+    .success-icon {
+        font-size: 64px;
+        color: #4CAF50;
+        margin-bottom: 0.5em;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        margin-top: 1em;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: #45a049;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .countdown {
+        font-size: 1.2em;
+        margin-top: 1.5em;
+        color: #4CAF50;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <div class="success-icon">✓</div>
+        <h2>Email Successfully Verified!</h2>
+        <p>Your email address has been successfully verified.</p>
+        <p>You can now sign in to your account with full access to all features.</p>
+        <a href="{{ url_for('login') }}" class="btn">Go to Login</a>
+        <div class="countdown">Redirecting to login in <span id="timer">5</span> seconds...</div>
+    </div>
+
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {{ firebase_config|tojson|safe }};
+        firebase.initializeApp(firebaseConfig);
+        
+        // Process the verification
+        function processVerification() {
+            const actionCode = new URLSearchParams(window.location.search).get('oobCode');
+            
+            if (actionCode) {
+                firebase.auth().applyActionCode(actionCode)
+                    .then(() => {
+                        // Update Firestore if user is logged in
+                        const user = firebase.auth().currentUser;
+                        if (user) {
+                            firebase.firestore().collection('users').doc(user.uid).update({
+                                emailVerified: true
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error verifying email:", error);
+                    });
+            }
+        }
+        
+        // Redirect countdown
+        let timeLeft = 5;
+        const timerElement = document.getElementById('timer');
+        
+        const countdown = setInterval(() => {
+            timeLeft--;
+            timerElement.textContent = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                window.location.href = "{{ url_for('login') }}";
+            }
+        }, 1000);
+        
+        // Process verification when page loads
+        processVerification();
+    </script>
+</body>
+
+</html> 

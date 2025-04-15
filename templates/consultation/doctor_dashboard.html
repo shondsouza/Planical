@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Consultation - Doctor Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Socket.IO client -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .dashboard-container {
+            margin-top: 20px;
+        }
+        .status-indicator {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        .status-available {
+            background-color: #198754;
+        }
+        .status-busy {
+            background-color: #dc3545;
+        }
+        .status-offline {
+            background-color: #6c757d;
+        }
+        .status-card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .consultation-card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .consultation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .consultation-time {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .consultation-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .toggle-slider {
+            background-color: #198754;
+        }
+        input:focus + .toggle-slider {
+            box-shadow: 0 0 1px #198754;
+        }
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            max-width: 350px;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease-in-out;
+        }
+        .notification.show {
+            transform: translateX(0);
+        }
+        .notification-info {
+            background-color: #0dcaf0;
+            color: white;
+        }
+        .notification-success {
+            background-color: #198754;
+            color: white;
+        }
+        .notification-error {
+            background-color: #dc3545;
+            color: white;
+        }
+        .notification-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .consultation-request {
+            background-color: #f8f9fa;
+            border-left: 5px solid #0dcaf0;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(13, 202, 240, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(13, 202, 240, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(13, 202, 240, 0);
+            }
+        }
+        .no-requests {
+            text-align: center;
+            color: #6c757d;
+            margin: 50px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h1 class="mb-0">Doctor Dashboard</h1>
+                    <a href="/" class="btn btn-outline-secondary">
+                        <i class="bi bi-house-fill"></i> Home
+                    </a>
+                </div>
+                <hr>
+            </div>
+        </div>
+
+        <div class="row dashboard-container">
+            <div class="col-md-4">
+                <div class="status-card">
+                    <h3>Your Status</h3>
+                    <div class="d-flex align-items-center mt-3">
+                        <div class="status-indicator status-available" id="statusIndicator"></div>
+                        <span class="ms-1" id="statusText">Available</span>
+                        <div class="ms-auto">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="availabilityToggle" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <p class="text-muted mt-3 mb-0 small">
+                        <i class="bi bi-info-circle-fill me-1"></i>
+                        Toggle switch to change your availability for consultations.
+                    </p>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Quick Tips</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Ensure your camera and microphone are working
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Maintain a professional environment
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Use headphones for better audio quality
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Have good lighting for clear video
+                            </li>
+                            <li>
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Keep patient information confidential
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Doctor Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Name:</strong> Dr. {{ session.get('user', {}).get('name', 'Doctor') }}</p>
+                        <p><strong>ID:</strong> {{ session.get('user', {}).get('uid', 'Not Available') }}</p>
+                        <p><strong>Specialization:</strong> Mental Health Specialist</p>
+                    </div>
+                </div>
+
+                <!-- Scheduled Consultations -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Scheduled Consultations</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="scheduledConsultationsContainer">
+                            <p class="text-center text-muted" id="noScheduledConsultations">No scheduled consultations</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <h3>Consultation Requests</h3>
+                <div id="consultationRequests">
+                    <!-- Consultation requests will be dynamically inserted here -->
+                    <div class="no-requests" id="noRequestsMessage">
+                        <i class="bi bi-hourglass"></i>
+                        <p>No pending consultation requests</p>
+                        <p class="small text-muted">Requests will appear here when patients need your assistance</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification element -->
+    <div class="notification" id="notification">
+        <div id="notificationMessage"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userId = "{{ session.get('user', {}).get('uid', '') }}";
+            const userName = "{{ session.get('user', {}).get('name', 'Doctor') }}";
+            
+            // Initialize Socket.IO
+            const socket = io();
+            
+            // Initialize toggle button event
+            const availabilityToggle = document.getElementById('availabilityToggle');
+            const statusIndicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
+            
+            // Initialize Firebase
+            const firebaseConfig = {
+                apiKey: "{{ firebase_config.apiKey }}",
+                authDomain: "{{ firebase_config.authDomain }}",
+                projectId: "{{ firebase_config.projectId }}",
+                storageBucket: "{{ firebase_config.storageBucket }}",
+                messagingSenderId: "{{ firebase_config.messagingSenderId }}",
+                appId: "{{ firebase_config.appId }}"
+            };
+            
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+            
+            // Function to show notification
+            function showNotification(message, type) {
+                const notification = document.createElement('div');
+                notification.className = `alert alert-${type} alert-dismissible fade show`;
+                notification.innerHTML = `
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                document.getElementById('notifications').appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, 5000);
+            }
+            
+            // Update availability status
+            availabilityToggle.addEventListener('change', function() {
+                const isAvailable = this.checked;
+                
+                // Update UI
+                statusIndicator.className = `status-indicator ${isAvailable ? 'status-available' : 'status-busy'}`;
+                statusText.textContent = isAvailable ? 'Available' : 'Busy';
+                
+                // Emit status update to server
+                socket.emit('update-doctor-status', {
+                    userId: userId,
+                    userName: userName,
+                    isAvailable: isAvailable
+                });
+                
+                // Show notification
+                showNotification(`You are now ${isAvailable ? 'available' : 'not available'} for consultations`, isAvailable ? 'success' : 'warning');
+            });
+            
+            // Join doctor room on page load
+            socket.emit('join-doctor-room', {
+                userId: userId,
+                userName: userName,
+                isAvailable: availabilityToggle.checked
+            });
+            
+            // Load pending consultation requests
+            loadPendingConsultations();
+            
+            // Load scheduled consultations
+            loadScheduledConsultations();
+            
+            function loadPendingConsultations() {
+                // Query Firestore for pending consultation requests for this doctor
+                db.collection('consultations')
+                    .where('doctorId', '==', userId)
+                    .where('status', '==', 'pending')
+                    .orderBy('createdAt', 'desc')
+                    .get()
+                    .then((querySnapshot) => {
+                        const pendingContainer = document.getElementById('pendingConsultationsContainer');
+                        const noPendingMessage = document.getElementById('noPendingConsultations');
+                        
+                        if (querySnapshot.empty) {
+                            noPendingMessage.style.display = 'block';
+                            return;
+                        }
+                        
+                        noPendingMessage.style.display = 'none';
+                        
+                        // Clear existing content
+                        const existingRequests = pendingContainer.querySelectorAll('.consultation-request');
+                        existingRequests.forEach(elem => elem.remove());
+                        
+                        // Add each consultation request
+                        querySnapshot.forEach((doc) => {
+                            const data = doc.data();
+                            const consultationId = doc.id;
+                            
+                            const requestElement = document.createElement('div');
+                            requestElement.className = 'consultation-request mb-3';
+                            
+                            // Format time slots
+                            const timeSlotLabels = {
+                                'today-morning': 'Today Morning',
+                                'today-afternoon': 'Today Afternoon',
+                                'today-evening': 'Today Evening',
+                                'tomorrow-morning': 'Tomorrow Morning',
+                                'tomorrow-afternoon': 'Tomorrow Afternoon',
+                                'tomorrow-evening': 'Tomorrow Evening'
+                            };
+                            const formattedTimeSlots = data.timeSlots.map(slot => timeSlotLabels[slot] || slot).join(', ');
+                            
+                            // Create urgency badge
+                            let urgencyBadge = '';
+                            if (data.urgency === 'high') {
+                                urgencyBadge = '<span class="badge bg-danger me-1">Urgent</span>';
+                            } else if (data.urgency === 'medium') {
+                                urgencyBadge = '<span class="badge bg-warning text-dark me-1">Medium</span>';
+                            } else {
+                                urgencyBadge = '<span class="badge bg-info me-1">Low</span>';
+                            }
+                            
+                            requestElement.innerHTML = `
+                                <div class="d-flex align-items-center">
+                                    <div>
+                                        <h6>${data.patientName} ${urgencyBadge}</h6>
+                                        <p class="mb-1 small"><strong>Symptoms:</strong> ${data.symptoms}</p>
+                                        <p class="mb-1 small"><strong>Available:</strong> ${formattedTimeSlots}</p>
+                                    </div>
+                                    <div class="ms-auto">
+                                        <a href="/doctor-view-request/${consultationId}" class="btn btn-sm btn-primary">View</a>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            pendingContainer.appendChild(requestElement);
+                        });
+                    })
+                    .catch((error) => {
+                        console.error("Error getting pending consultations: ", error);
+                        showNotification('Error loading pending consultation requests', 'danger');
+                    });
+            }
+            
+            function loadScheduledConsultations() {
+                // Query Firestore for scheduled consultations for this doctor
+                db.collection('consultations')
+                    .where('doctorId', '==', userId)
+                    .where('status', '==', 'accepted')
+                    .where('scheduled_time', '!=', null)
+                    .orderBy('scheduled_time', 'asc')
+                    .get()
+                    .then((querySnapshot) => {
+                        const scheduledContainer = document.getElementById('scheduledConsultationsContainer');
+                        const noScheduledMessage = document.getElementById('noScheduledConsultations');
+                        
+                        if (querySnapshot.empty) {
+                            noScheduledMessage.style.display = 'block';
+                            return;
+                        }
+                        
+                        noScheduledMessage.style.display = 'none';
+                        
+                        // Clear existing content
+                        const existingItems = scheduledContainer.querySelectorAll('.scheduled-consultation');
+                        existingItems.forEach(elem => elem.remove());
+                        
+                        // Add each scheduled consultation
+                        querySnapshot.forEach((doc) => {
+                            const data = doc.data();
+                            const consultationId = doc.id;
+                            
+                            const scheduledElement = document.createElement('div');
+                            scheduledElement.className = 'scheduled-consultation border-bottom py-3';
+                            
+                            // Format scheduled time
+                            let scheduledTimeDisplay = 'Time not set';
+                            if (data.scheduled_time) {
+                                const scheduledDate = new Date(data.scheduled_time);
+                                const formattedDate = scheduledDate.toLocaleDateString();
+                                const formattedTime = scheduledDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                                scheduledTimeDisplay = `${formattedDate} at ${formattedTime}`;
+                            }
+                            
+                            scheduledElement.innerHTML = `
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">${data.patientName}</h6>
+                                        <p class="mb-1 small text-muted"><i class="bi bi-clock me-1"></i>${scheduledTimeDisplay}</p>
+                                    </div>
+                                    <div>
+                                        <a href="/doctor-video-call/${consultationId}" class="btn btn-sm btn-success">
+                                            <i class="bi bi-camera-video-fill me-1"></i>Start
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-secondary" onclick="rescheduleConsultation('${consultationId}', '${data.patientName}')">
+                                            <i class="bi bi-calendar me-1"></i>Reschedule
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            scheduledContainer.appendChild(scheduledElement);
+                        });
+                    })
+                    .catch((error) => {
+                        console.error("Error getting scheduled consultations: ", error);
+                        showNotification('Error loading scheduled consultations', 'danger');
+                    });
+            }
+            
+            // Function to reschedule a consultation (to be implemented)
+            window.rescheduleConsultation = function(consultationId, patientName) {
+                alert(`Reschedule consultation with ${patientName}`);
+                // Implement reschedule functionality here
+            };
+            
+            // Set up Socket.IO event listeners
+            socket.on('new-consultation-request', function(data) {
+                // Reload pending consultations when a new request is received
+                loadPendingConsultations();
+                
+                // Show notification
+                showNotification(`New consultation request from ${data.patientName}`, 'info');
+                
+                // Play sound notification if available
+                try {
+                    const audio = new Audio('{{ url_for("static", filename="assets/sounds/notification.mp3") }}');
+                    audio.play();
+                } catch (e) {
+                    console.error('Could not play notification sound:', e);
+                }
+            });
+            
+            // Refresh data periodically
+            setInterval(loadPendingConsultations, 60000); // Every minute
+            setInterval(loadScheduledConsultations, 60000); // Every minute
+        });
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

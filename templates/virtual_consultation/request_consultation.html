@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Request Consultation - Planical</title>
+  
+  <!-- Favicons -->
+  <link href="{{url_for('static', filename='logo1.png')}}" rel="icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
+  
+  <!-- Main CSS File -->
+  <link href="{{url_for('static', filename='assets/css/style.css')}}" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f8fa;
+      padding-top: 70px;
+    }
+    
+    .consultation-header {
+      background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+      color: white;
+      padding: 3rem 0;
+      margin-bottom: 2rem;
+      border-radius: 0 0 20px 20px;
+    }
+    
+    .card {
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+    
+    .card-header {
+      background-color: #fff;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      padding: 1.25rem 1.5rem;
+      font-weight: 600;
+    }
+    
+    .doctor-card {
+      display: flex;
+      align-items: center;
+      padding: 1.5rem;
+      background-color: #f8f9fa;
+      border-radius: 15px;
+      margin-bottom: 1.5rem;
+    }
+    
+    .doctor-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: #0d6efd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: white;
+      margin-right: 1.5rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    
+    .doctor-info h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .doctor-info p {
+      color: #6c757d;
+      margin-bottom: 0.75rem;
+    }
+    
+    .form-label {
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+    
+    .form-text {
+      font-size: 0.875rem;
+      color: #6c757d;
+    }
+    
+    .submit-button {
+      background-color: #0d6efd;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-top: 1rem;
+    }
+    
+    .submit-button:hover {
+      background-color: #0a58ca;
+      transform: translateY(-2px);
+    }
+    
+    .waiting-container {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+    }
+    
+    .waiting-icon {
+      font-size: 4rem;
+      color: #0d6efd;
+      margin-bottom: 1.5rem;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    
+    .time-slot {
+      cursor: pointer;
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
+      transition: all 0.2s ease;
+    }
+    
+    .time-slot:hover {
+      border-color: #0d6efd;
+      background-color: #f0f7ff;
+    }
+    
+    .time-slot.selected {
+      border-color: #0d6efd;
+      background-color: #e7f1ff;
+    }
+    
+    .time-slot input[type="checkbox"] {
+      display: none;
+    }
+    
+    /* Add notification styling */
+    .notification {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1050;
+      max-width: 350px;
+      display: none;
+    }
+
+    /* Fix for textarea interaction issues */
+    textarea.form-control {
+      z-index: 10; /* Ensure it's above any potential overlay */
+      position: relative; /* Establish stacking context */
+      pointer-events: auto !important; /* Force pointer events to work */
+      opacity: 1 !important; /* Ensure it's fully visible */
+      background-color: #fff; /* Ensure background is visible */
+    }
+
+    /* Make sure clickable elements work properly */
+    .card, .form-check, button, input, select, textarea {
+      pointer-events: auto !important;
+    }
+    
+    /* Ensure no overlays by accident */
+    .overlay-fix {
+      pointer-events: none !important;
+      display: none !important;
+    }
+
+    /* Debug highlight for focus */
+    textarea.form-control:focus {
+      border: 2px solid #0d6efd !important;
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center justify-content-between">
+      <h1 class="logo"><img src="{{url_for('static', filename='logo.png')}}" alt="" class="src"><a href="/">Planical</a></h1>
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link" href="/">Home</a></li>
+          <li><a class="nav-link active" href="/virtual-consultation">Video Consultation</a></li>
+          <li><a class="nav-link" href="/profile">Profile</a></li>
+          <li><a class="nav-link" href="/logout">Logout</a></li>
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+    </div>
+  </header><!-- End Header -->
+
+  <!-- ======= Consultation Header ======= -->
+  <section class="consultation-header">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8">
+          <h1>Request Consultation</h1>
+          <p class="mb-0">Fill out the form below to request a consultation with Dr. {{ doctor_name }}</p>
+        </div>
+        <div class="col-lg-4 d-flex justify-content-end align-items-center">
+          <a href="/virtual-consultation" class="btn btn-outline-light">
+            <i class="bi bi-arrow-left"></i> Back to Doctors
+          </a>
+        </div>
+      </div>
+    </div>
+  </section><!-- End Consultation Header -->
+
+  <!-- Alert Container - For displaying system messages -->
+  <div id="alertContainer" class="container mt-3" style="display: none;">
+    <div class="alert alert-dismissible fade show" role="alert">
+      <span id="alertMessage"></span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  </div>
+
+  <main id="main">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8">
+          <!-- Doctor Information -->
+          <div class="doctor-card">
+            <div class="doctor-avatar">
+              {{ doctor_name[0] if doctor_name else 'D' }}
+            </div>
+            <div class="doctor-info flex-grow-1">
+              <h3>Dr. {{ doctor_name }}</h3>
+              <p><i class="bi bi-briefcase-fill me-2"></i>{{ doctor_specialization if doctor_specialization else 'Mental Health Specialist' }}</p>
+              <p><i class="bi bi-star-fill me-2 text-warning"></i>Experienced Doctor</p>
+            </div>
+          </div>
+          
+          <!-- Consultation Request Form -->
+          <div class="card" id="request-form-container">
+            <div class="card-header">
+              <i class="bi bi-clipboard-plus me-2"></i>Consultation Request Form
+            </div>
+            <div class="card-body">
+              <form id="consultationRequestForm" class="request-form" onsubmit="return false;">
+                <input type="hidden" id="doctorId" value="{{ doctor_id }}">
+                
+                <div class="mb-4">
+                  <label for="symptoms" class="form-label">What symptoms are you experiencing?</label>
+                  <textarea class="form-control" id="symptoms" rows="4" placeholder="Please describe your symptoms in detail..." required onclick="logTextareaClick(event)" oninput="logTextareaInput(event)"></textarea>
+                  <div class="form-text">This information helps the doctor prepare for your consultation.</div>
+                  <!-- Debug message for symptoms input -->
+                  <div class="text-danger mt-1" id="symptomsDebug"></div>
+                  
+                  <!-- Add immediate fallback solution -->
+                  <div class="mt-2 p-2 bg-light border rounded">
+                    <p class="mb-1 text-danger fw-bold">If you can't type in the box above, try typing here instead:</p>
+                    <input type="text" class="form-control mb-2" id="symptoms_fallback" placeholder="Type your symptoms here instead" 
+                           oninput="syncToTextarea(this.value)">
+                    <button type="button" class="btn btn-sm btn-primary" onclick="appendToSymptoms()">Add Line</button>
+                    <div class="form-text">As you type here, your text will appear in the main symptoms box.</div>
+                  </div>
+                </div>
+                
+                <div class="mb-4">
+                  <label class="form-label">Preferred Time Slots</label>
+                  <p class="form-text mb-2">Select one or more time slots when you're available for the consultation:</p>
+                  
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h6 class="mb-2">Today</h6>
+                      <div class="time-slot">
+                        <input type="checkbox" id="slot1" name="timeSlots" value="today-morning" style="display: inline-block; margin-right: 8px;">
+                        <label for="slot1" class="d-block mb-0">Morning (9 AM - 12 PM)</label>
+                      </div>
+                      <div class="time-slot">
+                        <input type="checkbox" id="slot2" name="timeSlots" value="today-afternoon" style="display: inline-block; margin-right: 8px;">
+                        <label for="slot2" class="d-block mb-0">Afternoon (1 PM - 5 PM)</label>
+                      </div>
+                      <div class="time-slot">
+                        <input type="checkbox" id="slot3" name="timeSlots" value="today-evening" style="display: inline-block; margin-right: 8px;">
+                        <label for="slot3" class="d-block mb-0">Evening (6 PM - 9 PM)</label>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <h6 class="mb-2">Tomorrow</h6>
+                      <div class="time-slot">
+                        <input type="checkbox" id="slot4" name="timeSlots" value="tomorrow-morning" style="display: inline-block; margin-right: 8px;">
+                        <label for="slot4" class="d-block mb-0">Morning (9 AM - 12 PM)</label>
+                      </div>
+                      <div class="time-slot">
+                        <input type="checkbox" id="slot5" name="timeSlots" value="tomorrow-afternoon" style="display: inline-block; margin-right: 8px;">
+                        <label for="slot5" class="d-block mb-0">Afternoon (1 PM - 5 PM)</label>
+                      </div>
+                      <div class="time-slot">
+                        <input type="checkbox" id="slot6" name="timeSlots" value="tomorrow-evening" style="display: inline-block; margin-right: 8px;">
+                        <label for="slot6" class="d-block mb-0">Evening (6 PM - 9 PM)</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="mb-4">
+                  <label for="urgency" class="form-label">How urgent is your consultation?</label>
+                  <select class="form-select" id="urgency" required>
+                    <option value="">Select urgency level</option>
+                    <option value="low">Not urgent (can wait several days)</option>
+                    <option value="medium">Somewhat urgent (would like to consult within 24 hours)</option>
+                    <option value="high">Urgent (need to consult as soon as possible)</option>
+                  </select>
+                </div>
+                
+                <div class="mb-4">
+                  <label class="form-label">Consultation Type</label>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="consultationType" id="typeVideo" value="video" checked>
+                    <label class="form-check-label" for="typeVideo">
+                      <i class="bi bi-camera-video me-2"></i>Video Call
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="consultationType" id="typeAudio" value="audio">
+                    <label class="form-check-label" for="typeAudio">
+                      <i class="bi bi-telephone me-2"></i>Audio Only
+                    </label>
+                  </div>
+                </div>
+                
+                <div class="mb-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="availability" checked>
+                    <label class="form-check-label" for="availability">
+                      I'm available immediately for a consultation if the doctor is free
+                    </label>
+                  </div>
+                </div>
+                
+                <button type="button" class="submit-button" onclick="submitFormDirectly()">
+                  <i class="bi bi-send me-2"></i>Submit Consultation Request
+                </button>
+                
+                <!-- Debug button with more visible styling -->
+                <button type="button" class="btn btn-warning mt-3 w-100" onclick="simpleDebug()">
+                  <strong>Click Here to Debug Form Submission</strong>
+                </button>
+                
+                <!-- Add direct access to alternative form -->
+                <button type="button" class="btn btn-info mt-3 w-100" onclick="showAlternativeForm()">
+                  <strong>Having trouble? Click here to use alternative form</strong>
+                </button>
+                
+                <!-- Debug section -->
+                <div class="mt-3 p-3 bg-light border rounded">
+                  <h5>Debug Information</h5>
+                  <p><strong>Firebase API Key:</strong> {{ firebase_config.apiKey }}</p>
+                  <p><strong>Firebase Project ID:</strong> {{ firebase_config.projectId }}</p>
+                  <p><strong>User ID:</strong> {{ user_id }}</p>
+                  <p><strong>Doctor ID:</strong> {{ doctor_id }}</p>
+                </div>
+              </form>
+            </div>
+          </div>
+          
+          <!-- Waiting for Doctor Card (initially hidden) -->
+          <div class="card waiting-container" id="waiting-container">
+            <i class="bi bi-hourglass-split waiting-icon"></i>
+            <h3 class="mb-3">Waiting for Doctor's Response</h3>
+            <p>Your consultation request has been sent to Dr. {{ doctor_name }}.</p>
+            <p>Please wait while we notify the doctor. This may take a few minutes.</p>
+            <p>You'll be notified when the doctor accepts your request.</p>
+            <div class="d-flex justify-content-center mt-4">
+              <button class="btn btn-outline-danger me-3" id="cancelRequest">
+                <i class="bi bi-x-circle me-2"></i>Cancel Request
+              </button>
+              <a href="/virtual-consultation" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+              </a>
+            </div>
+          </div>
+          
+          <!-- Direct server-side form submission -->
+          <div class="card mt-4">
+            <div class="card-header">
+              <i class="bi bi-send-check me-2"></i>Alternative Form Submission
+            </div>
+            <div class="card-body">
+              <p class="text-danger fw-bold">Try this alternative form if the main form is not working:</p>
+              <form action="/submit-consultation-request" method="POST">
+                <input type="hidden" name="doctor_id" value="{{ doctor_id }}">
+                <input type="hidden" name="X-Requested-With" value="XMLHttpRequest">
+                
+                <div class="mb-3">
+                  <label for="symptoms_direct" class="form-label">What symptoms are you experiencing?</label>
+                  <textarea class="form-control" id="symptoms_direct" name="symptoms" rows="4" placeholder="Please describe your symptoms in detail..." required></textarea>
+                </div>
+                
+                <div class="mb-3">
+                  <label class="form-label">Preferred Time Slots</label>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-check mb-2">
+                        <input type="checkbox" class="form-check-input" id="slot1_direct" name="time_slots" value="today-morning">
+                        <label class="form-check-label" for="slot1_direct">Today Morning</label>
+                      </div>
+                      <div class="form-check mb-2">
+                        <input type="checkbox" class="form-check-input" id="slot2_direct" name="time_slots" value="today-afternoon">
+                        <label class="form-check-label" for="slot2_direct">Today Afternoon</label>
+                      </div>
+                      <div class="form-check mb-2">
+                        <input type="checkbox" class="form-check-input" id="slot3_direct" name="time_slots" value="today-evening">
+                        <label class="form-check-label" for="slot3_direct">Today Evening</label>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-check mb-2">
+                        <input type="checkbox" class="form-check-input" id="slot4_direct" name="time_slots" value="tomorrow-morning">
+                        <label class="form-check-label" for="slot4_direct">Tomorrow Morning</label>
+                      </div>
+                      <div class="form-check mb-2">
+                        <input type="checkbox" class="form-check-input" id="slot5_direct" name="time_slots" value="tomorrow-afternoon">
+                        <label class="form-check-label" for="slot5_direct">Tomorrow Afternoon</label>
+                      </div>
+                      <div class="form-check mb-2">
+                        <input type="checkbox" class="form-check-input" id="slot6_direct" name="time_slots" value="tomorrow-evening">
+                        <label class="form-check-label" for="slot6_direct">Tomorrow Evening</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="mb-3">
+                  <label for="urgency_direct" class="form-label">How urgent is your consultation?</label>
+                  <select class="form-select" id="urgency_direct" name="urgency" required>
+                    <option value="">Select urgency level</option>
+                    <option value="low">Not urgent (can wait several days)</option>
+                    <option value="medium">Somewhat urgent (within 24 hours)</option>
+                    <option value="high">Urgent (as soon as possible)</option>
+                  </select>
+                </div>
+                
+                <div class="mb-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="availability_direct" name="availability" value="1" checked>
+                    <label class="form-check-label" for="availability_direct">
+                      I'm available immediately
+                    </label>
+                  </div>
+                </div>
+                
+                <button type="submit" class="btn btn-success w-100">
+                  Submit Consultation Request (Server-Side Processing)
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-4">
+          <!-- Consultation Process -->
+          <div class="card">
+            <div class="card-header">
+              <i class="bi bi-info-circle me-2"></i>Consultation Process
+            </div>
+            <div class="card-body">
+              <ol class="mb-0">
+                <li class="mb-3">Fill out the consultation request form with your symptoms and preferred time slots.</li>
+                <li class="mb-3">Submit your request to Dr. {{ doctor_name }}.</li>
+                <li class="mb-3">Wait for the doctor to review and accept your request.</li>
+                <li class="mb-3">Once accepted, you'll be redirected to the video call room.</li>
+                <li>Have your consultation with the doctor.</li>
+              </ol>
+            </div>
+          </div>
+          
+          <!-- Tips -->
+          <div class="card">
+            <div class="card-header">
+              <i class="bi bi-lightbulb-fill me-2"></i>Consultation Tips
+            </div>
+            <div class="card-body">
+              <ul class="list-unstyled mb-0">
+                <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i>Be specific about your symptoms</li>
+                <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i>Select multiple time slots to increase chances of consultation</li>
+                <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i>If your issue is urgent, mark it accordingly</li>
+                <li><i class="bi bi-check-circle-fill text-success me-2"></i>Stay online after submitting your request</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" style="background-color: #f8f9fa; padding: 30px 0; text-align: center; margin-top: 3rem;">
+    <div class="container">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Planical</span></strong>. All Rights Reserved
+      </div>
+      <div class="credits">
+        Virtual Consultation Service
+      </div>
+    </div>
+  </footer><!-- End Footer -->
+
+  <!-- Vendor JS Files -->
+  <script src="{{url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  
+  <!-- Notification Element -->
+  <div id="notification" class="notification">
+    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <strong class="me-auto">Notification</strong>
+        <button type="button" class="btn-close" onclick="hideNotification()"></button>
+      </div>
+      <div class="toast-body" id="notificationMessage">
+        <!-- Notification message goes here -->
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Define notification functions first so they're available immediately
+    function showNotification(message, type) {
+      console.log("Showing notification:", message, "Type:", type);
+      const notification = document.getElementById('notification');
+      const notificationMessage = document.getElementById('notificationMessage');
+      
+      // Set message
+      notificationMessage.textContent = message;
+      
+      // Set background color based on type
+      const toast = notification.querySelector('.toast');
+      toast.className = 'toast show';
+      
+      if (type === 'success') {
+        toast.classList.add('bg-success', 'text-white');
+      } else if (type === 'error') {
+        toast.classList.add('bg-danger', 'text-white');
+      } else if (type === 'warning') {
+        toast.classList.add('bg-warning');
+      } else {
+        toast.classList.add('bg-info', 'text-white');
+      }
+      
+      // Show notification
+      notification.style.display = 'block';
+      
+      // Auto-hide after 5 seconds
+      setTimeout(hideNotification, 5000);
+    }
+    
+    function hideNotification() {
+      const notification = document.getElementById('notification');
+      if (notification) {
+        notification.style.display = 'none';
+      }
+    }
+    
+    // Make functions available globally
+    window.showNotification = showNotification;
+    window.hideNotification = hideNotification;
+    
+    // Alert container functions
+    function showAlert(message, type = 'info') {
+      const alertContainer = document.getElementById('alertContainer');
+      const alertMessage = document.getElementById('alertMessage');
+      const alertElement = alertContainer.querySelector('.alert');
+      
+      // Set message
+      alertMessage.textContent = message;
+      
+      // Set alert type
+      alertElement.className = 'alert alert-dismissible fade show';
+      alertElement.classList.add(`alert-${type}`);
+      
+      // Show alert
+      alertContainer.style.display = 'block';
+      
+      // Auto-hide after 7 seconds if not error
+      if (type !== 'danger') {
+        setTimeout(() => hideAlert(), 7000);
+      }
+    }
+    
+    function hideAlert() {
+      const alertContainer = document.getElementById('alertContainer');
+      if (alertContainer) {
+        alertContainer.style.display = 'none';
+      }
+    }
+    
+    // Make alert functions available globally
+    window.showAlert = showAlert;
+    window.hideAlert = hideAlert;
+    
+    // Simple debug function that will work even if other code fails
+    function simpleDebug() {
+      alert("Debug button clicked! See browser console for details.");
+      
+      try {
+        console.log("Simple debug function called");
+        
+        // Show all form values
+        const symptomsVal = document.getElementById('symptoms').value;
+        const urgencyVal = document.getElementById('urgency').value;
+        
+        // Check selected time slots
+        const timeSlots = [];
+        document.querySelectorAll('input[name="timeSlots"]').forEach(checkbox => {
+          timeSlots.push({
+            id: checkbox.id,
+            value: checkbox.value,
+            checked: checkbox.checked,
+            visible: checkbox.offsetParent !== null
+          });
+        });
+        
+        console.log("Form values:", {
+          symptoms: symptomsVal,
+          urgency: urgencyVal,
+          timeSlots: timeSlots
+        });
+        
+        // Check for Firebase
+        console.log("Firebase defined:", typeof firebase !== 'undefined');
+        
+      } catch(error) {
+        console.error("Error in simple debug:", error);
+        alert("Error in debug: " + error.message);
+      }
+    }
+    
+    // Add this function to the beginning of the script section
+    function showAlternativeForm() {
+      const serverFormSection = document.querySelector('.card.mt-4');
+      if (serverFormSection) {
+        serverFormSection.scrollIntoView({ behavior: 'smooth' });
+        serverFormSection.style.border = '2px solid #0d6efd';
+        serverFormSection.style.boxShadow = '0 0 10px rgba(13, 110, 253, 0.5)';
+        
+        // Copy values from main form to alternative form
+        try {
+          const mainSymptoms = document.getElementById('symptoms');
+          const altSymptoms = document.getElementById('symptoms_direct');
+          
+          if (mainSymptoms && altSymptoms && mainSymptoms.value) {
+            altSymptoms.value = mainSymptoms.value;
+          }
+          
+          // Copy time slots if any are selected
+          const mainSlots = document.querySelectorAll('input[name="timeSlots"]:checked');
+          mainSlots.forEach(slot => {
+            const slotValue = slot.value;
+            const altSlot = document.querySelector(`input[name="time_slots"][value="${slotValue}"]`);
+            if (altSlot) {
+              altSlot.checked = true;
+            }
+          });
+        } catch(e) {
+          console.error("Error copying form values:", e);
+        }
+        
+        // Focus on alternative symptoms textarea
+        setTimeout(() => {
+          const altSymptoms = document.getElementById('symptoms_direct');
+          if (altSymptoms) {
+            altSymptoms.focus();
+          }
+        }, 500);
+      }
+    }
+    
+    // Add these functions at the beginning of the script section
+    function logTextareaClick(event) {
+      console.log("Textarea clicked", event);
+      document.getElementById('symptomsDebug').textContent = 'Click detected on symptoms field';
+      // Force focus and bring cursor
+      event.target.focus();
+    }
+    
+    function logTextareaInput(event) {
+      console.log("Textarea input", event);
+      document.getElementById('symptomsDebug').textContent = 'Input detected: ' + event.target.value.length + ' characters';
+      
+      // Clear any error messages
+      if (event.target.value.length > 0) {
+        setTimeout(() => {
+          document.getElementById('symptomsDebug').textContent = '';
+        }, 2000);
+      }
+    }
+    
+    // Fix any potential issues with the textarea when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      // Attempt to fix textarea interaction issue
+      const symptomsTextarea = document.getElementById('symptoms');
+      
+      if (symptomsTextarea) {
+        console.log("Found symptoms textarea, setting up fixes");
+        
+        // Reset any applied styles or event handlers
+        symptomsTextarea.style.position = 'relative';
+        symptomsTextarea.style.zIndex = '10';
+        symptomsTextarea.style.pointerEvents = 'auto';
+        
+        // Force a refresh of the textarea
+        const parent = symptomsTextarea.parentNode;
+        const next = symptomsTextarea.nextSibling;
+        parent.removeChild(symptomsTextarea);
+        
+        // Small delay before reinserting to ensure DOM is ready
+        setTimeout(() => {
+          if (next) {
+            parent.insertBefore(symptomsTextarea, next);
+          } else {
+            parent.appendChild(symptomsTextarea);
+          }
+          console.log("Textarea refreshed");
+        }, 50);
+        
+        // Add click event listener 
+        symptomsTextarea.addEventListener('click', function(e) {
+          console.log("Direct click on textarea");
+          this.focus();
+          // Prevent any other handlers from interfering
+          e.stopPropagation();
+        });
+        
+        // Also try fixing alternative symptoms textarea
+        const symptomsDirectTextarea = document.getElementById('symptoms_direct');
+        if (symptomsDirectTextarea) {
+          symptomsDirectTextarea.style.position = 'relative';
+          symptomsDirectTextarea.style.zIndex = '10';
+          symptomsDirectTextarea.style.pointerEvents = 'auto';
+        }
+        
+        // Check if there are any overlay elements and disable them
+        document.querySelectorAll('.modal-backdrop, .modal, .overlay, [style*="position: fixed"]').forEach(el => {
+          if (el.id !== 'notification' && el.id !== 'alertContainer') {
+            console.log("Found potential overlay element, disabling:", el);
+            el.style.display = 'none';
+            el.style.pointerEvents = 'none';
+            el.classList.add('overlay-fix');
+          }
+        });
+        
+        // Double-check for any elements that might be covering the textarea
+        const textareaRect = symptomsTextarea.getBoundingClientRect();
+        document.querySelectorAll('*').forEach(el => {
+          if (el !== symptomsTextarea && el !== parent) {
+            const elRect = el.getBoundingClientRect();
+            // Check if element overlaps with textarea
+            if (!(elRect.right < textareaRect.left || 
+                  elRect.left > textareaRect.right || 
+                  elRect.bottom < textareaRect.top || 
+                  elRect.top > textareaRect.bottom)) {
+              
+              const style = window.getComputedStyle(el);
+              // Only consider elements with absolute/fixed positioning and z-index
+              if ((style.position === 'absolute' || style.position === 'fixed') && 
+                  style.zIndex && parseInt(style.zIndex) > 0) {
+                console.log("Found element overlapping textarea:", el);
+                el.style.pointerEvents = 'none';
+                // Only hide if it's not a critical UI element
+                if (!el.closest('form') && !el.closest('.card-body')) {
+                  el.style.display = 'none';
+                }
+              }
+            }
+          }
+        });
+      }
+      
+      // Original DOMContentLoaded code continues...
+      console.log("DOM loaded. Initializing consultation request form...");
+      
+      // Connect to Socket.IO
+      const socket = io();
+      const userId = "{{ user_id }}";
+      const userName = "{{ user_name }}";
+      const doctorId = "{{ doctor_id }}";
+      const doctorName = "{{ doctor_name }}";
+      
+      console.log("User info:", { userId, userName, doctorId, doctorName });
+      
+      // DOM elements
+      const requestForm = document.getElementById('consultationRequestForm');
+      const requestFormContainer = document.getElementById('request-form-container');
+      const waitingContainer = document.getElementById('waiting-container');
+      const cancelRequestBtn = document.getElementById('cancelRequest');
+      const timeSlots = document.querySelectorAll('.time-slot');
+      
+      // Check if all elements are correctly found
+      console.log("Form elements found:", {
+        requestForm: !!requestForm,
+        requestFormContainer: !!requestFormContainer,
+        waitingContainer: !!waitingContainer,
+        cancelRequestBtn: !!cancelRequestBtn,
+        timeSlots: timeSlots.length
+      });
+      
+      // Firebase configuration check - we don't need this now that we're using the server-side form
+      const firebaseConfig = {
+        apiKey: "{{ firebase_config.apiKey }}" || "",
+        authDomain: "{{ firebase_config.authDomain }}" || "",
+        projectId: "{{ firebase_config.projectId }}" || "",
+        storageBucket: "{{ firebase_config.storageBucket }}" || "",
+        messagingSenderId: "{{ firebase_config.messagingSenderId }}" || "",
+        appId: "{{ firebase_config.appId }}" || ""
+      };
+      
+      // Check if config values are valid
+      if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+        console.error("Firebase configuration is incomplete:", firebaseConfig);
+        // This is no longer a critical error since we're using server-side processing
+      } else {
+        console.log("Firebase config appears valid:", Object.keys(firebaseConfig));
+      }
+      
+      // Time slot selection
+      timeSlots.forEach(slot => {
+        slot.addEventListener('click', function() {
+          const checkbox = this.querySelector('input[type="checkbox"]');
+          checkbox.checked = !checkbox.checked;
+          this.classList.toggle('selected', checkbox.checked);
+          console.log("Time slot toggled:", checkbox.value, "Selected:", checkbox.checked);
+        });
+      });
+      
+      // Also handle direct checkbox clicks
+      document.querySelectorAll('input[name="timeSlots"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+          const slot = this.closest('.time-slot');
+          if (slot) {
+            slot.classList.toggle('selected', this.checked);
+            console.log("Checkbox directly toggled:", this.value, "Selected:", this.checked);
+          }
+        });
+      });
+      
+      // Regular form submission handler setup
+      if (requestForm) {
+        console.log("Setting up form submission handler");
+        
+        // Add form submit handler
+        requestForm.addEventListener('submit', function handleFormSubmission(e) {
+          console.log("Form submission handler called");
+          e.preventDefault();
+          
+          // Just call our direct submission handler which uses fetch API
+          submitFormDirectly();
+        });
+      } else {
+        console.error("Consultation request form not found in the DOM");
+      }
+      
+      // Cancel request
+      if (cancelRequestBtn) {
+        cancelRequestBtn.addEventListener('click', function() {
+          console.log("Cancel request button clicked");
+          
+          if (confirm('Are you sure you want to cancel this consultation request?')) {
+            // Redirect to consultation page
+            window.location.href = '/virtual-consultation';
+          }
+        });
+      } else {
+        console.error("Cancel request button not found in the DOM");
+      }
+      
+      // Listen for socket events
+      socket.on('consultation-accepted', function(data) {
+        if (data.consultationId) {
+          showNotification(`Dr. ${doctorName} has accepted your consultation request!`, 'success');
+          
+          // Redirect to video call
+          setTimeout(() => {
+            window.location.href = `/patient-video-call/${data.consultationId}`;
+          }, 2000);
+        }
+      });
+      
+      socket.on('consultation-rejected', function(data) {
+        showNotification(`Dr. ${doctorName} is unable to accept your consultation request. Reason: ${data.reason || 'Not specified'}`, 'warning');
+        
+        // Return to form
+        requestFormContainer.style.display = 'block';
+        waitingContainer.style.display = 'none';
+      });
+    });
+    
+    // Direct form submission that doesn't rely on other code
+    function submitFormDirectly(e) {
+      if (e) e.preventDefault();
+      
+      console.log("Submitting form directly");
+      
+      // Check connection before submission
+      if (typeof connectionManager !== 'undefined' && typeof connectionManager.isOnline === 'function' && !connectionManager.isOnline()) {
+        showAlert('You appear to be offline. Your request has been saved and will be submitted when you reconnect.', 'warning');
+        
+        // Store form data in localStorage for later submission
+        storeFormDataLocally();
+        
+        // Show offline submission message
+        if (document.getElementById('offlineSubmissionMessage')) {
+          document.getElementById('offlineSubmissionMessage').style.display = 'block';
+        }
+        return;
+      }
+
+      // Get form elements - make sure we use direct access to avoid any issues
+      const form = document.getElementById('consultationRequestForm');
+      const symptomsInput = document.getElementById('symptoms');
+      const urgencySelect = document.getElementById('urgency');
+      const checkAvailabilityCheckbox = document.getElementById('availability');
+      
+      // Log elements found for debugging
+      console.log("Form elements found:", {
+        form: !!form,
+        symptomsInput: !!symptomsInput,
+        urgencySelect: !!urgencySelect,
+        checkAvailabilityCheckbox: !!checkAvailabilityCheckbox
+      });
+      
+      // Get values safely
+      const symptoms = symptomsInput ? symptomsInput.value : '';
+      const urgency = urgencySelect ? urgencySelect.value : '';
+      const isAvailable = checkAvailabilityCheckbox ? checkAvailabilityCheckbox.checked : true;
+      
+      // Get selected time slots
+      const selectedTimeSlots = [];
+      try {
+        document.querySelectorAll('input[name="timeSlots"]:checked').forEach(slot => {
+          if (slot && slot.value) {
+            selectedTimeSlots.push(slot.value);
+          }
+        });
+      } catch (e) {
+        console.error("Error getting time slots:", e);
+      }
+      
+      console.log("Form values:", { symptoms, urgency, isAvailable, selectedTimeSlots });
+      
+      // Validate
+      if (!symptoms) {
+        showNotification("Please describe your symptoms", "error");
+        return;
+      }
+      
+      if (selectedTimeSlots.length === 0) {
+        showNotification("Please select at least one time slot", "error");
+        return;
+      }
+      
+      if (!urgency) {
+        showNotification("Please select urgency level", "error");
+        return;
+      }
+      
+      // Get user and doctor data from template
+      const doctorId = "{{ doctor_id }}";
+      
+      // Instead of using Firebase directly, use our server-side form
+      const formData = new FormData();
+      formData.append('doctor_id', doctorId);
+      formData.append('symptoms', symptoms);
+      formData.append('urgency', urgency);
+      
+      // Add each time slot as a separate entry
+      selectedTimeSlots.forEach(slot => {
+        formData.append('time_slots', slot);
+      });
+      
+      formData.append('availability', isAvailable ? '1' : '0');
+      
+      // Show working message
+      showNotification("Sending consultation request...", "info");
+      
+      // Submit the form to our server endpoint
+      fetch('/submit-consultation-request', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => {
+        // Check if response is ok
+        if (!response.ok) {
+          throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+        }
+        
+        // Check Content-Type header to determine how to parse the response
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          return response.json();
+        } else {
+          // Handle non-JSON response (likely HTML)
+          throw new Error('Server returned a non-JSON response');
+        }
+      })
+      .then(data => {
+        if (data.success) {
+          showNotification("Consultation request submitted successfully!", "success");
+          
+          // Redirect to waiting page
+          window.location.href = `/virtual-consultation/waiting?consultation_id=${data.consultation_id}&doctor_name=${encodeURIComponent(data.doctor_name)}`;
+        } else {
+          showNotification("Error: " + (data.message || "Unknown error"), "error");
+        }
+      })
+      .catch(error => {
+        showNotification("Error submitting request: " + error.message, "error");
+        console.error("Form submission error:", error);
+        
+        // If we failed with the XHR approach, suggest using the server-side form
+        const serverFormSection = document.querySelector('.card.mt-4');
+        if (serverFormSection) {
+          serverFormSection.scrollIntoView({ behavior: 'smooth' });
+          showAlert('Please try using the alternative form below instead', 'warning');
+        }
+      });
+    }
+    
+    // Add this function to synchronize the fallback input with the textarea
+    function syncToTextarea(value) {
+      const textarea = document.getElementById('symptoms');
+      if (textarea) {
+        textarea.value = value;
+        // Trigger input event to update any listeners
+        const event = new Event('input', { bubbles: true });
+        textarea.dispatchEvent(event);
+      }
+    }
+    
+    // Add this function to add a new line to the symptoms description
+    function appendToSymptoms() {
+      const textarea = document.getElementById('symptoms');
+      const fallbackInput = document.getElementById('symptoms_fallback');
+      
+      if (textarea && fallbackInput) {
+        if (fallbackInput.value.trim()) {
+          if (textarea.value) {
+            textarea.value += '\n' + fallbackInput.value;
+          } else {
+            textarea.value = fallbackInput.value;
+          }
+          
+          // Clear the fallback input for the next line
+          fallbackInput.value = '';
+          
+          // Focus back on the fallback input
+          fallbackInput.focus();
+          
+          // Trigger input event
+          const event = new Event('input', { bubbles: true });
+          textarea.dispatchEvent(event);
+        }
+      }
+    }
+  </script>
+</body>
+</html> 

@@ -5,9 +5,8 @@
 <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
   <strong>{{message}}</strong> 
   
-  {% if current_user.is_authenticated and current_user.usn %}
+  {% if session.get('user') %}
   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-
   {% endif %}
 </div>
 

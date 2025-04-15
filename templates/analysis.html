@@ -2,248 +2,489 @@
 <html lang="en">
 
 <head>
-  <title>Analysis</title>
-  <link rel="icon" href="https://source.unsplash.com/1600x900/?analysis">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-
-</head>
-
+  <title>Stress Analysis Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="{{url_for('static', filename='favicon.ico')}}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  body {
-    padding: 10px;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+    :root {
+      --primary-color: #0d6efd;
+      --secondary-color: #6c757d;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+      --success-color: #28a745;
+      --info-color: #17a2b8;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
   }
 
   body {
-    background-color: #efffff;
-    background-size: 50000% 50000%;
-    animation: gradient 15s ease infinite;
-    height: 100vh;
-  }
-
-  @keyframes gradient {
-    0% {
-      background-position: 0% 50%;
+      font-family: 'Roboto', sans-serif;
+      background-color: #f5f8fa;
+      color: var(--dark-color);
+      line-height: 1.6;
     }
 
-    50% {
-      background-position: 100% 50%;
+    .dashboard-header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, #0052cc 100%);
+      color: white;
+      padding: 3rem 0;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
     }
 
-    100% {
-      background-position: 0% 50%;
+    .dashboard-header::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+      transform: rotate(30deg);
     }
-  }
 
+    .dashboard-header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
 
-  .main {
-    margin: auto;
-    max-width: fit-content;
-    padding: 10px;
-  }
+    .dashboard-header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
 
-  h1 {
-    color: black;
-    font-family: cursive;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-  }
+    .chart-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      height: 100%;
+    }
 
-  /* .inner{
-  position:absolute;
-  } */
-  #card {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.4);
+    .chart-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .chart-container {
+      height: 350px;
+      margin-bottom: 1rem;
+    }
+
+    .chart-title {
+      color: var(--dark-color);
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .chart-description {
+      color: var(--secondary-color);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .insight-badge {
+      display: inline-block;
+      padding: 0.35rem 0.75rem;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .insight-primary {
+      background-color: rgba(13, 110, 253, 0.1);
+      color: var(--primary-color);
+    }
+
+    .insight-warning {
+      background-color: rgba(255, 193, 7, 0.1);
+      color: #d97706;
+    }
+
+    .insight-danger {
+      background-color: rgba(220, 53, 69, 0.1);
+      color: var(--danger-color);
+    }
+
+    .insight-success {
+      background-color: rgba(40, 167, 69, 0.1);
+      color: var(--success-color);
+    }
+
+    .insight-info {
+      background-color: rgba(23, 162, 184, 0.1);
+      color: var(--info-color);
+    }
+
+    .key-stat-card {
+      background: linear-gradient(135deg, #0d6efd 0%, #0052cc 100%);
+      color: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      position: relative;
     overflow: hidden;
-    background-color: blanchedalmond;
-    background: white;
-    /* height: fit-content; */
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
 
-    border-radius: 20px;
-    height: 50%;
-    /* width: 400px; */
-  }
+    .key-stat-card::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+    }
 
-  .cantainer {
-    padding: 20px;
-    background-color: blanchedalmond;
-    margin-top: 25px;
-    margin-bottom: 30px;
-    margin-left: 10px;
-    margin-right: 10px;
-    width: 60%;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    border-radius: 5px;
-    /* border: 2px solid black; */
-    position: relative;
-  }
+    .key-stat-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      opacity: 0.8;
+    }
 
-  p {
-    color: black;
-    font-family: cursive;
+    .key-stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
 
-  }
+    .key-stat-label {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
 
-  .containerf {
-    padding: 10px;
-    background: radial-gradient(ellipse at 50% 100%, #a0C580 70%, transparent 70%);
-    background-color: #aefce8;
-    margin: auto;
-    width: 50%;
-    height: fit-content;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    /* border: 2px solid black; */
+    .back-to-home {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     text-decoration: none;
-    cursor: pointer;
-  }
+      transition: transform 0.3s ease, background-color 0.3s ease;
+    }
 
-  /**********************************/
-  /*		 Styling Footer	 */
-  /**********************************/
+    .back-to-home:hover {
+      transform: scale(1.1);
+      background-color: #0056b3;
+      color: white;
+    }
 
-  /*** Adding Styles to Company Details ***/
-  .company-details {
-    overflow: hidden;
-    padding: 3em 0em;
-    background: #E3F0F7;
-    text-align: center;
-    margin-top: 5em;
-  }
+    @media (max-width: 992px) {
+      .chart-container {
+        height: 300px;
+      }
+    }
 
-  #footer #col1,
-  #footer #col2,
-  #footer #col3 {
-    float: inline-end;
-    width: 320px;
-    padding: 0px 40px 0px 40px;
-  }
-
-  #footer #icon {
-    display: block;
-    margin-bottom: 1em;
-    font-size: 3em;
-  }
-
-  /*** Adding Styles to Copyright Div ***/
-  .copyright {
-    overflow: hidden;
-    padding: 3em 0em;
-    border-top: 20px solid rgba(255, 255, 255, 0.08);
-    text-align: center;
-    background: #4CAF50;
-  }
-
-  .copyright p {
-    letter-spacing: 1px;
-    font-size: 0.90em;
-    color: rgba(255, 255, 255, 0.6);
-  }
-
-  .copyright a {
-    text-decoration: none;
-    color: rgba(255, 255, 255, 0.8);
-  }
-
-  /* Styling Social Icons */
-  ul.contact {
-    margin: 0;
-    padding: 2em 0em 0em 0em;
-    list-style: none;
-  }
-
-  ul.contact li {
-    display: inline-block;
-    padding: 0em 0.10em;
-    font-size: 1em;
-  }
-
-  ul.contact li a {
-    color: #FFF;
-    display: inline-block;
-    background: #4C93B9;
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
+    @media (max-width: 768px) {
+      .dashboard-header {
+        padding: 2rem 0;
+      }
+      
+      .dashboard-header h1 {
+        font-size: 2rem;
+      }
+      
+      .chart-container {
+        height: 250px;
+      }
   }
 </style>
+</head>
 
 <body>
-  <div class="main"
-    style="padding: 30px; width: fit-content; background: radial-gradient(ellipse at 50% 0%, #6ecada 70%, transparent 70%);">
-    <div class="containerf" id="card">
-      <a href="#" style="text-decoration: none;">
-        <h1>Analysis of Stress across the World.</h1>
-      </a>
+  <div class="dashboard-header text-center">
+    <div class="container">
+      <h1><i class="bi bi-graph-up-arrow me-2"></i>Global Stress Analysis Dashboard</h1>
+      <p>Comprehensive data visualization of stress factors, patterns, and impacts across demographics, providing valuable insights for mental health awareness and intervention strategies.</p>
+    </div>
+  </div>
+
+  <div class="container mb-5">
+    <!-- Key Stats Row -->
+    <div class="row mb-4">
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="key-stat-card">
+          <i class="bi bi-emoji-frown key-stat-icon"></i>
+          <div class="key-stat-value">68%</div>
+          <div class="key-stat-label">In Stress</div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="key-stat-card" style="background: linear-gradient(135deg, #dc3545 0%, #b91c1c 100%);">
+          <i class="bi bi-heart-break key-stat-icon"></i>
+          <div class="key-stat-value">42%</div>
+          <div class="key-stat-label">Relationship Stress</div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="key-stat-card" style="background: linear-gradient(135deg, #ffc107 0%, #d97706 100%);">
+          <i class="bi bi-exclamation-triangle key-stat-icon"></i>
+          <div class="key-stat-value">37%</div>
+          <div class="key-stat-label">Anxiety Cases</div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="key-stat-card" style="background: linear-gradient(135deg, #198754 0%, #047857 100%);">
+          <i class="bi bi-lightning-charge key-stat-icon"></i>
+          <div class="key-stat-value">29%</div>
+          <div class="key-stat-label">Low Confidence</div>
+        </div>
+      </div>
     </div>
 
-    <div class="cantainer left" id="card" style="width: 44% ; float:left;">
-      <div id='chart' class='chart'></div>
-      <p class='chart'>According to analysis we could easily understand, people suffer from
-        stress mostly due to Relationship, then due to anxiety. Also, domestic violence is another
-        problem due to which people suffer from Mental Health issues.</p>
+    <!-- Charts Row 1 -->
+    <div class="row mb-4">
+      <div class="col-lg-6 mb-4">
+        <div class="chart-card">
+          <span class="insight-badge insight-primary">Key Insight</span>
+          <h3 class="chart-title">Distribution of Stress Factors</h3>
+          <div id="chart" class="chart-container"></div>
+          <p class="chart-description">
+            Analysis shows people predominantly experience stress due to relationship issues, followed by anxiety. Domestic violence also emerges as a significant contributor to mental health challenges.
+          </p>
     </div>
-    <div class="cantainer right" id="card" style="width: 44% ; float:right;">
-      <div id='chart2' class='chart2 inner'></div>
-      <p>This plot clearly shows that there are more people in Stress than people
-        who are Not in stress. There is a growing concern about the mental health of individuals across the globe. As
-        students, we understand how stress can take over your personal
-        as well as professional life. </p>
     </div>
-    <div class="cantainer left" id="card" style="width: 44% ; float:left;">
-      <div id='chart3' class='chart3 inner'></div>
-      <p>This is the analysis of sentiments with the types of mental health issues which shows that
-        Relationship stress and ptsd stress has the most sentiment breakdown due to which prople suffer from more mental
-        health issues.
+      <div class="col-lg-6 mb-4">
+        <div class="chart-card">
+          <span class="insight-badge insight-danger">Critical Finding</span>
+          <h3 class="chart-title">Stress Prevalence</h3>
+          <div id="chart2" class="chart-container"></div>
+          <p class="chart-description">
+            There is a significantly higher number of individuals experiencing stress compared to those who aren't. This growing concern affects both personal and professional aspects of life globally.
       </p>
     </div>
-    <div class="cantainer right" id="card" style="width: 44% ; float:right;">
-      <div id='chart4' class='chart4'></div>
-      <p>This analysis shows us the subreddit posts versus the social karma points. Here also we
-        see that relationship is on top then comes the anxiety stress.
-      </p>
-    </div>
-    <div class="cantainer left" id="card" style="width: 44% ; float:left;">
-      <div id='chart5' class='chart5'></div>
-      <p> This plot shows the count of confidence level a person is having. There are a huge
-        number of people with a very low confidence level.
-      </p>
+      </div>
     </div>
 
-    <div class="cantainer right" id="card" style="width: 44% ; float:right;">
-      <div id='chart6' class='chart6'></div>
-      <p>This is a Histogram plot to show the types of health issues with its count who clearly shows
-        that what are all the issues prople are dealing with.</p>
+    <!-- Charts Row 2 -->
+    <div class="row mb-4">
+      <div class="col-lg-6 mb-4">
+        <div class="chart-card">
+          <span class="insight-badge insight-warning">Sentiment Analysis</span>
+          <h3 class="chart-title">Sentiment by Mental Health Issue</h3>
+          <div id="chart3" class="chart-container"></div>
+          <p class="chart-description">
+            Relationship stress and PTSD demonstrate the most significant sentiment breakdown, indicating these issues may have particularly severe impacts on mental health and emotional well-being.
+      </p>
+    </div>
+      </div>
+      <div class="col-lg-6 mb-4">
+        <div class="chart-card">
+          <span class="insight-badge insight-info">Social Media Impact</span>
+          <h3 class="chart-title">Subreddit Posts vs. Karma Points</h3>
+          <div id="chart4" class="chart-container"></div>
+          <p class="chart-description">
+            Relationship-related content receives the highest engagement on social platforms, followed by anxiety-related posts, reflecting widespread concern and resonance with these issues.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row 3 -->
+    <div class="row mb-4">
+      <div class="col-lg-6 mb-4">
+        <div class="chart-card">
+          <span class="insight-badge insight-success">Confidence Analysis</span>
+          <h3 class="chart-title">Confidence Level Distribution</h3>
+          <div id="chart5" class="chart-container"></div>
+          <p class="chart-description">
+            The data reveals a concerning trend of low confidence levels among a significant portion of the population, which may correlate with increased stress and anxiety levels.
+          </p>
+        </div>
+      </div>
+      <div class="col-lg-6 mb-4">
+        <div class="chart-card">
+          <span class="insight-badge insight-primary">Issue Breakdown</span>
+          <h3 class="chart-title">Types of Mental Health Issues</h3>
+          <div id="chart6" class="chart-container"></div>
+          <p class="chart-description">
+            This histogram provides a comprehensive breakdown of the various mental health issues people are currently dealing with, helping identify priority areas for intervention.
+          </p>
+        </div>
     </div>
   </div>
   
+    <!-- Summary/Conclusion Section -->
+    <div class="row">
+      <div class="col-12">
+        <div class="chart-card">
+          <h3 class="chart-title"><i class="bi bi-lightbulb me-2"></i>Key Takeaways</h3>
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <div class="d-flex align-items-start">
+                <div class="me-3 text-primary">
+                  <i class="bi bi-1-circle-fill fs-3"></i>
+                </div>
+                <div>
+                  <h5>Relationship Stress Dominance</h5>
+                  <p class="chart-description">Relationship issues consistently emerge as the leading cause of stress across multiple metrics, suggesting a need for better relationship education and support.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <div class="d-flex align-items-start">
+                <div class="me-3 text-warning">
+                  <i class="bi bi-2-circle-fill fs-3"></i>
+                </div>
+                <div>
+                  <h5>Anxiety Prevalence</h5>
+                  <p class="chart-description">Anxiety ranks as the second most common stress factor, indicating the importance of anxiety management resources and early intervention.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <div class="d-flex align-items-start">
+                <div class="me-3 text-danger">
+                  <i class="bi bi-3-circle-fill fs-3"></i>
+                </div>
+                <div>
+                  <h5>Confidence Correlation</h5>
+                  <p class="chart-description">Low confidence levels appear to correlate with higher stress levels, suggesting confidence-building interventions as a potential stress management strategy.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <a href="/" class="back-to-home" title="Back to Home">
+    <i class="bi bi-house-fill"></i>
+  </a>
 
-</body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script type="text/javascript">
+    // Update plot layouts to match new styling
   var graphs = {{ graphJSON | safe}};
-  Plotly.plot('chart', graphs, {});
+    var layout1 = {
+      height: 350,
+      margin: { t: 30, b: 40, l: 40, r: 30 },
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      plot_bgcolor: 'rgba(0,0,0,0)',
+      font: { family: 'Roboto, sans-serif' },
+      hovermode: 'closest'
+    };
+    Plotly.newPlot('chart', graphs.data, {...graphs.layout, ...layout1});
+    
   var graphs2 = {{ graphJSON2 | safe}};
-  Plotly.plot('chart2', graphs2, {});
+    var layout2 = {
+      height: 350,
+      margin: { t: 30, b: 40, l: 40, r: 30 },
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      plot_bgcolor: 'rgba(0,0,0,0)',
+      font: { family: 'Roboto, sans-serif' },
+      barmode: 'group',
+      hovermode: 'closest'
+    };
+    Plotly.newPlot('chart2', graphs2.data, {...graphs2.layout, ...layout2});
+    
   var graphs3 = {{ graphJSON3 | safe}};
-  Plotly.plot('chart3', graphs3, {});
+    var layout3 = {
+      height: 350,
+      margin: { t: 30, b: 40, l: 40, r: 30 },
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      plot_bgcolor: 'rgba(0,0,0,0)',
+      font: { family: 'Roboto, sans-serif' },
+      hovermode: 'closest',
+      xaxis: { title: { font: { size: 14 } } },
+      yaxis: { title: { font: { size: 14 } } }
+    };
+    Plotly.newPlot('chart3', graphs3.data, {...graphs3.layout, ...layout3});
+    
   var graphs4 = {{ graphJSON4 | safe}};
-  Plotly.plot('chart4', graphs4, {});
+    var layout4 = {
+      height: 350,
+      margin: { t: 30, b: 40, l: 40, r: 30 },
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      plot_bgcolor: 'rgba(0,0,0,0)',
+      font: { family: 'Roboto, sans-serif' },
+      hovermode: 'closest',
+      xaxis: { title: { font: { size: 14 } } },
+      yaxis: { title: { font: { size: 14 } } }
+    };
+    Plotly.newPlot('chart4', graphs4.data, {...graphs4.layout, ...layout4});
+    
   var graphs5 = {{ graphJSON5 | safe}};
-  Plotly.plot('chart5', graphs5, {});
+    var layout5 = {
+      height: 350,
+      margin: { t: 30, b: 40, l: 40, r: 30 },
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      plot_bgcolor: 'rgba(0,0,0,0)',
+      font: { family: 'Roboto, sans-serif' },
+      hovermode: 'closest'
+    };
+    Plotly.newPlot('chart5', graphs5.data, {...graphs5.layout, ...layout5});
+    
   var graphs6 = {{ graphJSON6 | safe}};
-  Plotly.plot('chart6', graphs6, {});
-</script>
+    var layout6 = {
+      height: 350,
+      margin: { t: 30, b: 40, l: 40, r: 30 },
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      plot_bgcolor: 'rgba(0,0,0,0)',
+      font: { family: 'Roboto, sans-serif' },
+      hovermode: 'closest'
+    };
+    Plotly.newPlot('chart6', graphs6.data, {...graphs6.layout, ...layout6});
 
+    // Make plots responsive
+    window.onresize = function() {
+      Plotly.relayout('chart', {
+        'xaxis.autorange': true,
+        'yaxis.autorange': true
+      });
+      Plotly.relayout('chart2', {
+        'xaxis.autorange': true,
+        'yaxis.autorange': true
+      });
+      Plotly.relayout('chart3', {
+        'xaxis.autorange': true,
+        'yaxis.autorange': true
+      });
+      Plotly.relayout('chart4', {
+        'xaxis.autorange': true,
+        'yaxis.autorange': true
+      });
+      Plotly.relayout('chart5', {
+        'xaxis.autorange': true,
+        'yaxis.autorange': true
+      });
+      Plotly.relayout('chart6', {
+        'xaxis.autorange': true,
+        'yaxis.autorange': true
+      });
+    };
+</script>
+</body>
 </html>

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Virtual Consultation - Patient Dashboard</title>
+  
+  <!-- Favicons -->
+  <link href="{{url_for('static', filename='logo1.png')}}" rel="icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
+  
+  <!-- Main CSS File -->
+  <link href="{{url_for('static', filename='assets/css/style.css')}}" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-color: #0d6efd;
+      --primary-light: #e6f0ff;
+      --primary-dark: #0252c9;
+      --secondary-color: #6c757d;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+      --success-color: #28a745;
+      --info-color: #17a2b8;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f8fa;
+    }
+    
+    .dashboard-header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 3rem 0;
+      position: relative;
+    }
+    
+    .dashboard-header::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    .doctor-card {
+      border-radius: 12px;
+      background-color: white;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    
+    .doctor-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    }
+    
+    .doctor-card .card-body {
+      padding: 1.5rem;
+    }
+    
+    .doctor-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--primary-light);
+      color: var(--primary-color);
+      font-size: 2rem;
+      font-weight: 600;
+      margin-right: 1.5rem;
+    }
+    
+    .doctor-info {
+      flex: 1;
+    }
+    
+    .doctor-name {
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: var(--dark-color);
+      margin-bottom: 0.25rem;
+    }
+    
+    .doctor-specialty {
+      color: var(--secondary-color);
+      margin-bottom: 0.75rem;
+    }
+    
+    .status-badge {
+      padding: 5px 12px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: inline-block;
+    }
+    
+    .status-available {
+      background-color: rgba(40, 167, 69, 0.1);
+      color: var(--success-color);
+    }
+    
+    .status-busy {
+      background-color: rgba(220, 53, 69, 0.1);
+      color: var(--danger-color);
+    }
+    
+    .status-offline {
+      background-color: rgba(108, 117, 125, 0.1);
+      color: var(--secondary-color);
+    }
+    
+    .btn-consultation {
+      background-color: var(--primary-color);
+      color: white;
+      border-radius: 50px;
+      padding: 0.5rem 1.5rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-consultation:hover {
+      background-color: var(--primary-dark);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+    }
+    
+    .btn-consultation:disabled {
+      background-color: var(--secondary-color);
+      cursor: not-allowed;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+    }
+    
+    .empty-state-icon {
+      font-size: 4rem;
+      color: var(--secondary-color);
+      margin-bottom: 1.5rem;
+    }
+    
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 1rem;
+      border-radius: 8px;
+      background-color: white;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
+      transform: translateX(150%);
+      transition: transform 0.3s ease;
+    }
+    
+    .notification.show {
+      transform: translateX(0);
+    }
+    
+    .notification-success {
+      border-left: 4px solid var(--success-color);
+    }
+    
+    .notification-warning {
+      border-left: 4px solid var(--warning-color);
+    }
+    
+    .notification-error {
+      border-left: 4px solid var(--danger-color);
+    }
+    
+    @media (max-width: 768px) {
+      .doctor-card {
+        padding: 1rem;
+      }
+      
+      .doctor-avatar {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+        margin-right: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center justify-content-between">
+      <h1 class="logo"><img src="{{url_for('static', filename='logo.png')}}" alt="" class="src"><a href="/">Planical</a></h1>
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link" href="/">Home</a></li>
+          <li><a class="nav-link" href="/profile">Profile</a></li>
+          <li><a class="nav-link active" href="/virtual-consultation">Consultation</a></li>
+          <li><a class="nav-link" href="/help-support">Help & Support</a></li>
+          <li><a class="nav-link" href="/logout">Logout</a></li>
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+    </div>
+  </header><!-- End Header -->
+
+  <!-- ======= Dashboard Header ======= -->
+  <section class="dashboard-header">
+    <div class="container text-center">
+      <h1>Virtual Consultation</h1>
+      <p class="lead">Connect with mental health professionals through secure video calls</p>
+    </div>
+  </section>
+
+  <main id="main" class="py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title mb-3"><i class="bi bi-info-circle-fill me-2 text-primary"></i>How It Works</h5>
+              <ol class="ps-3">
+                <li class="mb-2">Choose an available doctor from the list</li>
+                <li class="mb-2">Request a consultation by clicking the button</li>
+                <li class="mb-2">Wait for the doctor to accept your request</li>
+                <li class="mb-2">Join the secure video call when connected</li>
+              </ol>
+              <div class="alert alert-info mt-3">
+                <i class="bi bi-lightbulb-fill me-2"></i> Make sure your camera and microphone are working properly before starting a consultation.
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-8">
+          <h3 class="mb-4"><i class="bi bi-people-fill me-2 text-primary"></i>Available Doctors</h3>
+          
+          <div id="doctorsList">
+            <!-- Doctor cards will be populated here dynamically -->
+            <div class="empty-state">
+              <i class="bi bi-hourglass-split empty-state-icon"></i>
+              <h4>Loading available doctors...</h4>
+              <p>Please wait while we fetch the list of available mental health professionals.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Notification element -->
+  <div id="notification" class="notification">
+    <div class="d-flex align-items-center">
+      <i class="bi bi-info-circle-fill me-2"></i>
+      <span id="notificationMessage">Notification message</span>
+    </div>
+  </div>
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" style="background-color: #f8f9fa; padding: 30px 0; text-align: center;">
+    <div class="container">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Planical</span></strong>. All Rights Reserved
+      </div>
+      <div class="credits">
+        Designed by <a href="https://github.com/shondsouza" target="_blank">Shon Dsouza</a>
+      </div>
+    </div>
+  </footer><!-- End Footer -->
+
+  <!-- Vendor JS Files -->
+  <script src="{{url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get user information from Flask template
+      const userId = '{{ user_id }}';
+      const userName = '{{ user_name }}';
+      
+      // Connect to Socket.IO server
+      const socket = io();
+      
+      // DOM elements
+      const doctorsListElement = document.getElementById('doctorsList');
+      
+      // Handle Socket.IO events
+      socket.on('connect', function() {
+        console.log('Connected to Socket.IO server');
+        showNotification('Connected to consultation service', 'success');
+        
+        // Join the patient room
+        socket.emit('join-room', {
+          room: 'patient-room',
+          userId: userId,
+          userName: userName
+        });
+      });
+      
+      // Handle doctors list updates
+      socket.on('doctors-updated', function(doctors) {
+        updateDoctorsList(doctors);
+      });
+      
+      // Handle consultation accepted event
+      socket.on('consultation-accepted', function(data) {
+        const { doctorId, doctorName, callId } = data;
+        showNotification(`Dr. ${doctorName} has accepted your consultation request`, 'success');
+        
+        // Redirect to the video call page
+        window.location.href = `/video-call/${callId}`;
+      });
+      
+      // Handle consultation rejected event
+      socket.on('consultation-rejected', function(data) {
+        const { doctorId, doctorName, reason } = data;
+        showNotification(`Dr. ${doctorName} is unable to accept your consultation at this time. Reason: ${reason}`, 'error');
+      });
+      
+      // Function to update the list of doctors
+      function updateDoctorsList(doctors) {
+        if (!Array.isArray(doctors) || doctors.length === 0) {
+          doctorsListElement.innerHTML = `
+            <div class="empty-state">
+              <i class="bi bi-person-x empty-state-icon"></i>
+              <h4>No doctors available</h4>
+              <p>There are currently no mental health professionals available for consultation. Please check back later.</p>
+            </div>
+          `;
+          return;
+        }
+        
+        // Filter doctors by availability
+        const availableDoctors = doctors.filter(doctor => doctor.status === 'available');
+        
+        if (availableDoctors.length === 0) {
+          doctorsListElement.innerHTML = `
+            <div class="empty-state">
+              <i class="bi bi-person-x empty-state-icon"></i>
+              <h4>No doctors available</h4>
+              <p>There are currently no mental health professionals available for consultation. Please check back later.</p>
+            </div>
+          `;
+          return;
+        }
+        
+        let doctorsHTML = '';
+        
+        availableDoctors.forEach(doctor => {
+          doctorsHTML += `
+            <div class="card mb-3">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="me-3">
+                    <div class="avatar rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; font-size: 20px;">
+                      ${doctor.name.charAt(0).toUpperCase()}
+                    </div>
+                  </div>
+                  <div>
+                    <h5 class="card-title mb-1">Dr. ${doctor.name}</h5>
+                    <p class="card-text text-muted mb-2">Mental Health Professional</p>
+                    <span class="badge bg-success mb-2">
+                      <i class="bi bi-circle-fill me-1"></i> Available
+                    </span>
+                    <div>
+                      <button 
+                        class="btn btn-primary mt-2" 
+                        onclick="requestConsultation('${doctor.id}', '${doctor.name}')"
+                      >
+                        <i class="bi bi-camera-video-fill me-2"></i> Request Consultation
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        
+        doctorsListElement.innerHTML = doctorsHTML;
+      }
+      
+      // Notification helper function
+      function showNotification(message, type = 'info') {
+        const notification = document.getElementById('notification');
+        const notificationMessage = document.getElementById('notificationMessage');
+        
+        // Set the message
+        notificationMessage.textContent = message;
+        
+        // Set the notification type
+        notification.className = 'notification';
+        notification.classList.add(`notification-${type}`);
+        
+        // Show the notification
+        notification.classList.add('show');
+        
+        // Hide the notification after 5 seconds
+        setTimeout(() => {
+          notification.classList.remove('show');
+        }, 5000);
+      }
+      
+      // Make the requestConsultation function globally available
+      window.requestConsultation = function(doctorId, doctorName) {
+        // Generate a unique call ID
+        const callId = `call-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        
+        // Send a consultation request via Socket.IO
+        socket.emit('request-consultation', {
+          doctorId: doctorId,
+          patientId: userId,
+          patientName: userName,
+          callId: callId
+        }, function(success) {
+          if (success) {
+            showNotification(`Consultation request sent to Dr. ${doctorName}`, 'success');
+          } else {
+            showNotification(`Unable to reach Dr. ${doctorName}. Please try again.`, 'error');
+          }
+        });
+      };
+    });
+  </script>
+</body>
+</html> 
