@@ -7,93 +7,138 @@
  */
 
 class ConnectionManager {
-  constructor(options = {}) {
+  constructor() {
+    this.online = navigator.onLine;
+    this.firebaseConnected = false;
+    this.firestoreConnected = false;
+    this.lastChecked = new Date();
+    this.checkInterval = null;
+    this.reconnectAttempts = 0;
+    this.maxReconnectAttempts = 5;
+    this.reconnectInterval = 5000; 
+    this.firebase = null; // Reference to the Firebase app
+    this.firestore = null; // Reference to Firestore
+    this.databaseRef = null; // Reference to Firebase Realtime Database
+
+    // Diagnostics data
+    this.diagnostics = {
+      lastChecked: new Date(),
+      lastOnline: navigator.onLine ? new Date() : null,
+      lastOffline: navigator.onLine ? null : new Date(),
+      connectionChecks: 0,
+      reconnectAttempts: 0,
+      errors: []
+    };
+
+    // Default options
     this.options = {
+      checkInterval: 30000,
       onStatusChange: null,
       onReconnect: null,
       onDisconnect: null,
-      onReconnectFailed: null,  // New callback for reconnect failures
-      checkInterval: 30000, // 30 seconds
       firebaseApp: null,
-      enableBackgroundSync: true, // Whether to enable background sync for offline operations
+      enableOfflinePersistence: true,
+      enableBackgroundSync: true,
+      skipRealtimeDatabase: false // Option to skip Realtime Database connection
+    };
+
+    // Initialize listener for online/offline status
+    this.setupListeners();
+  }
+
+  // Initialize the connection manager
+  init(options) {
+    console.log("Initializing ConnectionManager");
+    
+    // Merge options with defaults
+    this.options = {
+      ...this.options,
       ...options
     };
     
-    this.isOnline = navigator.onLine;
-    this.firebaseConnected = false;
-    this.firestoreConnected = false;
-    this.checkIntervalId = null;
-    this.reconnectAttempts = 0;
-    this.maxReconnectAttempts = 5;
-    this.lastSuccessfulConnection = null;
-    this.lastConnectionAttempt = null;
-    this.isInitialized = false;
-    this.pendingRequests = []; // Queue for requests made while offline
-    this.networkQuality = 'unknown'; // 'good', 'poor', 'unknown'
-    this.diagnosticsData = {}; // Store diagnostic information
-    this.isReconnecting = false;
+    // Store Firebase app instance
+    this.firebase = this.options.firebaseApp;
     
-    // Initialize
-    this.init();
+    // Set up Firebase monitoring if Firebase app is provided
+    this.setupFirebaseMonitoring();
+    
+    // Set up periodic connection check
+    if (this.options.checkInterval > 0) {
+      this.checkInterval = setInterval(() => {
+        this.checkConnection();
+      }, this.options.checkInterval);
+      
+      console.log("Periodic connection check set up (every " + (this.options.checkInterval / 1000) + " seconds)");
+    }
+    
+    // Perform initial check
+    this.checkConnection();
+    
+    // Enable offline persistence for Firestore if supported
+    if (this.options.enableOfflinePersistence && this.firebase && typeof this.firebase.firestore === 'function') {
+      this.enableOfflinePersistence();
+    }
+    
+    console.log("ConnectionManager initialized successfully");
+    return this;
   }
-  
-  /**
-   * Initialize connection manager and event listeners
-   */
-  init() {
+
+  setupFirebaseMonitoring() {
     try {
-      console.log("Initializing ConnectionManager");
-      
-      // Add browser online/offline events
-      this.handleOnline = this.handleOnline.bind(this);
-      this.handleOffline = this.handleOffline.bind(this);
-      
-      window.addEventListener('online', this.handleOnline);
-      window.addEventListener('offline', this.handleOffline);
-      
-      // Add visibility change event to check connection when tab becomes visible
-      document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') {
-          console.log('Tab became visible, checking connection...');
-          this.checkConnection();
-        }
-      });
-      
-      // Set up Firebase connection monitoring if Firebase is provided
-      if (this.options.firebaseApp) {
-        console.log("Setting up Firebase monitoring");
-        this.setupFirebaseMonitoring();
-      } else {
-        console.warn("No Firebase app provided to ConnectionManager");
-        // Try to use global firebase if available
+      if (!this.firebase) {
+        console.log("No Firebase app provided to ConnectionManager");
+        
+        // Use global Firebase instance if available
         if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
           console.log("Using global Firebase instance");
-          this.options.firebaseApp = firebase.app();
-          this.setupFirebaseMonitoring();
+          this.firebase = firebase;
+        } else {
+          return; // Cannot monitor Firebase without an instance
         }
       }
       
-      // Register to send offline data when online
-      if (this.options.enableBackgroundSync && 'serviceWorker' in navigator && 'SyncManager' in window) {
-        this.setupBackgroundSync();
+      // Skip Realtime Database if specified in options or if databaseURL is missing
+      if (this.options.skipRealtimeDatabase) {
+        console.log("Skipping Realtime Database connection monitoring (explicitly disabled)");
+      } else {
+        try {
+          // Try to access the database reference - this will throw an error if databaseURL is missing
+          this.databaseRef = this.firebase.database().ref('.info/connected');
+          
+          // Add listener for connection status
+          this.databaseRef.on('value', (snapshot) => {
+            const connected = snapshot.val() === true;
+            this.firebaseConnected = connected;
+            this.updateConnectionStatus();
+          });
+          
+          console.log("Firebase Realtime Database monitoring set up");
+        } catch (dbError) {
+          console.log("Could not monitor Firebase Realtime Database, falling back to Firestore:", dbError);
+          // Set this option so we don't try to use the database again
+          this.options.skipRealtimeDatabase = true;
+        }
       }
       
-      // Start periodic connection check
-      this.startPeriodicCheck();
-      
-      // Initial check
-      this.checkConnection();
-      
-      // Set up performance monitoring for network quality detection
-      this.setupNetworkQualityMonitoring();
-      
-      this.isInitialized = true;
-      console.log("ConnectionManager initialized successfully");
+      // Always try to monitor Firestore
+      if (this.firebase.firestore) {
+        this.firestore = this.firebase.firestore();
+        
+        // Try to enable the network for Firestore
+        try {
+          this.firestore.enableNetwork().then(() => {
+            console.log("Firestore network enabled");
+            this.checkFirestoreConnection();
+          });
+        } catch (err) {
+          console.warn("Could not enable Firestore network:", err);
+        }
+      }
     } catch (error) {
-      console.error("Error initializing ConnectionManager:", error);
+      console.error("Error setting up Firebase monitoring:", error);
     }
   }
-  
+
   /**
    * Setup background sync for offline operations
    */
@@ -146,141 +191,7 @@ class ConnectionManager {
       updateNetworkQuality(); // Initial check
     } else {
       // Fallback to basic online/offline status
-      this.networkQuality = this.isOnline ? 'unknown' : 'poor';
-    }
-  }
-  
-  /**
-   * Set up Firebase connection monitoring
-   */
-  setupFirebaseMonitoring() {
-    try {
-      const app = this.options.firebaseApp;
-      if (!app) {
-        console.warn("No Firebase app available for monitoring");
-        return;
-      }
-      
-      // First try to get Firebase Database for .info/connected status
-      try {
-        const connRef = firebase.database().ref('.info/connected');
-        connRef.on('value', (snap) => {
-          this.firebaseConnected = snap.val() === true;
-          this.updateStatus();
-          
-          if (this.firebaseConnected) {
-            console.log('Firebase Realtime Database connected');
-            this.reconnectAttempts = 0;
-            this.lastSuccessfulConnection = new Date();
-            this.diagnosticsData.lastFirebaseConnection = new Date();
-            if (this.options.onReconnect) {
-              this.options.onReconnect('firebase');
-            }
-            
-            // Process any pending requests
-            this.processPendingRequests();
-          } else {
-            console.log('Firebase Realtime Database disconnected');
-            this.diagnosticsData.lastFirebaseDisconnection = new Date();
-            if (this.options.onDisconnect) {
-              this.options.onDisconnect('firebase');
-            }
-          }
-        });
-      } catch (dbError) {
-        console.warn("Could not monitor Firebase Realtime Database, falling back to Firestore:", dbError);
-        this.diagnosticsData.firebaseDatabaseError = dbError.message;
-      }
-      
-      // Always monitor Firestore connection as well
-      try {
-        const db = firebase.firestore();
-        
-        // Enable network to ensure we can check connection
-        db.enableNetwork().then(() => {
-          console.log('Firestore network enabled');
-          this.checkFirestoreConnection();
-        }).catch(error => {
-          console.error('Error enabling Firestore network:', error);
-          this.firestoreConnected = false;
-          this.diagnosticsData.firestoreNetworkError = error.message;
-          this.updateStatus();
-        });
-      } catch (fsError) {
-        console.error("Error setting up Firestore monitoring:", fsError);
-        this.firestoreConnected = false;
-        this.diagnosticsData.firestoreSetupError = fsError.message;
-        this.updateStatus();
-      }
-    } catch (error) {
-      console.error("Error in setupFirebaseMonitoring:", error);
-      this.diagnosticsData.firebaseMonitoringError = error.message;
-    }
-  }
-  
-  /**
-   * Start periodic connection check
-   */
-  startPeriodicCheck() {
-    if (this.checkIntervalId) {
-      clearInterval(this.checkIntervalId);
-    }
-    
-    this.checkIntervalId = setInterval(() => {
-      this.checkConnection();
-      
-      // If we're offline but the browser thinks we're online, try to reconnect
-      if (!this.getOverallConnected() && navigator.onLine && !this.isReconnecting) {
-        this.attemptReconnect();
-      }
-    }, this.options.checkInterval);
-    
-    console.log(`Periodic connection check set up (every ${this.options.checkInterval/1000} seconds)`);
-  }
-  
-  /**
-   * Stop periodic connection check
-   */
-  stopPeriodicCheck() {
-    if (this.checkIntervalId) {
-      clearInterval(this.checkIntervalId);
-      this.checkIntervalId = null;
-      console.log("Periodic connection check stopped");
-    }
-  }
-  
-  /**
-   * Handle browser online event
-   */
-  handleOnline() {
-    console.log('Browser reports online status');
-    this.isOnline = true;
-    this.updateStatus();
-    
-    // Attempt to reconnect Firebase
-    if (this.options.firebaseApp && !this.getOverallConnected() && !this.isReconnecting) {
-      this.attemptReconnect();
-    }
-    
-    // Try to process any pending requests
-    this.processPendingRequests();
-    
-    if (this.options.onReconnect) {
-      this.options.onReconnect('browser');
-    }
-  }
-  
-  /**
-   * Handle browser offline event
-   */
-  handleOffline() {
-    console.log('Browser reports offline status');
-    this.isOnline = false;
-    this.networkQuality = 'poor';
-    this.updateStatus();
-    
-    if (this.options.onDisconnect) {
-      this.options.onDisconnect('browser');
+      this.networkQuality = this.online ? 'unknown' : 'poor';
     }
   }
   
@@ -289,14 +200,14 @@ class ConnectionManager {
    */
   checkConnection() {
     // Check browser connection
-    this.isOnline = navigator.onLine;
+    this.online = navigator.onLine;
     
     // Update timestamp
-    this.lastConnectionAttempt = new Date();
+    this.lastChecked = new Date();
     this.diagnosticsData.lastConnectionCheck = new Date();
     
     // Check firestore if needed
-    if (this.options.firebaseApp && this.isOnline) {
+    if (this.firebase && this.online) {
       this.checkFirestoreConnection();
     }
     
@@ -308,17 +219,17 @@ class ConnectionManager {
    * Check if we have any successful connection
    */
   getOverallConnected() {
-    return this.isOnline && (this.firebaseConnected || this.firestoreConnected);
+    return this.online && (this.firebaseConnected || this.firestoreConnected);
   }
   
   /**
    * Check Firestore connection by performing a small query
    */
   checkFirestoreConnection() {
-    if (!this.options.firebaseApp) return Promise.resolve(false);
+    if (!this.firebase) return Promise.resolve(false);
     
     try {
-      const db = firebase.firestore();
+      const db = this.firebase.firestore();
       
       // Measure response time for diagnostics
       const startTime = performance.now();
@@ -369,7 +280,7 @@ class ConnectionManager {
    * Attempt to reconnect to Firebase/Firestore
    */
   attemptReconnect() {
-    if (!this.options.firebaseApp || this.reconnectAttempts >= this.maxReconnectAttempts) {
+    if (!this.firebase || this.reconnectAttempts >= this.maxReconnectAttempts) {
       if (this.reconnectAttempts >= this.maxReconnectAttempts) {
         console.warn(`Maximum reconnection attempts (${this.maxReconnectAttempts}) reached`);
         
@@ -397,7 +308,7 @@ class ConnectionManager {
     };
     
     try {
-      const db = firebase.firestore();
+      const db = this.firebase.firestore();
       
       return db.enableNetwork()
         .then(() => {
@@ -549,8 +460,8 @@ class ConnectionManager {
         // Execute based on request type
         switch (request.type) {
           case 'firestore-set':
-            if (this.options.firebaseApp) {
-              const db = firebase.firestore();
+            if (this.firebase) {
+              const db = this.firebase.firestore();
               const docRef = db.collection(request.data.collection).doc(request.data.docId);
               
               docRef.set(request.data.data, { merge: true })
@@ -626,10 +537,10 @@ class ConnectionManager {
    * Enable offline persistence for Firestore
    */
   enableOfflinePersistence() {
-    if (!this.options.firebaseApp) return Promise.reject(new Error('Firebase not initialized'));
+    if (!this.firebase) return Promise.reject(new Error('Firebase not initialized'));
     
     try {
-      const db = firebase.firestore();
+      const db = this.firebase.firestore();
       return db.enablePersistence({synchronizeTabs: true})
         .then(() => {
           console.log('Firestore offline persistence enabled');
@@ -678,12 +589,12 @@ class ConnectionManager {
   updateStatus() {
     const previousStatus = this.getStatus();
     const currentStatus = {
-      isOnline: this.isOnline,
+      isOnline: this.online,
       firebaseConnected: this.firebaseConnected,
       firestoreConnected: this.firestoreConnected,
       overallStatus: this.getOverallStatus(),
       lastSuccessful: this.lastSuccessfulConnection,
-      lastAttempt: this.lastConnectionAttempt,
+      lastAttempt: this.lastChecked,
       networkQuality: this.networkQuality
     };
     
@@ -703,12 +614,12 @@ class ConnectionManager {
    */
   getStatus() {
     return {
-      isOnline: this.isOnline,
+      isOnline: this.online,
       firebaseConnected: this.firebaseConnected,
       firestoreConnected: this.firestoreConnected,
       overallStatus: this.getOverallStatus(),
       lastSuccessful: this.lastSuccessfulConnection,
-      lastAttempt: this.lastConnectionAttempt,
+      lastAttempt: this.lastChecked,
       pendingRequests: this.pendingRequests.length,
       networkQuality: this.networkQuality,
       isReconnecting: this.isReconnecting
@@ -719,11 +630,11 @@ class ConnectionManager {
    * Get overall connection status
    */
   getOverallStatus() {
-    if (!this.isOnline) {
+    if (!this.online) {
       return 'offline';
     }
     
-    if (this.options.firebaseApp) {
+    if (this.firebase) {
       if (this.firebaseConnected && this.firestoreConnected) {
         return 'connected';
       } else if (this.firebaseConnected || this.firestoreConnected) {
@@ -733,7 +644,7 @@ class ConnectionManager {
       }
     }
     
-    return this.isOnline ? 'connected' : 'offline';
+    return this.online ? 'connected' : 'offline';
   }
   
   /**
@@ -754,11 +665,11 @@ class ConnectionManager {
     
     this.stopPeriodicCheck();
     
-    if (this.options.firebaseApp) {
+    if (this.firebase) {
       try {
         // Disconnect from Firebase Database if we were using it
         try {
-          const connRef = firebase.database().ref('.info/connected');
+          const connRef = this.firebase.database().ref('.info/connected');
           connRef.off('value');
         } catch (dbErr) {
           console.warn('Error removing Firebase Database connection listener:', dbErr);
@@ -766,7 +677,7 @@ class ConnectionManager {
         
         // Disable Firestore network
         try {
-          const db = firebase.firestore();
+          const db = this.firebase.firestore();
           db.disableNetwork().catch(err => {
             console.warn('Error disabling Firestore network:', err);
           });
@@ -777,6 +688,70 @@ class ConnectionManager {
         console.warn('Error during ConnectionManager cleanup:', err);
       }
     }
+  }
+
+  // Update the overall connection status and call the callback if status changed
+  updateConnectionStatus() {
+    const previousStatus = this.getStatus();
+    const currentStatus = {
+      online: this.online,
+      firebaseConnected: this.firebaseConnected,
+      firestoreConnected: this.firestoreConnected,
+      overallConnected: this.getOverallConnected(),
+      lastChecked: this.lastChecked,
+      networkQuality: this.networkQuality || 'unknown'
+    };
+    
+    // Calculate overall status
+    const statusChanged = previousStatus.online !== currentStatus.online || 
+                          previousStatus.firebaseConnected !== currentStatus.firebaseConnected ||
+                          previousStatus.firestoreConnected !== currentStatus.firestoreConnected ||
+                          previousStatus.overallConnected !== currentStatus.overallConnected;
+    
+    if (statusChanged && this.options.onStatusChange) {
+      console.log("Connection status changed:", currentStatus);
+      this.options.onStatusChange(currentStatus);
+    }
+    
+    // Update diagnostics
+    this.diagnostics.lastChecked = new Date();
+    if (currentStatus.online) {
+      this.diagnostics.lastOnline = new Date();
+    } else {
+      this.diagnostics.lastOffline = new Date();
+    }
+    
+    return currentStatus;
+  }
+
+  // Set up browser online/offline event listeners
+  setupListeners() {
+    // Handle online event
+    window.addEventListener('online', () => {
+      console.log('Browser reports online status');
+      this.online = true;
+      this.updateConnectionStatus();
+      
+      // Attempt to reconnect to Firebase services if we have them
+      if (this.firebase) {
+        this.reconnectFirestore();
+      }
+    });
+    
+    // Handle offline event
+    window.addEventListener('offline', () => {
+      console.log('Browser reports offline status');
+      this.online = false;
+      this.updateConnectionStatus();
+    });
+    
+    // Check connection when tab becomes visible
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        console.log('Tab became visible, checking connection...');
+        this.checkConnection();
+      }
+    });
   }
 }
 
