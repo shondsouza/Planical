@@ -172,4 +172,18 @@ yarn-debug.log
 .python-version
 
 # Any .fixed files
-*.fixed 
+*.fixed
+
+# Additional unnecessary files
+*.pkl
+firebase-service-account.json
+chroma_db/
+__pycache__/
+*.csv
+.env
+database.db
+*.bat
+
+# Allow these specific files
+!stresslevel.pkl
+!dreaddit-train.csv 

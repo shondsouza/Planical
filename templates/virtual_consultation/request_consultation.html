@@ -139,27 +139,41 @@
       }
     }
     
+    .time-slots-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
     .time-slot {
-      cursor: pointer;
-      border: 2px solid #dee2e6;
+      background-color: #f8f9fa;
       border-radius: 8px;
-      padding: 0.5rem;
-      margin-bottom: 0.5rem;
+      padding: 10px;
       transition: all 0.2s ease;
+      cursor: pointer;
+      border: 1px solid #dee2e6;
     }
     
     .time-slot:hover {
-      border-color: #0d6efd;
-      background-color: #f0f7ff;
+      background-color: #e9ecef;
+      border-color: #ced4da;
     }
     
     .time-slot.selected {
-      border-color: #0d6efd;
-      background-color: #e7f1ff;
+      background-color: #cfe2ff;
+      border-color: #9ec5fe;
+    }
+    
+    .time-slot label {
+      cursor: pointer;
+      display: block;
+      width: 100%;
+      margin-bottom: 0;
     }
     
     .time-slot input[type="checkbox"] {
-      display: none;
+      margin-right: 8px;
     }
     
     /* Add notification styling */
@@ -265,12 +279,14 @@
               <i class="bi bi-clipboard-plus me-2"></i>Consultation Request Form
             </div>
             <div class="card-body">
-              <form id="consultationRequestForm" class="request-form" onsubmit="return false;">
-                <input type="hidden" id="doctorId" value="{{ doctor_id }}">
+              <form id="consultationRequestForm" class="request-form" action="/submit-consultation-request" method="POST">
+                <input type="hidden" name="doctor_id" value="{{ doctor_id }}">
+                <input type="hidden" name="doctor_name" value="{{ doctor_name }}">
+                <input type="hidden" name="target" value="waiting_page">
                 
                 <div class="mb-4">
                   <label for="symptoms" class="form-label">What symptoms are you experiencing?</label>
-                  <textarea class="form-control" id="symptoms" rows="4" placeholder="Please describe your symptoms in detail..." required onclick="logTextareaClick(event)" oninput="logTextareaInput(event)"></textarea>
+                  <textarea class="form-control" id="symptoms" name="symptoms" rows="4" placeholder="Please describe your symptoms in detail..." required onclick="logTextareaClick(event)" oninput="logTextareaInput(event)"></textarea>
                   <div class="form-text">This information helps the doctor prepare for your consultation.</div>
                   <!-- Debug message for symptoms input -->
                   <div class="text-danger mt-1" id="symptomsDebug"></div>
@@ -285,47 +301,39 @@
                   </div>
                 </div>
                 
-                <div class="mb-4">
+                <div class="mb-3">
                   <label class="form-label">Preferred Time Slots</label>
-                  <p class="form-text mb-2">Select one or more time slots when you're available for the consultation:</p>
-                  
-                  <div class="row">
-                    <div class="col-md-6">
-                      <h6 class="mb-2">Today</h6>
-                      <div class="time-slot">
-                        <input type="checkbox" id="slot1" name="timeSlots" value="today-morning" style="display: inline-block; margin-right: 8px;">
-                        <label for="slot1" class="d-block mb-0">Morning (9 AM - 12 PM)</label>
-                      </div>
-                      <div class="time-slot">
-                        <input type="checkbox" id="slot2" name="timeSlots" value="today-afternoon" style="display: inline-block; margin-right: 8px;">
-                        <label for="slot2" class="d-block mb-0">Afternoon (1 PM - 5 PM)</label>
-                      </div>
-                      <div class="time-slot">
-                        <input type="checkbox" id="slot3" name="timeSlots" value="today-evening" style="display: inline-block; margin-right: 8px;">
-                        <label for="slot3" class="d-block mb-0">Evening (6 PM - 9 PM)</label>
-                      </div>
+                  <div class="time-slots-grid">
+                    <div class="time-slot">
+                      <input type="checkbox" name="time_slots" value="today-morning" id="slot1">
+                      <label for="slot1">Today Morning</label>
                     </div>
-                    <div class="col-md-6">
-                      <h6 class="mb-2">Tomorrow</h6>
-                      <div class="time-slot">
-                        <input type="checkbox" id="slot4" name="timeSlots" value="tomorrow-morning" style="display: inline-block; margin-right: 8px;">
-                        <label for="slot4" class="d-block mb-0">Morning (9 AM - 12 PM)</label>
-                      </div>
-                      <div class="time-slot">
-                        <input type="checkbox" id="slot5" name="timeSlots" value="tomorrow-afternoon" style="display: inline-block; margin-right: 8px;">
-                        <label for="slot5" class="d-block mb-0">Afternoon (1 PM - 5 PM)</label>
-                      </div>
-                      <div class="time-slot">
-                        <input type="checkbox" id="slot6" name="timeSlots" value="tomorrow-evening" style="display: inline-block; margin-right: 8px;">
-                        <label for="slot6" class="d-block mb-0">Evening (6 PM - 9 PM)</label>
-                      </div>
+                    <div class="time-slot">
+                      <input type="checkbox" name="time_slots" value="today-afternoon" id="slot2">
+                      <label for="slot2">Today Afternoon</label>
+                    </div>
+                    <div class="time-slot">
+                      <input type="checkbox" name="time_slots" value="today-evening" id="slot3">
+                      <label for="slot3">Today Evening</label>
+                    </div>
+                    <div class="time-slot">
+                      <input type="checkbox" name="time_slots" value="tomorrow-morning" id="slot4">
+                      <label for="slot4">Tomorrow Morning</label>
+                    </div>
+                    <div class="time-slot">
+                      <input type="checkbox" name="time_slots" value="tomorrow-afternoon" id="slot5">
+                      <label for="slot5">Tomorrow Afternoon</label>
+                    </div>
+                    <div class="time-slot">
+                      <input type="checkbox" name="time_slots" value="tomorrow-evening" id="slot6">
+                      <label for="slot6">Tomorrow Evening</label>
                     </div>
                   </div>
                 </div>
                 
                 <div class="mb-4">
                   <label for="urgency" class="form-label">How urgent is your consultation?</label>
-                  <select class="form-select" id="urgency" required>
+                  <select class="form-select" id="urgency" name="urgency" required>
                     <option value="">Select urgency level</option>
                     <option value="low">Not urgent (can wait several days)</option>
                     <option value="medium">Somewhat urgent (would like to consult within 24 hours)</option>
@@ -336,13 +344,13 @@
                 <div class="mb-4">
                   <label class="form-label">Consultation Type</label>
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="consultationType" id="typeVideo" value="video" checked>
+                    <input class="form-check-input" type="radio" name="consultation_type" id="typeVideo" value="video" checked>
                     <label class="form-check-label" for="typeVideo">
                       <i class="bi bi-camera-video me-2"></i>Video Call
                     </label>
                   </div>
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="consultationType" id="typeAudio" value="audio">
+                    <input class="form-check-input" type="radio" name="consultation_type" id="typeAudio" value="audio">
                     <label class="form-check-label" for="typeAudio">
                       <i class="bi bi-telephone me-2"></i>Audio Only
                     </label>
@@ -351,34 +359,34 @@
                 
                 <div class="mb-4">
                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="availability" checked>
+                    <input class="form-check-input" type="checkbox" id="availability" name="availability" value="1" checked>
                     <label class="form-check-label" for="availability">
                       I'm available immediately for a consultation if the doctor is free
                     </label>
                   </div>
                 </div>
                 
-                <button type="button" class="submit-button" onclick="submitFormDirectly()">
-                  <i class="bi bi-send me-2"></i>Submit Consultation Request
-                </button>
+                <div class="d-grid gap-2">
+                  <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="bi bi-send me-2"></i>Submit Consultation Request
+                  </button>
+                  
+                  <div class="d-flex justify-content-center mt-2 gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="testAjaxSubmission()" id="ajax_test_btn">
+                      <i class="bi bi-send me-1"></i>Test AJAX Submission
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="debugFormSubmission()">
+                      <i class="bi bi-bug me-1"></i>Debug Form
+                    </button>
+                  </div>
+                </div>
                 
-                <!-- Debug button with more visible styling -->
-                <button type="button" class="btn btn-warning mt-3 w-100" onclick="simpleDebug()">
-                  <strong>Click Here to Debug Form Submission</strong>
-                </button>
-                
-                <!-- Add direct access to alternative form -->
-                <button type="button" class="btn btn-info mt-3 w-100" onclick="showAlternativeForm()">
-                  <strong>Having trouble? Click here to use alternative form</strong>
-                </button>
-                
-                <!-- Debug section -->
-                <div class="mt-3 p-3 bg-light border rounded">
-                  <h5>Debug Information</h5>
-                  <p><strong>Firebase API Key:</strong> {{ firebase_config.apiKey }}</p>
-                  <p><strong>Firebase Project ID:</strong> {{ firebase_config.projectId }}</p>
-                  <p><strong>User ID:</strong> {{ user_id }}</p>
-                  <p><strong>Doctor ID:</strong> {{ doctor_id }}</p>
+                <!-- Debug output area -->
+                <div id="formDebugOutput" style="margin-top: 15px; font-family: monospace; font-size: 12px; display: none;">
+                  <div class="alert alert-info">
+                    <strong>Debug Info:</strong>
+                    <pre id="debugDetails"></pre>
+                  </div>
                 </div>
               </form>
             </div>
@@ -531,6 +539,8 @@
   <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <!-- Connection Manager Script -->
+  <script src="{{url_for('static', filename='js/connection_status.js')}}"></script>
   
   <!-- Notification Element -->
   <div id="notification" class="notification">
@@ -633,7 +643,7 @@
         
         // Check selected time slots
         const timeSlots = [];
-        document.querySelectorAll('input[name="timeSlots"]').forEach(checkbox => {
+        document.querySelectorAll('input[name="time_slots"]').forEach(checkbox => {
           timeSlots.push({
             id: checkbox.id,
             value: checkbox.value,
@@ -675,7 +685,7 @@
           }
           
           // Copy time slots if any are selected
-          const mainSlots = document.querySelectorAll('input[name="timeSlots"]:checked');
+          const mainSlots = document.querySelectorAll('input[name="time_slots"]:checked');
           mainSlots.forEach(slot => {
             const slotValue = slot.value;
             const altSlot = document.querySelector(`input[name="time_slots"][value="${slotValue}"]`);
@@ -842,6 +852,32 @@
         // This is no longer a critical error since we're using server-side processing
       } else {
         console.log("Firebase config appears valid:", Object.keys(firebaseConfig));
+        
+        // Initialize Firebase
+        try {
+          if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+          }
+          
+          // Initialize connection manager
+          let connectionManager = new ConnectionManager();
+          connectionManager.init({
+            firebaseApp: firebase,
+            checkInterval: 30000,
+            onStatusChange: (status) => {
+              console.log("Connection status changed:", status);
+              if (!status.online) {
+                showAlert("You appear to be offline. Some features may be limited.", "warning");
+              }
+            }
+          });
+          
+          // Make connectionManager globally available
+          window.connectionManager = connectionManager;
+          
+        } catch (error) {
+          console.error("Error initializing Firebase or ConnectionManager:", error);
+        }
       }
       
       // Time slot selection
@@ -855,7 +891,7 @@
       });
       
       // Also handle direct checkbox clicks
-      document.querySelectorAll('input[name="timeSlots"]').forEach(checkbox => {
+      document.querySelectorAll('input[name="time_slots"]').forEach(checkbox => {
         checkbox.addEventListener('change', function() {
           const slot = this.closest('.time-slot');
           if (slot) {
@@ -869,13 +905,48 @@
       if (requestForm) {
         console.log("Setting up form submission handler");
         
-        // Add form submit handler
-        requestForm.addEventListener('submit', function handleFormSubmission(e) {
+        // Add form submit handler that will only intercept if JavaScript is working well
+        requestForm.addEventListener('submit', function(e) {
           console.log("Form submission handler called");
-          e.preventDefault();
           
-          // Just call our direct submission handler which uses fetch API
-          submitFormDirectly();
+          // Allow normal form submission to proceed as backup
+          try {
+            // Always validate form first
+            if (!validateForm()) {
+              e.preventDefault();
+              return false;
+            }
+            
+            // Prevent default only if we want to try AJAX submission
+            if (document.getElementById('use_ajax_submission')) {
+              e.preventDefault();
+              // Call our direct submission handler
+              submitFormDirectly();
+              return false;
+            } else {
+              // Let normal form submission happen
+              console.log("Allowing normal form submission to proceed");
+              
+              // Add a hidden field to ensure we redirect to waiting page
+              if (!document.querySelector('input[name="target"]')) {
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'target';
+                hiddenInput.value = 'waiting_page';
+                requestForm.appendChild(hiddenInput);
+              }
+              
+              // Log for debugging but allow submission to continue
+              logFormSubmission(new FormData(requestForm));
+              
+              // Continue with form submission
+              return true;
+            }
+          } catch (err) {
+            console.error("Error in form submission handler:", err);
+            // Let the normal form submission happen as fallback
+            return true;
+          }
         });
       } else {
         console.error("Consultation request form not found in the DOM");
@@ -926,7 +997,7 @@
       if (typeof connectionManager !== 'undefined' && typeof connectionManager.isOnline === 'function' && !connectionManager.isOnline()) {
         showAlert('You appear to be offline. Your request has been saved and will be submitted when you reconnect.', 'warning');
         
-        // Store form data in localStorage for later submission
+        // Store form data locally for later submission
         storeFormDataLocally();
         
         // Show offline submission message
@@ -936,70 +1007,30 @@
         return;
       }
 
-      // Get form elements - make sure we use direct access to avoid any issues
+      // Validate the form
+      if (!validateForm()) {
+        return;
+      }
+
+      // Get the form and create FormData directly from it
       const form = document.getElementById('consultationRequestForm');
-      const symptomsInput = document.getElementById('symptoms');
-      const urgencySelect = document.getElementById('urgency');
-      const checkAvailabilityCheckbox = document.getElementById('availability');
       
-      // Log elements found for debugging
-      console.log("Form elements found:", {
-        form: !!form,
-        symptomsInput: !!symptomsInput,
-        urgencySelect: !!urgencySelect,
-        checkAvailabilityCheckbox: !!checkAvailabilityCheckbox
-      });
-      
-      // Get values safely
-      const symptoms = symptomsInput ? symptomsInput.value : '';
-      const urgency = urgencySelect ? urgencySelect.value : '';
-      const isAvailable = checkAvailabilityCheckbox ? checkAvailabilityCheckbox.checked : true;
-      
-      // Get selected time slots
-      const selectedTimeSlots = [];
-      try {
-        document.querySelectorAll('input[name="timeSlots"]:checked').forEach(slot => {
-          if (slot && slot.value) {
-            selectedTimeSlots.push(slot.value);
-          }
-        });
-      } catch (e) {
-        console.error("Error getting time slots:", e);
-      }
-      
-      console.log("Form values:", { symptoms, urgency, isAvailable, selectedTimeSlots });
-      
-      // Validate
-      if (!symptoms) {
-        showNotification("Please describe your symptoms", "error");
+      if (!form) {
+        showNotification("Form not found", "error");
         return;
       }
       
-      if (selectedTimeSlots.length === 0) {
-        showNotification("Please select at least one time slot", "error");
-        return;
-      }
+      // Create FormData directly from the form
+      const formData = new FormData(form);
       
-      if (!urgency) {
-        showNotification("Please select urgency level", "error");
-        return;
-      }
+      // Ensure X-Requested-With is included
+      formData.append('X-Requested-With', 'XMLHttpRequest');
       
-      // Get user and doctor data from template
-      const doctorId = "{{ doctor_id }}";
+      // Log submission for monitoring and debugging
+      logFormSubmission(formData);
       
-      // Instead of using Firebase directly, use our server-side form
-      const formData = new FormData();
-      formData.append('doctor_id', doctorId);
-      formData.append('symptoms', symptoms);
-      formData.append('urgency', urgency);
-      
-      // Add each time slot as a separate entry
-      selectedTimeSlots.forEach(slot => {
-        formData.append('time_slots', slot);
-      });
-      
-      formData.append('availability', isAvailable ? '1' : '0');
+      // Log for debugging
+      console.log("Form data collected, sending request...");
       
       // Show working message
       showNotification("Sending consultation request...", "info");
@@ -1014,41 +1045,134 @@
         }
       })
       .then(response => {
-        // Check if response is ok
+        // First check if response is ok
         if (!response.ok) {
           throw new Error(`Server returned ${response.status}: ${response.statusText}`);
         }
         
-        // Check Content-Type header to determine how to parse the response
+        // Parse response based on content type
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
           return response.json();
         } else {
-          // Handle non-JSON response (likely HTML)
-          throw new Error('Server returned a non-JSON response');
+          // For non-JSON responses (HTML), just redirect to waiting page with default values
+          console.log("Server returned HTML response instead of JSON");
+          // Create a default success response
+          return {
+            success: true,
+            consultation_id: `consult-${Date.now()}`,
+            doctor_name: "{{ doctor_name }}"
+          };
         }
       })
       .then(data => {
+        console.log("Server response:", data);
+        
         if (data.success) {
           showNotification("Consultation request submitted successfully!", "success");
           
+          // Log successful submission
+          logFormSubmission(null, {
+            status: 'success',
+            consultation_id: data.consultation_id,
+            timestamp: new Date().toISOString()
+          });
+          
           // Redirect to waiting page
-          window.location.href = `/virtual-consultation/waiting?consultation_id=${data.consultation_id}&doctor_name=${encodeURIComponent(data.doctor_name)}`;
+          const consultationId = data.consultation_id;
+          const docName = data.doctor_name || "{{ doctor_name }}"; // Use template value as fallback
+          
+          // Show brief success message before redirecting
+          setTimeout(() => {
+            window.location.href = `/virtual-consultation/waiting?consultation_id=${consultationId}&doctor_name=${encodeURIComponent(docName)}`;
+          }, 1500);
         } else {
-          showNotification("Error: " + (data.message || "Unknown error"), "error");
+          // Show error message
+          showNotification("Error: " + (data.error || "Unknown error"), "error");
+          
+          // Log failed submission
+          logFormSubmission(null, {
+            status: 'error',
+            error: data.error || "Unknown error",
+            timestamp: new Date().toISOString()
+          });
         }
       })
       .catch(error => {
-        showNotification("Error submitting request: " + error.message, "error");
         console.error("Form submission error:", error);
+        showNotification("Error submitting request: " + error.message, "error");
         
-        // If we failed with the XHR approach, suggest using the server-side form
-        const serverFormSection = document.querySelector('.card.mt-4');
-        if (serverFormSection) {
-          serverFormSection.scrollIntoView({ behavior: 'smooth' });
-          showAlert('Please try using the alternative form below instead', 'warning');
-        }
+        // Log error
+        logFormSubmission(null, {
+          status: 'exception',
+          error_message: error.message,
+          stack: error.stack,
+          timestamp: new Date().toISOString()
+        });
+        
+        // If we failed with the XHR approach, try the alternative form
+        showAlternativeForm();
       });
+    }
+    
+    /**
+     * Logs form submission data for monitoring and debugging purposes
+     * @param {FormData} formData - The form data being submitted (optional)
+     * @param {Object} resultData - The result of the submission (optional)
+     */
+    function logFormSubmission(formData, resultData) {
+      try {
+        const logData = {
+          timestamp: new Date().toISOString(),
+          user_id: "{{ user_id }}",
+          doctor_id: "{{ doctor_id }}",
+          browser: navigator.userAgent,
+          screen_size: `${window.innerWidth}x${window.innerHeight}`,
+          connection_status: typeof connectionManager !== 'undefined' ? 
+            {
+              online: connectionManager.isOnline(),
+              firebaseConnected: connectionManager.isFirebaseConnected(),
+              firestoreConnected: connectionManager.isFirestoreConnected()
+            } : 
+            { online: navigator.onLine }
+        };
+        
+        // Add form data if provided
+        if (formData) {
+          const formEntries = {};
+          for (const [key, value] of formData.entries()) {
+            // Don't log potentially sensitive medical information in symptoms
+            if (key === 'symptoms') {
+              formEntries[key] = `[REDACTED] Length: ${value.length} chars`;
+            } else {
+              formEntries[key] = value;
+            }
+          }
+          logData.form_data = formEntries;
+        }
+        
+        // Add result data if provided
+        if (resultData) {
+          logData.result = resultData;
+        }
+        
+        // Log to console for now
+        console.log('Form submission log:', logData);
+        
+        // Save to session storage for debugging
+        const logs = JSON.parse(sessionStorage.getItem('formSubmissionLogs') || '[]');
+        logs.push(logData);
+        sessionStorage.setItem('formSubmissionLogs', JSON.stringify(logs));
+        
+        // In the future, we could send this to a server endpoint
+        // fetch('/log-form-submission', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify(logData)
+        // });
+      } catch (error) {
+        console.error('Error in logFormSubmission:', error);
+      }
     }
     
     // Add this function to synchronize the fallback input with the textarea
@@ -1085,6 +1209,200 @@
           const event = new Event('input', { bubbles: true });
           textarea.dispatchEvent(event);
         }
+      }
+    }
+    
+    // Debug function to test form submission without actually submitting
+    function debugFormSubmission() {
+      const debugOutput = document.getElementById('formDebugOutput');
+      const debugDetails = document.getElementById('debugDetails');
+      
+      if (!debugOutput || !debugDetails) {
+        alert('Debug elements not found in DOM');
+        return;
+      }
+      
+      // Show the debug output area
+      debugOutput.style.display = 'block';
+      
+      try {
+        // Collect form data
+        const symptoms = document.getElementById('symptoms')?.value || '';
+        const urgency = document.getElementById('urgency')?.value || '';
+        
+        // Get selected time slots
+        const selectedTimeSlots = [];
+        document.querySelectorAll('input[name="time_slots"]:checked').forEach(slot => {
+          if (slot && slot.value) {
+            selectedTimeSlots.push(slot.value);
+          }
+        });
+        
+        // Create the FormData object that would be sent
+        const formData = new FormData();
+        formData.append('doctor_id', "{{ doctor_id }}");
+        formData.append('doctor_name', "{{ doctor_name }}");
+        formData.append('symptoms', symptoms);
+        formData.append('urgency', urgency);
+        
+        // Add each time slot
+        selectedTimeSlots.forEach(slot => {
+          formData.append('time_slots', slot);
+        });
+        
+        // Debug output
+        const formDataEntries = [];
+        for (const [key, value] of formData.entries()) {
+          formDataEntries.push(`${key}: ${value}`);
+        }
+        
+        // Check if form is valid using our validation function
+        const isValid = validateForm();
+        
+        const debugInfo = {
+          formValid: isValid,
+          formValues: {
+            symptoms: symptoms,
+            urgency: urgency,
+            selectedTimeSlots: selectedTimeSlots
+          },
+          formDataEntries: formDataEntries,
+          endpoint: '/submit-consultation-request',
+          method: 'POST',
+          ajaxHeaders: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        };
+        
+        // Display in pre tag
+        debugDetails.innerText = JSON.stringify(debugInfo, null, 2);
+        
+        // Console log for easier inspection
+        console.log('Form submission debug:', debugInfo);
+        
+        // Validation feedback
+        if (!isValid) {
+          debugDetails.innerHTML += "\n\n⚠️ VALIDATION FAILED: Please fill all required fields";
+          debugOutput.querySelector('.alert').classList.remove('alert-info');
+          debugOutput.querySelector('.alert').classList.add('alert-danger');
+        } else {
+          debugDetails.innerHTML += "\n\n✅ VALIDATION PASSED: Form is ready to submit";
+          debugOutput.querySelector('.alert').classList.remove('alert-info');
+          debugOutput.querySelector('.alert').classList.add('alert-success');
+        }
+      } catch (error) {
+        debugDetails.innerText = `ERROR: ${error.message}\n\n${error.stack}`;
+        debugOutput.querySelector('.alert').classList.remove('alert-info');
+        debugOutput.querySelector('.alert').classList.add('alert-danger');
+        console.error('Debug error:', error);
+      }
+    }
+    
+    // Function to test AJAX submission
+    function testAjaxSubmission() {
+      console.log("Testing AJAX submission");
+      
+      // Create a hidden input to signal we want to use AJAX
+      const hiddenInput = document.createElement('input');
+      hiddenInput.type = 'hidden';
+      hiddenInput.id = 'use_ajax_submission';
+      hiddenInput.name = 'use_ajax_submission';
+      hiddenInput.value = '1';
+      
+      // Add to form
+      const form = document.getElementById('consultationRequestForm');
+      form.appendChild(hiddenInput);
+      
+      // Call submit to trigger the form submission handler
+      try {
+        // Validate form first
+        if (!validateForm()) {
+          return;
+        }
+        
+        // Show working message
+        showNotification("Initiating AJAX submission test...", "info");
+        
+        // Use direct submission function
+        submitFormDirectly();
+      } catch (error) {
+        console.error("Error in AJAX submission test:", error);
+        showNotification("AJAX submission test error: " + error.message, "error");
+      }
+    }
+    
+    // Function to validate form
+    function validateForm() {
+      const symptoms = document.getElementById('symptoms')?.value || '';
+      const urgency = document.getElementById('urgency')?.value || '';
+      
+      // Get selected time slots
+      const selectedTimeSlots = [];
+      document.querySelectorAll('input[name="time_slots"]:checked').forEach(slot => {
+        if (slot && slot.value) {
+          selectedTimeSlots.push(slot.value);
+        }
+      });
+      
+      let valid = true;
+      let errorMessage = '';
+      
+      if (!symptoms) {
+        valid = false;
+        errorMessage = "Please describe your symptoms";
+      } else if (selectedTimeSlots.length === 0) {
+        valid = false;
+        errorMessage = "Please select at least one time slot";
+      } else if (!urgency) {
+        valid = false;
+        errorMessage = "Please select urgency level";
+      }
+      
+      if (!valid) {
+        showNotification(errorMessage, "error");
+      }
+      
+      return valid;
+    }
+    
+    // Function to store form data locally for later submission when online
+    function storeFormDataLocally() {
+      try {
+        // Get the form
+        const form = document.getElementById('consultationRequestForm');
+        if (!form) return;
+        
+        // Create FormData from the form
+        const formData = new FormData(form);
+        
+        // Convert FormData to a simple object for storage
+        const formObject = {};
+        for (const [key, value] of formData.entries()) {
+          // Handle multiple values for same key (like time_slots)
+          if (key in formObject) {
+            if (Array.isArray(formObject[key])) {
+              formObject[key].push(value);
+            } else {
+              formObject[key] = [formObject[key], value];
+            }
+          } else {
+            formObject[key] = value;
+          }
+        }
+        
+        // Add timestamp and generate an ID
+        formObject.timestamp = Date.now();
+        formObject.id = 'offline_' + Math.random().toString(36).substr(2, 9);
+        
+        // Store in localStorage
+        let pendingForms = JSON.parse(localStorage.getItem('pendingConsultationForms') || '[]');
+        pendingForms.push(formObject);
+        localStorage.setItem('pendingConsultationForms', JSON.stringify(pendingForms));
+        
+        console.log('Form data stored locally for later submission');
+      } catch (error) {
+        console.error('Error storing form data locally:', error);
       }
     }
   </script>

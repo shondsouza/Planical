@@ -123,6 +123,63 @@
             background-color: #ffc107;
             color: #212529;
         }
+        /* Toast notification styles */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1100;
+        }
+        .toast {
+            max-width: 350px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            margin-bottom: 10px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            animation: toast-in 0.3s ease-out forwards;
+        }
+        .toast.hiding {
+            animation: toast-out 0.3s ease-in forwards;
+        }
+        .toast-icon {
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 0;
+            font-size: 1.2rem;
+        }
+        .toast-content {
+            flex: 1;
+            padding: 12px;
+        }
+        .toast-info .toast-icon {
+            background-color: #0dcaf0;
+            color: white;
+        }
+        .toast-success .toast-icon {
+            background-color: #198754;
+            color: white;
+        }
+        .toast-error .toast-icon {
+            background-color: #dc3545;
+            color: white;
+        }
+        .toast-warning .toast-icon {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        @keyframes toast-in {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes toast-out {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(100%); opacity: 0; }
+        }
         .loading-indicator {
             display: flex;
             flex-direction: column;
@@ -259,6 +316,9 @@
         <div id="notificationMessage"></div>
     </div>
 
+    <!-- Toast container for notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
     <script>
         try {
             document.addEventListener('DOMContentLoaded', function() {
@@ -279,6 +339,8 @@
                 const toggleAudioBtn = document.getElementById('toggleAudio');
                 const toggleVideoBtn = document.getElementById('toggleVideo');
                 const endCallBtn = document.getElementById('endCall');
+                const notificationElement = document.getElementById('notification');
+                const toastContainer = document.getElementById('toastContainer');
                 
                 // WebRTC variables
                 let peer;
@@ -312,24 +374,13 @@
                     updateConnectionStatus('<i class="bi bi-wifi"></i> Reconnected to server', 'success');
                 });
                 
-                // Notification function
+                // Function to show notification
                 function showNotification(message, type = 'info') {
-                    const notification = document.getElementById('notification');
-                    const notificationMessage = document.getElementById('notificationMessage');
+                    notificationElement.textContent = message;
+                    notificationElement.className = `notification show notification-${type}`;
                     
-                    // Set the message
-                    notificationMessage.textContent = message;
-                    
-                    // Set the notification type
-                    notification.className = 'notification';
-                    notification.classList.add(`notification-${type}`);
-                    
-                    // Show the notification
-                    notification.classList.add('show');
-                    
-                    // Hide the notification after 5 seconds
                     setTimeout(() => {
-                        notification.classList.remove('show');
+                        notificationElement.classList.remove('show');
                     }, 5000);
                 }
                 
@@ -672,7 +723,7 @@
                         console.log('Call closed');
                         
                         // Update call state
-                        callState.setRemoteConnected(false);
+                        callState.setCallActive(false);
                         
                         // Clear remote video
                         if (remoteVideo.srcObject) {
@@ -856,9 +907,18 @@
                         callId: callId
                     });
                     
+                    // If user is a doctor, update consulting status
+                    if (userRole === 'doctor') {
+                        socket.emit('doctor-consulting', {
+                            doctorId: userId,
+                            consultationId: callId,
+                            status: false
+                        });
+                    }
+                    
                     // Redirect back to dashboard after a short delay
                     setTimeout(() => {
-                        window.location.href = '/virtual-consultation';
+                        window.location.href = userRole === 'doctor' ? '/doctor-dashboard' : '/dashboard';
                     }, 2000);
                 }
                 
