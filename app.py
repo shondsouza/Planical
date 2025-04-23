@@ -2330,5 +2330,15 @@ def api_doctor_requests(doctor_id):
         print(f"Error in API endpoint: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/test-peerjs')
+def test_peerjs():
+    """Serve a test page for PeerJS functionality"""
+    return render_template('test_peerjs.html')
+
+@app.route('/debug-peerjs')
+def debug_peerjs():
+    """Serve a diagnostic tool for PeerJS connection issues"""
+    return render_template('debug_peerjs.html')
+
 if __name__ == "__main__":
     socketio.run(app, host='0.0.0.0', port=5000, debug=True, allow_unsafe_werkzeug=True)

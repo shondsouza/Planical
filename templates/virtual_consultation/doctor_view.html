@@ -2157,23 +2157,25 @@
   <script>
     function safeSetupConnectionManager() {
       try {
-        if (typeof ConnectionManager !== 'function') {
-          console.error("ConnectionManager not found - SAFE REWRITE");
+        // Set up connection manager if Firebase is available
+        if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) {
+          console.log("Firebase not initialized, skipping connection manager setup");
           return;
         }
         
-        // Create a custom ConnectionManager config that handles missing databaseURL
+        // Set up connection manager configuration
         const connectionConfig = {
           firebaseApp: firebase,
-          checkInterval: 30000,
-          skipRealtimeDatabase: true, // Add this flag to skip Realtime Database
+          checkInterval: 30000, // Check every 30 seconds
+          skipRealtimeDatabase: true,
           onStatusChange: function(status) {
-            console.log("Connection status changed - SAFE REWRITE:", status);
-            if (!status.online) {
-              window.safeShowNotification("You appear to be offline. Some features may be limited.", "warning");
-              window.safeUpdateSocketStatus('Offline', 'Device appears offline');
-            } else {
-              window.safeUpdateSocketStatus('Online', 'Connected to services');
+            safeUpdateSocketStatus(status.overallStatus, getStatusDescription(status));
+            
+            // Update last check time
+            const lastCheckEl = document.getElementById('last-check-time');
+            if (lastCheckEl) {
+              const now = new Date();
+              lastCheckEl.textContent = now.toLocaleTimeString();
             }
           }
         };
@@ -2182,17 +2184,30 @@
         const fbConfig = firebase.apps[0]?.options || {};
         if (fbConfig.databaseURL && fbConfig.databaseURL.includes('firebaseio.com')) {
           connectionConfig.databaseURL = fbConfig.databaseURL;
+          connectionConfig.skipRealtimeDatabase = false;
         } else {
           console.log("No valid databaseURL found, will skip Realtime Database checks");
+          connectionConfig.skipRealtimeDatabase = true;
         }
         
-        let connManager = new ConnectionManager();
-        connManager.init(connectionConfig);
+        // Create ConnectionManager with configuration
+        window.connectionManager = new ConnectionManager(connectionConfig);
         
-        // Make connection manager globally available
-        window.connectionManager = connManager;
       } catch (error) {
         console.error("Error setting up connection manager - SAFE REWRITE:", error);
+      }
+    }
+    
+    // Helper to get a user-friendly status description
+    function getStatusDescription(status) {
+      if (!status.isOnline) return "You're offline";
+      
+      if (status.firebaseConnected && status.firestoreConnected) {
+        return "All systems connected";
+      } else if (status.firebaseConnected || status.firestoreConnected) {
+        return "Partial connection";
+      } else {
+        return "Limited connectivity";
       }
     }
   </script>
@@ -2439,3 +2454,29 @@
 </body>
 </html> 
 </html> 
+<!-- Fix for consultation notifications -->
+<script>
+  // Add a generic listener for consultation requests
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.socket) {
+      window.socket.on('new-consultation-request', function(data) {
+        console.log('Generic consultation request received:', data);
+        if (typeof safeAddConsultationRequest === 'function') {
+          safeAddConsultationRequest(data);
+        }
+        if (typeof safeShowNotification === 'function') {
+          safeShowNotification('New consultation request from ' + (data.patientName || 'a patient'), 'info');
+        }
+      });
+      window.socket.on('new-consultation-notification', function(data) {
+        console.log('Generic consultation notification received:', data);
+        if (typeof safeAddConsultationRequest === 'function') {
+          safeAddConsultationRequest(data);
+        }
+        if (typeof safeShowNotification === 'function') {
+          safeShowNotification('New consultation request from ' + (data.patientName || 'a patient'), 'info');
+        }
+      });
+    }
+  });
+</script>
