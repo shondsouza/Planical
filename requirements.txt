@@ -19,3 +19,8 @@ Flask-WTF==0.15.1
 WTForms==2.3.3
 pyrebase4==4.8.0
 numpy
+pandas
+matplotlib
+seaborn
+scikit-learn
+scipy
