@@ -1763,16 +1763,16 @@
         </div>
         <div class="home-buttons2">
           {% if session.get('user') %}
-            <a href="{{ url_for('virtual_consultation') }}" class="home-get-started5 button" style="text-decoration: none; cursor: pointer; background-color: #0d6efd; color: white; padding: 15px 30px; border-radius: 50px; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#000000';" onmouseout="this.style.backgroundColor='#0d6efd';">
+            <a href="{{ url_for('virtual_consultation') }}" class="home-get-started5 button" style="text-decoration: none; cursor: pointer; background-color: white; color: #0d6efd; padding: 15px 30px; border-radius: 50px; font-weight: 600; border: 2px solid #0d6efd; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#f2f2f2'; this.style.color='#0d6efd';" onmouseout="this.style.backgroundColor='white'; this.style.color='#0d6efd';">
               <span class="home-text32">Start Video Call with Doctor</span>
             </a>
           {% else %}
-            <a href="{{ url_for('login') }}" class="home-get-started5 button" style="text-decoration: none; cursor: pointer; background-color: #0d6efd; color: white; padding: 15px 30px; border-radius: 50px; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#000000';" onmouseout="this.style.backgroundColor='#0d6efd';">
+            <a href="{{ url_for('login') }}" class="home-get-started5 button" style="text-decoration: none; cursor: pointer; background-color: white; color: #0d6efd; padding: 15px 30px; border-radius: 50px; font-weight: 600; border: 2px solid #0d6efd; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#f2f2f2'; this.style.color='#0d6efd';" onmouseout="this.style.backgroundColor='white'; this.style.color='#0d6efd';">
               <span class="home-text32">Get started</span>
             </a>
           {% endif %}
-          <a href="{{ url_for('help_support') }}" class="home-book-demo button" style="text-decoration: none; cursor: pointer; background-color: transparent; color: #0d6efd; padding: 15px 30px; border-radius: 50px; font-weight: 600; border: 2px solid #0d6efd; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#0d6efd'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#0d6efd';">
-            <span class="home-text33">Learn More</span>
+          <a href="{{ url_for('help_support') }}" class="home-book-demo button" style="text-decoration: none; cursor: pointer; background-color: white; color: #0d6efd; padding: 15px 30px; border-radius: 50px; font-weight: 600; border: 2px solid #0d6efd; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='#f2f2f2'; this.style.color='#0d6efd';" onmouseout="this.style.backgroundColor='white'; this.style.color='#0d6efd';">
+            <span class="home-text33" style="color: #0d6efd;">Learn More</span>
           </a>
         </div>
       </main>
@@ -1808,7 +1808,7 @@
                 <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 15px; color: #2a2a2a;">
                   <i class="bi bi-activity me-2" style="color: #0d6efd;"></i>Stress Analysis
                 </h3>
-                <p style="color: #666; font-size: 16px; line-height: 1.7; margin-bottom: 25px;">
+                <p style="color: #fff; font-size: 16px; line-height: 1.7; margin-bottom: 25px;">
                   Visual representations of various stress-related data including types of stress, common causes, and impact analysis. Gain insights through comprehensive data visualization.
                 </p>
                 <a href="{{url_for('analysis')}}" style="display: inline-flex; align-items: center; color: #0d6efd; font-weight: 600; text-decoration: none; font-size: 16px; transition: all 0.3s ease;" onmouseover="this.style.gap='12px';" onmouseout="this.style.gap='8px';">
@@ -1857,7 +1857,7 @@
         <div class="row g-4">
           <!-- Music Therapy -->
           <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
-            <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: all 0.3s ease; height: 100%; position: relative;" onmouseover="this.style.transform='translateY(-7px)'; this.style.boxShadow='0 15px 35px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.05)';">
+            <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: all 0.3s ease; height: 100%; position: relative; display: flex; flex-direction: column;">
               <div style="position: relative; overflow: hidden; height: 200px;">
                 <img src="{{url_for('static', filename='services/music3.svg')}}" alt="Music Therapy" style="width: 100%; height: 100%; object-fit: cover; transition: all 0.5s ease;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';">
                 <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.6));"></div>
@@ -1867,23 +1867,25 @@
                   </span>
               </div>
                 </div>
-              <div style="padding: 25px;">
+              <div style="padding: 25px; flex: 1 1 auto; display: flex; flex-direction: column;">
                 <h3 style="font-size: 22px; font-weight: 700; margin-bottom: 15px; color: #2a2a2a;">
                   <i class="bi bi-music-player me-2" style="color: #0d6efd;"></i>Music Therapy
                 </h3>
                 <p style="color: #666; font-size: 15px; line-height: 1.6; margin-bottom: 25px;">
                   Experience the healing power of music therapy. Improve your mood and reduce stress with our curated therapeutic playlists.
                 </p>
-                <a href="{{url_for('music')}}" class="d-block w-100" style="background: #f8f9fa; color: #0d6efd; text-align: center; padding: 12px 0; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.3s ease;" onmouseover="this.style.background='#0d6efd'; this.style.color='white';" onmouseout="this.style.background='#f8f9fa'; this.style.color='#0d6efd';">
-                  Listen Now
-                </a>
+                <div style="margin-top: auto;">
+                  <a href="{{url_for('music')}}" style="background: #f8f9fa; color: #0d6efd; text-align: center; padding: 12px 0; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.3s ease; display: block;" onmouseover="this.style.background='#0d6efd'; this.style.color='white';" onmouseout="this.style.background='#f8f9fa'; this.style.color='#0d6efd';">
+                    Listen Now
+                  </a>
+                </div>
               </div>
             </div>
           </div>
 
           <!-- Games -->
           <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
-            <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: all 0.3s ease; height: 100%; position: relative;" onmouseover="this.style.transform='translateY(-7px)'; this.style.boxShadow='0 15px 35px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.05)';">
+            <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: all 0.3s ease; height: 100%; position: relative; display: flex; flex-direction: column;">
               <div style="position: relative; overflow: hidden; height: 200px;">
                 <img src="{{url_for('static', filename='services/games.svg')}}" alt="Quiz and Games" style="width: 100%; height: 100%; object-fit: cover; transition: all 0.5s ease;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';">
                 <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.6));"></div>
@@ -1893,23 +1895,25 @@
                   </span>
               </div>
                 </div>
-              <div style="padding: 25px;">
+              <div style="padding: 25px; flex: 1 1 auto; display: flex; flex-direction: column;">
                 <h3 style="font-size: 22px; font-weight: 700; margin-bottom: 15px; color: #2a2a2a;">
                   <i class="bi bi-puzzle me-2" style="color: #0d6efd;"></i>Quiz & Fun Games
                 </h3>
                 <p style="color: #666; font-size: 15px; line-height: 1.6; margin-bottom: 25px;">
                   Boost your knowledge and test your concentration with engaging quizzes and mentally stimulating games.
                 </p>
-                <a href="{{url_for('quizandgame')}}" class="d-block w-100" style="background: #f8f9fa; color: #0d6efd; text-align: center; padding: 12px 0; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.3s ease;" onmouseover="this.style.background='#0d6efd'; this.style.color='white';" onmouseout="this.style.background='#f8f9fa'; this.style.color='#0d6efd';">
-                  Play Now
-                </a>
+                <div style="margin-top: auto;">
+                  <a href="{{url_for('quizandgame')}}" style="background: #f8f9fa; color: #0d6efd; text-align: center; padding: 12px 0; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.3s ease; display: block;" onmouseover="this.style.background='#0d6efd'; this.style.color='white';" onmouseout="this.style.background='#f8f9fa'; this.style.color='#0d6efd';">
+                    Play Now
+                  </a>
+                </div>
               </div>
             </div>
           </div>
 
           <!-- Exercises -->
           <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
-            <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: all 0.3s ease; height: 100%; position: relative;" onmouseover="this.style.transform='translateY(-7px)'; this.style.boxShadow='0 15px 35px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.05)';">
+            <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: all 0.3s ease; height: 100%; position: relative; display: flex; flex-direction: column;">
               <div style="position: relative; overflow: hidden; height: 200px;">
                 <img src="{{url_for('static', filename='services/yoga1.svg')}}" alt="Yoga Exercises" style="width: 100%; height: 100%; object-fit: cover; transition: all 0.5s ease;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';">
                 <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.6));"></div>
@@ -1919,16 +1923,18 @@
                   </span>
               </div>
                 </div>
-              <div style="padding: 25px;">
+              <div style="padding: 25px; flex: 1 1 auto; display: flex; flex-direction: column;">
                 <h3 style="font-size: 22px; font-weight: 700; margin-bottom: 15px; color: #2a2a2a;">
                   <i class="bi bi-person-standing me-2" style="color: #0d6efd;"></i>Mind-Body Exercises
                 </h3>
                 <p style="color: #666; font-size: 15px; line-height: 1.6; margin-bottom: 25px;">
                   Achieve mental and physical flexibility through guided yoga and mindfulness exercises for holistic wellness.
                 </p>
-                <a href="{{url_for('exercises')}}" class="d-block w-100" style="background: #f8f9fa; color: #0d6efd; text-align: center; padding: 12px 0; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.3s ease;" onmouseover="this.style.background='#0d6efd'; this.style.color='white';" onmouseout="this.style.background='#f8f9fa'; this.style.color='#0d6efd';">
-                  Start Exercising
-                </a>
+                <div style="margin-top: auto;">
+                  <a href="{{url_for('exercises')}}" style="background: #f8f9fa; color: #0d6efd; text-align: center; padding: 12px 0; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.3s ease; display: block;" onmouseover="this.style.background='#0d6efd'; this.style.color='white';" onmouseout="this.style.background='#f8f9fa'; this.style.color='#0d6efd';">
+                    Start Exercising
+                  </a>
+                </div>
               </div>
             </div>
           </div>

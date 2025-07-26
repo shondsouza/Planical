@@ -26,8 +26,25 @@ Planical is a comprehensive mental healthcare platform designed to connect patie
 
 1. Clone the repository
 2. Install dependencies: `pip install -r requirements.txt`
-3. Set up Firebase project and add your configuration
-4. Run the application: `python app.py`
+3. Set up environment variables:
+   - Copy `env.example` to `.env`
+   - Fill in your Firebase configuration values
+4. Set up Firebase project and add your configuration
+5. Run the application: `python app.py`
+
+### Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+
+```
+FIREBASE_API_KEY=your_firebase_api_key_here
+FIREBASE_PROJECT_ID=your_project_id_here
+FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id_here
+FIREBASE_APP_ID=your_app_id_here
+FLASK_SECRET_KEY=your_secret_key_here
+```
+
+**⚠️ Security Note:** Never commit your `.env` file or `firebase-service-account.json` to version control!
 
 ## License
 

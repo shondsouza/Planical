@@ -1,0 +1,10 @@
+[33mcommit b35001669bcedd97b25c9ed6e7a5fb3e90206760[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfix-doctor-notification-system[m[33m)[m
+Author: Shon Dsouza <shondsouza11@gmail.com>
+Date:   Wed Apr 23 23:54:22 2025 +0530
+
+    Fix doctor notification system for consultation requests
+
+ app.py                                          |  10 [32m+++[m
+ doctor_notification_fix.py                      | 104 [32m++++++++++++++++++++++++[m
+ templates/virtual_consultation/doctor_view.html |  73 [32m+++++++++++++[m[31m----[m
+ 3 files changed, 171 insertions(+), 16 deletions(-)

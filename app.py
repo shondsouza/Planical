@@ -1526,41 +1526,6 @@ def doctor_dashboard():
 # Apply proxy fix
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1)
 
-# Add PeerJS server routes
-@app.route('/peerjs/peerjs', methods=['GET', 'POST', 'OPTIONS'])
-def peerjs_endpoint():
-    # Enable CORS for PeerJS
-    if request.method == 'OPTIONS':
-        response = Response()
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-        response.headers.add('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
-        return response
-    
-    # For GET and POST requests, pass through to Socket.IO
-    # This is a simple pass-through implementation
-    user_id = request.args.get('id', '')
-    
-    # Join a room named after the peer ID
-    if request.method == 'POST':
-        data = request.get_json(silent=True) or {}
-        target_id = data.get('dst')
-        if target_id:
-            socketio.emit('peerjs-message', data, room=target_id)
-    
-    # Enable CORS for the response
-    response = Response(json.dumps({'status': 'success'}))
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Content-Type', 'application/json')
-    return response
-
-@socketio.on('peerjs-connect')
-def handle_peerjs_connect(data):
-    peer_id = data.get('id')
-    if peer_id:
-        join_room(peer_id)
-        print(f"PeerJS: Client {peer_id} connected")
-
 @app.route('/request-consultation/<doctor_id>')
 @role_required(['patient'])
 def request_consultation(doctor_id):

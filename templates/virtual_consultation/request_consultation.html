@@ -860,13 +860,12 @@
           }
           
           // Initialize connection manager
-          let connectionManager = new ConnectionManager();
-          connectionManager.init({
+          let connectionManager = new ConnectionManager({
             firebaseApp: firebase,
             checkInterval: 30000,
             onStatusChange: (status) => {
               console.log("Connection status changed:", status);
-              if (!status.online) {
+              if (!status.isOnline) {
                 showAlert("You appear to be offline. Some features may be limited.", "warning");
               }
             }

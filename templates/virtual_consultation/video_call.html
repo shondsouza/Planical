@@ -6,10 +6,8 @@
     <title>Virtual Consultation - Video Call</title>
     <link href="{{url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
     <link href="{{url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
-    <!-- PeerJS library for WebRTC -->
-    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
-    <!-- Socket.IO client -->
-    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <!-- Jitsi Meet API -->
+    <script src='https://meet.jit.si/external_api.js'></script>
     <style>
         body {
             background-color: #f8f9fa;
@@ -19,295 +17,57 @@
         .call-container {
             margin-top: 20px;
             position: relative;
+            height: 80vh;
         }
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        .video-container {
-            background-color: #000;
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
-            aspect-ratio: 16/9;
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-        }
-        video {
+        #jitsiContainer {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-        }
-        .video-label {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-        .call-controls {
-            background-color: #fff;
             border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
         }
-        .control-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .control-btn:hover {
-            transform: scale(1.05);
-        }
-        .control-btn.mute {
-            background-color: #f8f9fa;
-            color: #212529;
-        }
-        .control-btn.mute.active {
-            background-color: #dc3545;
-            color: white;
-        }
-        .control-btn.video {
-            background-color: #f8f9fa;
-            color: #212529;
-        }
-        .control-btn.video.active {
-            background-color: #dc3545;
-            color: white;
-        }
-        .control-btn.end-call {
-            background-color: #dc3545;
-            color: white;
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         .notification {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            max-width: 350px;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            transform: translateX(400px);
-            transition: transform 0.3s ease-in-out;
-        }
-        .notification.show {
-            transform: translateX(0);
-        }
-        .notification-info {
-            background-color: #0dcaf0;
-            color: white;
-        }
-        .notification-success {
-            background-color: #198754;
-            color: white;
-        }
-        .notification-error {
-            background-color: #dc3545;
-            color: white;
-        }
-        .notification-warning {
-            background-color: #ffc107;
-            color: #212529;
-        }
-        /* Toast notification styles */
-        .toast-container {
-            position: fixed;
             bottom: 20px;
             right: 20px;
-            z-index: 1100;
-        }
-        .toast {
-            max-width: 350px;
-            background-color: rgba(255, 255, 255, 0.95);
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            margin-bottom: 10px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            animation: toast-in 0.3s ease-out forwards;
-        }
-        .toast.hiding {
-            animation: toast-out 0.3s ease-in forwards;
-        }
-        .toast-icon {
-            width: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px 0;
-            font-size: 1.2rem;
-        }
-        .toast-content {
-            flex: 1;
-            padding: 12px;
-        }
-        .toast-info .toast-icon {
-            background-color: #0dcaf0;
-            color: white;
-        }
-        .toast-success .toast-icon {
-            background-color: #198754;
-            color: white;
-        }
-        .toast-error .toast-icon {
-            background-color: #dc3545;
-            color: white;
-        }
-        .toast-warning .toast-icon {
-            background-color: #ffc107;
-            color: #212529;
-        }
-        @keyframes toast-in {
-            from { transform: translateY(100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        @keyframes toast-out {
-            from { transform: translateY(0); opacity: 1; }
-            to { transform: translateY(100%); opacity: 0; }
-        }
-        .loading-indicator {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #6c757d;
-            margin: 50px 0;
-        }
-        .loading-spinner {
-            width: 3rem;
-            height: 3rem;
-            margin-bottom: 1rem;
-        }
-        .connection-status {
-            color: #6c757d;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-        .waiting-message {
-            text-align: center;
-            margin: 50px 0;
-            color: #6c757d;
-        }
-        .header-bar {
-            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
-            padding: 15px 0;
-            margin-bottom: 20px;
-            color: white;
-            border-radius: 10px;
+            z-index: 1000;
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: none;
         }
     </style>
-    
-    <!-- Handle static asset loading errors -->
-    <script>
-        function handleAssetError(element, type) {
-            console.error(`Failed to load ${type}:`, element.src || element.href);
-            if (type === 'image') {
-                element.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%23ccc' d='M21.9 21.9l-19.8-19.8M21.9 2.1l-19.8 19.8'/%3E%3C/svg%3E";
-                element.alt = "Image failed to load";
-                element.classList.add("broken-image");
-            }
-        }
-
-        // Add global error handler
-        window.addEventListener('error', function(e) {
-            console.error('Global error:', e.message);
-            if (e.target.tagName === 'IMG') {
-                handleAssetError(e.target, 'image');
-            } else if (e.target.tagName === 'LINK' && e.target.rel === 'stylesheet') {
-                console.error('CSS failed to load:', e.target.href);
-                // Add inline basic styles as fallback
-                const style = document.createElement('style');
-                style.textContent = `
-                    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
-                    .error { color: red; }
-                    .warning { color: orange; }
-                    .success { color: green; }
-                `;
-                document.head.appendChild(style);
-            }
-        }, true);
-    </script>
 </head>
 <body>
     <div class="container">
-        <div class="header-bar">
-            <div class="row">
-                <div class="col-12">
-                    <div class="d-flex justify-content-between align-items-center px-3">
-                        <h1 class="mb-0 h3">Virtual Consultation</h1>
-                        <a href="/virtual-consultation" class="btn btn-light btn-sm">
-                            <i class="bi bi-arrow-left"></i> Back to Dashboard
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        <!-- Connection Status -->
         <div class="connection-status" id="connectionStatus">
-            <i class="bi bi-wifi"></i> Connecting to secure server...
+            <i class="bi bi-broadcast"></i> Connecting...
         </div>
 
-        <!-- Loading indicator -->
-        <div class="loading-indicator" id="loadingIndicator">
-            <div class="spinner-border loading-spinner" role="status">
+        <!-- Loading Indicator -->
+        <div class="text-center" id="loadingIndicator">
+            <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
-            <p>Setting up your call...</p>
+            <p class="mt-2">Initializing video call...</p>
         </div>
 
-        <!-- Waiting for other participant -->
-        <div class="waiting-message d-none" id="waitingMessage">
-            <div class="alert alert-info">
-                <i class="bi bi-hourglass-split me-2"></i>
-                Waiting for the other participant to join...
-            </div>
-        </div>
-
-        <!-- Call container - initially hidden -->
+        <!-- Call Container -->
         <div class="call-container d-none" id="callContainer">
-            <div class="video-grid">
-                <!-- Remote Video -->
-                <div class="video-container">
-                    <video id="remoteVideo" autoplay playsinline></video>
-                    <div class="video-label" id="remoteVideoLabel">Connecting...</div>
-                </div>
-                
-                <!-- Local Video -->
-                <div class="video-container">
-                    <video id="localVideo" autoplay playsinline muted></video>
-                    <div class="video-label">You</div>
-                </div>
-            </div>
-
-            <div class="call-controls">
-                <div class="control-btn mute" id="toggleAudio" title="Mute/Unmute">
-                    <i class="bi bi-mic-fill"></i>
-                </div>
-                <div class="control-btn video" id="toggleVideo" title="Turn Camera On/Off">
-                    <i class="bi bi-camera-video-fill"></i>
-                </div>
-                <div class="control-btn end-call" id="endCall" title="End Call">
-                    <i class="bi bi-telephone-x-fill"></i>
-                </div>
-            </div>
-            
-            <!-- Call timer -->
-            <div class="text-center mb-3 d-none" id="callTimer">00:00:00</div>
+            <div id="jitsiContainer"></div>
         </div>
     </div>
 
@@ -316,677 +76,126 @@
         <div id="notificationMessage"></div>
     </div>
 
-    <!-- Toast container for notifications -->
-    <div class="toast-container" id="toastContainer"></div>
-
     <script>
-        try {
-            document.addEventListener('DOMContentLoaded', function() {
-                // Get the call ID from the URL
-                const callId = '{{ call_id }}';
-                const userId = '{{ user_id }}';
-                const userName = '{{ user_name }}';
-                const userRole = '{{ user_role }}'; // 'doctor' or 'patient'
-                
-                // DOM elements
-                const loadingIndicator = document.getElementById('loadingIndicator');
-                const waitingMessage = document.getElementById('waitingMessage');
-                const callContainer = document.getElementById('callContainer');
-                const connectionStatus = document.getElementById('connectionStatus');
-                const localVideo = document.getElementById('localVideo');
-                const remoteVideo = document.getElementById('remoteVideo');
-                const remoteVideoLabel = document.getElementById('remoteVideoLabel');
-                const toggleAudioBtn = document.getElementById('toggleAudio');
-                const toggleVideoBtn = document.getElementById('toggleVideo');
-                const endCallBtn = document.getElementById('endCall');
-                const notificationElement = document.getElementById('notification');
-                const toastContainer = document.getElementById('toastContainer');
-                
-                // WebRTC variables
-                let peer;
-                let localStream;
-                let remoteStream;
-                let currentCall;
-                
-                // Connect to Socket.IO server
-                const socket = io({
-                    reconnection: true,
-                    reconnectionAttempts: 5,
-                    reconnectionDelay: 1000,
-                    reconnectionDelayMax: 5000,
-                    timeout: 20000
-                });
-                
-                socket.on('connect_error', (error) => {
-                    console.log('Socket.IO connection error:', error);
-                    updateConnectionStatus('<i class="bi bi-wifi-off"></i> Connection to server failed. Using local mode only.', 'warning');
-                    // Show notification
-                    showNotification('Connection to server failed. Your video may still work but with limited features.', 'warning');
-                });
-                
-                socket.on('disconnect', () => {
-                    console.log('Socket.IO disconnected');
-                    updateConnectionStatus('<i class="bi bi-wifi-off"></i> Disconnected from server. Using local mode only.', 'warning');
-                });
-                
-                socket.on('reconnect', (attemptNumber) => {
-                    console.log('Socket.IO reconnected after', attemptNumber, 'attempts');
-                    updateConnectionStatus('<i class="bi bi-wifi"></i> Reconnected to server', 'success');
-                });
-                
-                // Function to show notification
-                function showNotification(message, type = 'info') {
-                    notificationElement.textContent = message;
-                    notificationElement.className = `notification show notification-${type}`;
-                    
-                    setTimeout(() => {
-                        notificationElement.classList.remove('show');
-                    }, 5000);
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get the call ID and user info from the template
+            const callId = '{{ call_id }}';
+            const userId = '{{ user_id }}';
+            const userName = '{{ user_name }}';
+            const userRole = '{{ user_role }}';
+            
+            // DOM elements
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const callContainer = document.getElementById('callContainer');
+            const connectionStatus = document.getElementById('connectionStatus');
+            const notification = document.getElementById('notification');
+            
+            // Initialize Jitsi Meet
+            const domain = 'meet.jit.si';
+            const options = {
+                roomName: `MindCare-${callId}`,
+                width: '100%',
+                height: '100%',
+                parentNode: document.querySelector('#jitsiContainer'),
+                userInfo: {
+                    displayName: userName,
+                    email: `${userRole}@mindcare.com`
+                },
+                configOverwrite: {
+                    prejoinPageEnabled: false,
+                    disableDeepLinking: true,
+                    startWithAudioMuted: false,
+                    startWithVideoMuted: false
+                },
+                interfaceConfigOverwrite: {
+                    TOOLBAR_BUTTONS: [
+                        'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
+                        'fodeviceselection', 'hangup', 'profile', 'chat', 'recording',
+                        'shortcuts', 'tileview', 'select-background', 'download', 'help',
+                        'mute-everyone', 'security'
+                    ],
+                    SHOW_JITSI_WATERMARK: false,
+                    SHOW_WATERMARK_FOR_GUESTS: false,
+                    DEFAULT_REMOTE_DISPLAY_NAME: 'Participant',
+                    TOOLBAR_ALWAYS_VISIBLE: true
                 }
-                
-                // Update connection status
-                function updateConnectionStatus(status, type = 'info') {
-                    connectionStatus.innerHTML = status;
-                    connectionStatus.className = 'connection-status';
-                    connectionStatus.classList.add(`text-${type}`);
-                }
-                
-                // Handle errors
-                function handleError(error) {
-                    console.error('Error:', error);
-                    let errorMessage = error.message || error.toString();
-                    
-                    // More user-friendly error messages
-                    if (errorMessage.includes("Lost connection")) {
-                        errorMessage = "Connection to video server lost. Please check your internet connection and try again.";
-                    } else if (errorMessage.includes("getUserMedia")) {
-                        errorMessage = "Could not access your camera or microphone. Please check your device permissions.";
-                    } else if (errorMessage.includes("ICE connection")) {
-                        errorMessage = "Could not establish a direct connection. This might be due to network restrictions.";
-                    }
-                    
-                    showNotification(`Error: ${errorMessage}`, 'error');
-                    updateConnectionStatus(`<i class="bi bi-exclamation-triangle"></i> Error: ${errorMessage}`, 'danger');
-                    
-                    // Retry logic for connection errors
-                    if (error.type === 'disconnected' || errorMessage.includes("Lost connection")) {
-                        setTimeout(() => {
-                            showNotification("Attempting to reconnect...", 'warning');
-                            if (peer) {
-                                try {
-                                    peer.reconnect();
-                                } catch (e) {
-                                    console.error("Failed to reconnect:", e);
-                                    // If reconnection fails, try initializing again after 5 seconds
-                                    setTimeout(initializeCall, 5000);
-                                }
-                            } else {
-                                // If no peer exists, try initializing again
-                                initializeCall();
-                            }
-                        }, 3000);
-                    }
-                }
-                
-                // Set up media stream with enhanced error handling
-                async function setupMediaStream() {
-                    try {
-                        // Check if browser supports getUserMedia
-                        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                            throw new Error("Your browser doesn't support media devices. Please use a modern browser like Chrome, Firefox, or Edge.");
-                        }
-                        
-                        // Try to get both audio and video
-                        return await navigator.mediaDevices.getUserMedia({
-                            audio: true,
-                            video: {
-                                width: { ideal: 1280 },
-                                height: { ideal: 720 },
-                                facingMode: 'user'
-                            }
-                        });
-                    } catch (error) {
-                        console.error('Media stream error:', error);
-                        
-                        // Handle specific error cases
-                        if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
-                            showNotification('Camera and microphone access denied. Please allow access to use this feature.', 'error');
-                            throw new Error('Permission denied for camera and microphone. Please allow access in your browser settings.');
-                        } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
-                            showNotification('No camera or microphone found. Trying audio only...', 'warning');
-                            
-                            // Try to get audio only as fallback
-                            try {
-                                return await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-                            } catch (audioError) {
-                                showNotification('Could not access microphone. Please check device connections.', 'error');
-                                throw new Error('No media devices available. Please check your connections.');
-                            }
-                        } else if (error.name === 'NotReadableError' || error.name === 'TrackStartError') {
-                            showNotification('Could not start camera or microphone. They might be in use by another application.', 'error');
-                            
-                            // Try audio only as fallback
-                            try {
-                                showNotification('Trying audio only...', 'warning');
-                                return await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-                            } catch (audioError) {
-                                throw new Error('Media devices are in use by another application.');
-                            }
-                        } else if (error.name === 'OverconstrainedError') {
-                            showNotification('Camera constraints not satisfied. Trying with default settings...', 'warning');
-                            
-                            // Try with simpler constraints
-                            try {
-                                return await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-                            } catch (simpleError) {
-                                throw new Error('Could not access media devices with current settings.');
-                            }
-                        } else {
-                            throw new Error(`Media error: ${error.message || 'Unknown error'}`);
-                        }
-                    }
-                }
-                
-                // Initialize call
-                async function initializeCall() {
-                    try {
-                        // Get media stream with enhanced error handling
-                        localStream = await setupMediaStream();
-                        
-                        // Display local video
-                        localVideo.srcObject = localStream;
-                        
-                        // Initialize PeerJS
-                        initPeer();
-                        
-                        // Update UI
-                        updateConnectionStatus('<i class="bi bi-broadcast"></i> Looking for connection...', 'info');
-                        loadingIndicator.classList.add('d-none');
-                    } catch (error) {
-                        console.error('Error initializing call:', error);
-                        updateConnectionStatus('<i class="bi bi-exclamation-triangle"></i> ' + error.message, 'danger');
-                        loadingIndicator.classList.add('d-none');
-                    }
-                }
+            };
 
-                // Initialize PeerJS with error handling and reconnection
-                function initPeer() {
-                    if (peer && peer.disconnected) {
-                        peer.reconnect();
-                        return;
-                    }
-                    
-                    if (peer) {
-                        peer.destroy();
-                    }
-                    
-                    // Create a unique peer ID based on role and user ID
-                    let peerId;
-                    if (userRole === 'doctor') {
-                        // For doctors, use their user ID directly so patients can find them
-                        peerId = userId;
-                    } else {
-                        // For patients, create a unique ID that won't conflict with doctors
-                        peerId = `patient-${userId}-${callId}`;
-                    }
-                    
-                    console.log(`Initializing peer with ID: ${peerId}`);
-                    
-                    // Determine peer port based on window location
-                    const peerPortNumber = window.location.port || (window.location.protocol === 'https:' ? 443 : 80);
-                    
-                    peer = new Peer(peerId, {
-                        host: window.location.hostname,
-                        port: peerPortNumber,
-                        path: '/peerjs',
-                        debug: 3,
-                        config: {
-                            'iceServers': [
-                                { urls: 'stun:stun.l.google.com:19302' },
-                                { urls: 'stun:stun1.l.google.com:19302' },
-                                { urls: 'stun:stun2.l.google.com:19302' }
-                            ]
-                        }
-                    });
-                    
-                    // PeerJS event handlers with error handling
-                    peer.on('open', handlePeerOpen);
-                    peer.on('call', handleIncomingCall);
-                    peer.on('error', handlePeerError);
-                    peer.on('disconnected', handlePeerDisconnected);
-                    peer.on('close', handlePeerClose);
-                }
-                
-                // PeerJS open event handler
-                function handlePeerOpen(id) {
-                    console.log('My peer ID is: ' + id);
-                    updateConnectionStatus('<i class="bi bi-broadcast"></i> Connected to server, waiting for peer...', 'info');
-                    
-                    // Join call room
-                    socket.emit('join-call-room', {
-                        userId: userId,
-                        userName: userName,
-                        userType: userRole,
-                        callId: callId
-                    });
-                    
-                    // If this is the doctor, wait for patient to call
-                    if (userRole === 'doctor') {
-                        waitingMessage.classList.remove('d-none');
-                        updateConnectionStatus('<i class="bi bi-clock"></i> Waiting for patient to connect...', 'warning');
-                        socket.emit('check-patient-status', { callId: callId });
-                    } else {
-                        // If this is the patient, initiate the call to the doctor
-                        waitingMessage.classList.add('d-none');
-                        callContainer.classList.remove('d-none');
-                        
-                        // Slight delay to ensure both peers are ready
-                        setTimeout(() => {
-                            makeCall();
-                        }, 1000);
-                    }
-                }
-                
-                // PeerJS error event handler
-                function handlePeerError(error) {
-                    console.error('PeerJS error:', error);
-                    
-                    // Handle specific error cases
-                    if (error.type === 'network' || error.type === 'server-error' || error.type === 'socket-error') {
-                        updateConnectionStatus('<i class="bi bi-wifi-off"></i> Network connection issue. Attempting to reconnect...', 'warning');
-                        
-                        // Attempt to reconnect after delay
-                        setTimeout(() => {
-                            if (peer && peer.disconnected) {
-                                peer.reconnect();
-                            } else {
-                                initPeer();
-                            }
-                        }, 5000);
-                    } else if (error.type === 'peer-unavailable') {
-                        updateConnectionStatus('<i class="bi bi-person-x"></i> The other participant is unavailable.', 'warning');
-                        showNotification('The other participant could not be reached. Please wait or try again later.', 'warning');
-                    } else if (error.type === 'browser-incompatible') {
-                        updateConnectionStatus('<i class="bi bi-browser-chrome"></i> Your browser is not compatible with WebRTC.', 'danger');
-                        showNotification('Your browser does not support WebRTC. Please use a modern browser like Chrome, Firefox, or Edge.', 'error');
-                    } else {
-                        updateConnectionStatus('<i class="bi bi-exclamation-triangle"></i> Connection error: ' + error.type, 'danger');
-                        showNotification('Connection error: ' + error.message, 'error');
-                    }
-                }
-                
-                // PeerJS disconnected event handler
-                function handlePeerDisconnected() {
-                    console.log('Disconnected from PeerJS server');
-                    updateConnectionStatus('<i class="bi bi-wifi-off"></i> Disconnected from server. Attempting to reconnect...', 'warning');
-                    
-                    // Attempt to reconnect after a short delay
-                    setTimeout(() => {
-                        if (peer && peer.disconnected) {
-                            peer.reconnect();
-                        }
-                    }, 3000);
-                }
-                
-                // PeerJS close event handler
-                function handlePeerClose() {
-                    console.log('PeerJS connection destroyed');
-                    updateConnectionStatus('<i class="bi bi-x-circle"></i> Connection closed', 'danger');
-                    
-                    // Clean up
-                    if (currentCall) {
-                        currentCall.close();
-                        currentCall = null;
-                    }
-                    
-                    // Update call state
-                    callState.setCallActive(false);
-                    callState.setRemoteConnected(false);
-                }
-                
-                // Handle incoming call with improved error handling
-                function handleIncomingCall(call) {
-                    // If already in a call, close the new call
-                    if (currentCall) {
-                        call.close();
-                        return;
-                    }
-                    
-                    currentCall = call;
-                    
-                    // Update UI for incoming call
-                    updateConnectionStatus('<i class="bi bi-telephone-inbound"></i> Incoming call...', 'info');
-                    showNotification('Incoming call from ' + (call.metadata?.name || 'remote user'), 'info');
-                    
-                    // Answer the call with our local stream
-                    call.answer(localStream);
-                    
-                    // Set up listeners for the call
-                    setupCallListeners(call);
-                }
-                
-                // Make a call (patient initiates)
-                function makeCall(remoteUserId) {
-                    // If already in a call, return
-                    if (currentCall) {
-                        showNotification('Already in a call', 'warning');
-                        return;
-                    }
-                    
-                    // Check if peer is connected
-                    if (!peer || peer.disconnected) {
-                        showNotification('Not connected to server. Reconnecting...', 'warning');
-                        initPeer();
-                        
-                        // Try again after reconnection
-                        setTimeout(() => makeCall(remoteUserId), 3000);
-                        return;
-                    }
-                    
-                    try {
-                        // Update UI
-                        updateConnectionStatus('<i class="bi bi-telephone-outbound"></i> Calling...', 'info');
-                        
-                        // If no explicit remoteUserId is provided, use the callId as the doctor's ID
-                        if (!remoteUserId) {
-                            remoteUserId = callId;
-                        }
-                        
-                        console.log('Calling user with ID:', remoteUserId);
-                        
-                        // Call the remote peer
-                        const call = peer.call(remoteUserId, localStream, {
-                            metadata: {
-                                name: userName,
-                                role: userRole
-                            }
-                        });
-                        
-                        currentCall = call;
-                        
-                        // Set up listeners for the call
-                        setupCallListeners(call);
-                    } catch (error) {
-                        console.error('Error making call:', error);
-                        updateConnectionStatus('<i class="bi bi-telephone-x"></i> Call failed: ' + error.message, 'danger');
-                        showNotification('Call failed: ' + error.message, 'error');
-                    }
-                }
-                
-                // Set up call listeners
-                function setupCallListeners(call) {
-                    // Event listener for when remote stream is received
-                    call.on('stream', handleRemoteStream);
-                    
-                    // Event listener for when call closes
-                    call.on('close', () => {
-                        console.log('Call closed');
-                        
-                        // Update call state
-                        callState.setCallActive(false);
-                        
-                        // Clear remote video
-                        if (remoteVideo.srcObject) {
-                            remoteVideo.srcObject.getTracks().forEach(track => track.stop());
-                            remoteVideo.srcObject = null;
-                        }
-                        
-                        // Reset state
-                        remoteStream = null;
-                        currentCall = null;
-                        
-                        // Update UI
-                        updateConnectionStatus('<i class="bi bi-telephone-x"></i> Call ended', 'warning');
-                    });
-                    
-                    // Event listener for call errors
-                    call.on('error', (error) => {
-                        console.error('Call error:', error);
-                        updateConnectionStatus('<i class="bi bi-telephone-x"></i> Call error: ' + error.message, 'danger');
-                        showNotification('Call error: ' + error.message, 'error');
-                        
-                        // Clean up on error
-                        call.close();
-                        currentCall = null;
-                    });
-                }
-                
-                // Handle remote stream
-                function handleRemoteStream(stream) {
-                    remoteStream = stream;
-                    remoteVideo.srcObject = stream;
-                    
-                    // Show remote video container
-                    remoteVideo.closest('.video-container').classList.remove('d-none');
-                    
-                    // Update call state
-                    callState.setCallActive(true);
-                    callState.setRemoteConnected(true);
-                    
-                    // Update UI
-                    updateConnectionStatus('<i class="bi bi-telephone-fill"></i> Call connected', 'success');
-                    waitingMessage.classList.add('d-none');
-                    showNotification('Call connected', 'success');
-                    
-                    // Start call timer
-                    startCallTimer();
-                }
-                
-                // Start call timer
-                function startCallTimer() {
-                    const timerElement = document.getElementById('callTimer');
-                    if (!timerElement) return;
-                    
-                    let seconds = 0;
-                    timerElement.classList.remove('d-none');
-                    
-                    // Clear any existing timer
-                    if (window.callTimerInterval) {
-                        clearInterval(window.callTimerInterval);
-                    }
-                    
-                    // Set up new timer
-                    window.callTimerInterval = setInterval(() => {
-                        seconds++;
-                        const hours = Math.floor(seconds / 3600);
-                        const minutes = Math.floor((seconds % 3600) / 60);
-                        const secs = seconds % 60;
-                        
-                        timerElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-                    }, 1000);
-                }
-                
-                // Call state management
-                const callState = {
-                    isCallActive: false,
-                    isRemoteConnected: false,
-                    isAudioMuted: false,
-                    isVideoOff: false,
-                    
-                    setCallActive(active) {
-                        this.isCallActive = active;
-                        // Update UI based on call state
-                        if (active) {
-                            callContainer.classList.remove('d-none');
-                            waitingMessage.classList.add('d-none');
-                        } else {
-                            callContainer.classList.add('d-none');
-                        }
-                    },
-                    
-                    setRemoteConnected(connected) {
-                        this.isRemoteConnected = connected;
-                        // Update connection status based on remote connection
-                        if (connected) {
-                            updateConnectionStatus('<i class="bi bi-telephone-fill"></i> Call connected', 'success');
-                        } else {
-                            updateConnectionStatus('<i class="bi bi-telephone-x"></i> Remote participant disconnected', 'warning');
-                        }
-                    }
-                };
-                
-                // Toggle audio with improved state management
-                function toggleAudio() {
-                    if (!localStream) return;
-                    
-                    const audioTracks = localStream.getAudioTracks();
-                    if (audioTracks.length === 0) {
-                        showNotification('No audio device available', 'warning');
-                        return;
-                    }
-                    
-                    callState.isAudioMuted = !callState.isAudioMuted;
-                    audioTracks.forEach(track => {
-                        track.enabled = !callState.isAudioMuted;
-                    });
-                    
-                    // Update UI
-                    if (callState.isAudioMuted) {
-                        toggleAudioBtn.classList.add('active');
-                        toggleAudioBtn.innerHTML = '<i class="bi bi-mic-mute-fill"></i>';
-                        showNotification('Microphone muted', 'info');
-                    } else {
-                        toggleAudioBtn.classList.remove('active');
-                        toggleAudioBtn.innerHTML = '<i class="bi bi-mic-fill"></i>';
-                        showNotification('Microphone unmuted', 'info');
-                    }
-                }
-                
-                // Toggle video with improved state management
-                function toggleVideo() {
-                    if (!localStream) return;
-                    
-                    const videoTracks = localStream.getVideoTracks();
-                    if (videoTracks.length === 0) {
-                        showNotification('No video device available', 'warning');
-                        return;
-                    }
-                    
-                    callState.isVideoOff = !callState.isVideoOff;
-                    videoTracks.forEach(track => {
-                        track.enabled = !callState.isVideoOff;
-                    });
-                    
-                    // Update UI
-                    if (callState.isVideoOff) {
-                        toggleVideoBtn.classList.add('active');
-                        toggleVideoBtn.innerHTML = '<i class="bi bi-camera-video-off-fill"></i>';
-                        showNotification('Camera turned off', 'info');
-                    } else {
-                        toggleVideoBtn.classList.remove('active');
-                        toggleVideoBtn.innerHTML = '<i class="bi bi-camera-video-fill"></i>';
-                        showNotification('Camera turned on', 'info');
-                    }
-                }
-                
-                // End current call with improved state management
-                function endCurrentCall() {
-                    if (currentCall) {
-                        currentCall.close();
-                        currentCall = null;
-                    }
-                    
-                    if (remoteStream) {
-                        remoteStream.getTracks().forEach(track => track.stop());
-                        remoteStream = null;
-                    }
-                    
-                    // Update call state
-                    callState.setCallActive(false);
-                    callState.setRemoteConnected(false);
-                    
-                    // Update UI
-                    remoteVideo.srcObject = null;
-                    updateConnectionStatus('<i class="bi bi-telephone-x"></i> Call ended', 'warning');
-                    
-                    // Leave call room
-                    socket.emit('leave-call-room', {
-                        userId: userId,
-                        userName: userName,
-                        userType: userRole,
-                        callId: callId
-                    });
-                    
-                    // If user is a doctor, update consulting status
-                    if (userRole === 'doctor') {
-                        socket.emit('doctor-consulting', {
-                            doctorId: userId,
-                            consultationId: callId,
-                            status: false
-                        });
-                    }
-                    
-                    // Redirect back to dashboard after a short delay
-                    setTimeout(() => {
-                        window.location.href = userRole === 'doctor' ? '/doctor-dashboard' : '/dashboard';
-                    }, 2000);
-                }
-                
-                // Toggle audio button click handler
-                toggleAudioBtn.addEventListener('click', toggleAudio);
-                
-                // Toggle video button click handler
-                toggleVideoBtn.addEventListener('click', toggleVideo);
-                
-                // End call button
-                endCallBtn.addEventListener('click', () => {
-                    showNotification('Ending call...', 'warning');
-                    endCurrentCall();
-                });
-                
-                // Socket.IO event: User joined call
-                socket.on('user-joined-call', (data) => {
-                    console.log('User joined:', data);
-                    
-                    // Update remote video label
-                    remoteVideoLabel.textContent = data.userName;
-                    
-                    showNotification(`${data.userName} joined the call`, 'success');
-                });
-                
-                // Socket.IO event: User left call
-                socket.on('user-left-call', (data) => {
-                    console.log('User left:', data);
-                    showNotification(`${data.userName} left the call`, 'warning');
-                    
-                    // If the remote user left, end the call
-                    if (data.userId !== userId) {
-                        endCurrentCall();
-                    }
-                });
-                
-                // Initialize when document is ready
-                initializeCall();
-                
-                // Cleanup when leaving the page
-                window.addEventListener('beforeunload', () => {
-                    if (localStream) {
-                        localStream.getTracks().forEach(track => track.stop());
-                    }
-                    
-                    if (currentCall) {
-                        currentCall.close();
-                    }
-                    
-                    if (peer) {
-                        peer.destroy();
-                    }
-                    
-                    socket.emit('leave-call-room', {
-                        userId: userId,
-                        userName: userName,
-                        userType: userRole,
-                        callId: callId
-                    });
-                });
+            // Create Jitsi Meet API instance
+            const api = new JitsiMeetExternalAPI(domain, options);
+
+            // Handle Jitsi Meet events
+            api.addEventListeners({
+                videoConferenceJoined: handleVideoConferenceJoined,
+                videoConferenceLeft: handleVideoConferenceLeft,
+                participantJoined: handleParticipantJoined,
+                participantLeft: handleParticipantLeft,
+                audioMuteStatusChanged: handleAudioMuteStatusChanged,
+                videoMuteStatusChanged: handleVideoMuteStatusChanged,
+                readyToClose: handleReadyToClose
             });
-        } catch (error) {
-            console.error('Error in main script:', error);
-            updateConnectionStatus('An error occurred while initializing the application. Please refresh the page.', 'error');
-            showNotification('Application error: ' + error.message, 'error');
-        }
+
+            // Show the call container
+            loadingIndicator.classList.add('d-none');
+            callContainer.classList.remove('d-none');
+
+            // Event Handlers
+            function handleVideoConferenceJoined() {
+                updateConnectionStatus('<i class="bi bi-telephone-fill"></i> Connected to call', 'success');
+                showNotification('Connected to call', 'success');
+            }
+
+            function handleVideoConferenceLeft() {
+                updateConnectionStatus('<i class="bi bi-telephone-x"></i> Call ended', 'warning');
+                showNotification('Call ended', 'warning');
+                // Redirect back to dashboard after a short delay
+                setTimeout(() => {
+                    window.location.href = '/virtual-consultation';
+                }, 2000);
+            }
+
+            function handleParticipantJoined(participant) {
+                showNotification(`${participant.displayName} joined the call`, 'success');
+            }
+
+            function handleParticipantLeft(participant) {
+                showNotification(`${participant.displayName} left the call`, 'warning');
+            }
+
+            function handleAudioMuteStatusChanged(data) {
+                const status = data.muted ? 'muted' : 'unmuted';
+                showNotification(`Audio ${status}`, 'info');
+            }
+
+            function handleVideoMuteStatusChanged(data) {
+                const status = data.muted ? 'turned off' : 'turned on';
+                showNotification(`Camera ${status}`, 'info');
+            }
+
+            function handleReadyToClose() {
+                window.location.href = '/virtual-consultation';
+            }
+
+            // UI Helper Functions
+            function updateConnectionStatus(message, type) {
+                connectionStatus.innerHTML = message;
+                connectionStatus.className = `connection-status alert alert-${type}`;
+            }
+
+            function showNotification(message, type) {
+                const notificationElement = document.getElementById('notification');
+                const messageElement = document.getElementById('notificationMessage');
+                
+                messageElement.textContent = message;
+                notificationElement.className = `notification alert alert-${type}`;
+                notificationElement.style.display = 'block';
+                
+                // Hide notification after 3 seconds
+                setTimeout(() => {
+                    notificationElement.style.display = 'none';
+                }, 3000);
+            }
+        });
     </script>
-    
-    <script src="{{url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 </body>
 </html> 
