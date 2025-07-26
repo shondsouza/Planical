@@ -24,6 +24,4 @@ matplotlib
 seaborn
 scikit-learn
 scipy
-pyrebase
 plotly
-pycryptodome
