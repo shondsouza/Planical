@@ -44,8 +44,6 @@ FIREBASE_APP_ID=your_app_id_here
 FLASK_SECRET_KEY=your_secret_key_here
 ```
 
-**⚠️ Security Note:** Never commit your `.env` file or `firebase-service-account.json` to version control!
-
 ## License
 
 This project is proprietary and confidential. All rights reserved.
