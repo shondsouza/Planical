@@ -294,7 +294,7 @@
   </script>
   
   <!-- Doctor ID for scripts -->
-  <meta name="doctor-id" content="{{ session.get('user', {}).get('doctor_id', 'N/A') }}">
+  <meta name="doctor-id" content="{{ session.get('user', {}).get('uid', 'N/A') }}">
   
   <!-- Favicons -->
   <link href="{{url_for('static', filename='logo1.png')}}" rel="icon">
@@ -799,7 +799,7 @@
             
             // Setup timers for consultation requests
             console.log("EMERGENCY FIX - Setting up timers");
-            const doctorId = "{{ session.get('user', {}).get('doctor_id', 'N/A') }}";
+            const doctorId = "{{ session.get('user', {}).get('uid', 'N/A') }}";
             window.requestInterval = setInterval(function() {
               if (typeof manualCheckForRequests === 'function') {
                 manualCheckForRequests(doctorId);
@@ -823,7 +823,7 @@
             
             // Setup timers for consultation requests
             console.log("EMERGENCY FIX - Setting up timers");
-            const doctorId = "{{ session.get('user', {}).get('doctor_id', 'N/A') }}";
+            const doctorId = "{{ session.get('user', {}).get('uid', 'N/A') }}";
             window.requestInterval = setInterval(function() {
               if (typeof manualCheckForRequests === 'function') {
                 manualCheckForRequests(doctorId);
@@ -1053,10 +1053,28 @@
   <script src="{{url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
   <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
   
-  <!-- Firebase required libraries -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script>
+    // Firebase config should be passed from server-side template
+    // This is a fallback - ideally the config should come from the server
+    console.warn('Firebase config not found in template, using fallback');
+    var firebaseConfig = {
+      apiKey: "FIREBASE_API_KEY_PLACEHOLDER",
+      authDomain: "planical1.firebaseapp.com",
+      databaseURL: "https://planical1-default-rtdb.firebaseio.com",
+      projectId: "planical1",
+      storageBucket: "planical1.firebasestorage.app",
+      messagingSenderId: "FIREBASE_MESSAGING_SENDER_ID_PLACEHOLDER",
+      appId: "FIREBASE_APP_ID_PLACEHOLDER"
+    };
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+  </script>
+  <script src="/static/js/doctor_view_init.js"></script>
   
   <!-- Connection status manager -->
   <script src="{{url_for('static', filename='js/connection_status.js')}}"></script>
@@ -1396,7 +1414,7 @@
         
         // Setup periodic request check
         const doctorId = document.getElementById('doctor-id')?.value || 
-                        "{{ session.get('user', {}).get('doctor_id', 'N/A') }}";
+                        "{{ session.get('user', {}).get('uid', 'N/A') }}";
         
         if (!window.requestCheckInterval) {
           window.requestCheckInterval = setInterval(function() {
@@ -1992,7 +2010,7 @@
       if (window.socket) {
         window.socket.emit('accept-consultation', {
           consultationId: consultationId,
-          doctorId: "{{ session.get('user', {}).get('doctor_id', 'N/A') }}"
+          doctorId: "{{ session.get('user', {}).get('uid', 'N/A') }}"
         });
       }
       
@@ -2024,7 +2042,7 @@
       if (window.socket) {
         window.socket.emit('decline-consultation', {
           consultationId: consultationId,
-          doctorId: "{{ session.get('user', {}).get('doctor_id', 'N/A') }}",
+          doctorId: "{{ session.get('user', {}).get('uid', 'N/A') }}",
           reason: reason
         });
       }
@@ -2157,23 +2175,25 @@
   <script>
     function safeSetupConnectionManager() {
       try {
-        if (typeof ConnectionManager !== 'function') {
-          console.error("ConnectionManager not found - SAFE REWRITE");
+        // Set up connection manager if Firebase is available
+        if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) {
+          console.log("Firebase not initialized, skipping connection manager setup");
           return;
         }
         
-        // Create a custom ConnectionManager config that handles missing databaseURL
+        // Set up connection manager configuration
         const connectionConfig = {
           firebaseApp: firebase,
-          checkInterval: 30000,
-          skipRealtimeDatabase: true, // Add this flag to skip Realtime Database
+          checkInterval: 30000, // Check every 30 seconds
+          skipRealtimeDatabase: true,
           onStatusChange: function(status) {
-            console.log("Connection status changed - SAFE REWRITE:", status);
-            if (!status.online) {
-              window.safeShowNotification("You appear to be offline. Some features may be limited.", "warning");
-              window.safeUpdateSocketStatus('Offline', 'Device appears offline');
-            } else {
-              window.safeUpdateSocketStatus('Online', 'Connected to services');
+            safeUpdateSocketStatus(status.overallStatus, getStatusDescription(status));
+            
+            // Update last check time
+            const lastCheckEl = document.getElementById('last-check-time');
+            if (lastCheckEl) {
+              const now = new Date();
+              lastCheckEl.textContent = now.toLocaleTimeString();
             }
           }
         };
@@ -2182,17 +2202,30 @@
         const fbConfig = firebase.apps[0]?.options || {};
         if (fbConfig.databaseURL && fbConfig.databaseURL.includes('firebaseio.com')) {
           connectionConfig.databaseURL = fbConfig.databaseURL;
+          connectionConfig.skipRealtimeDatabase = false;
         } else {
           console.log("No valid databaseURL found, will skip Realtime Database checks");
+          connectionConfig.skipRealtimeDatabase = true;
         }
         
-        let connManager = new ConnectionManager();
-        connManager.init(connectionConfig);
+        // Create ConnectionManager with configuration
+        window.connectionManager = new ConnectionManager(connectionConfig);
         
-        // Make connection manager globally available
-        window.connectionManager = connManager;
       } catch (error) {
         console.error("Error setting up connection manager - SAFE REWRITE:", error);
+      }
+    }
+    
+    // Helper to get a user-friendly status description
+    function getStatusDescription(status) {
+      if (!status.isOnline) return "You're offline";
+      
+      if (status.firebaseConnected && status.firestoreConnected) {
+        return "All systems connected";
+      } else if (status.firebaseConnected || status.firestoreConnected) {
+        return "Partial connection";
+      } else {
+        return "Limited connectivity";
       }
     }
   </script>
@@ -2436,6 +2469,58 @@
       }
     }
   </script>
+
+  <!-- Wait for Firebase Auth to be ready before initializing anything that needs the doctor UID -->
+  <script>
+    // Wait for Firebase Auth to be ready before initializing anything that needs the doctor UID
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof firebase !== 'undefined' && firebase.auth) {
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+            const doctorId = user.uid;
+            // Now safe to initialize socket, fetch requests, etc.
+            if (typeof window.manualCheckForRequests === 'function') {
+              window.manualCheckForRequests(doctorId);
+            } else if (typeof manualCheckForRequests === 'function') {
+              manualCheckForRequests(doctorId);
+            }
+            // If you have a socket, initialize it here as well
+          } else {
+            // Not logged in, redirect or show login UI
+            console.warn('No user logged in.');
+          }
+        });
+      } else {
+        console.error('Firebase Auth is not available.');
+      }
+    });
+  </script>
 </body>
 </html> 
 </html> 
+<!-- Fix for consultation notifications -->
+<script>
+  // Add a generic listener for consultation requests
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.socket) {
+      window.socket.on('new-consultation-request', function(data) {
+        console.log('Generic consultation request received:', data);
+        if (typeof safeAddConsultationRequest === 'function') {
+          safeAddConsultationRequest(data);
+        }
+        if (typeof safeShowNotification === 'function') {
+          safeShowNotification('New consultation request from ' + (data.patientName || 'a patient'), 'info');
+        }
+      });
+      window.socket.on('new-consultation-notification', function(data) {
+        console.log('Generic consultation notification received:', data);
+        if (typeof safeAddConsultationRequest === 'function') {
+          safeAddConsultationRequest(data);
+        }
+        if (typeof safeShowNotification === 'function') {
+          safeShowNotification('New consultation request from ' + (data.patientName || 'a patient'), 'info');
+        }
+      });
+    }
+  });
+</script>

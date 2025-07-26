@@ -14,19 +14,19 @@ if os.path.exists(service_account_path):
             print(f"Using service account for project: {project_id}")
     except Exception as e:
         print(f"Error reading service account file: {str(e)}")
-        project_id = "planical1"  # Fallback
+        project_id = os.getenv('FIREBASE_PROJECT_ID', "planical1")  # Use env var with fallback
 else:
     print(f"Service account file not found at {service_account_path}")
-    project_id = "planical1"  # Fallback
+    project_id = os.getenv('FIREBASE_PROJECT_ID', "planical1")  # Use env var with fallback
 
-# Firebase Web Config (for client-side)
+# Firebase Web Config (for client-side) - Use environment variables
 firebase_config = {
-    "apiKey": "AIzaSyAbJTW1tbUMxDBta49sBEbt0dptwviDuU4",
+    "apiKey": os.getenv('FIREBASE_API_KEY', "AIzaSyAbJTW1tbUMxDBta49sBEbt0dptwviDuU4"),
     "authDomain": f"{project_id}.firebaseapp.com",
     "projectId": project_id,
     "storageBucket": f"{project_id}.appspot.com",
-    "messagingSenderId": "233635331250",
-    "appId": "1:233635331250:web:1b379c216a0204cbf9ddab",
+    "messagingSenderId": os.getenv('FIREBASE_MESSAGING_SENDER_ID', "233635331250"),
+    "appId": os.getenv('FIREBASE_APP_ID', "1:233635331250:web:1b379c216a0204cbf9ddab"),
     "databaseURL": f"https://{project_id}-default-rtdb.firebaseio.com",
     "dynamicLinksDomain": f"{project_id}.page.link"
 }

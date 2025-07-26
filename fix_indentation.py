@@ -1,45 +1,88 @@
+import sys
 import re
 
 def fix_indentation_issues(filename):
-    print(f"Checking indentation in {filename}...")
-    
-    with open(filename, 'r', encoding='utf-8') as f:
-        lines = f.readlines()
-    
-    fixed_lines = []
-    line_num = 0
-    issues_found = 0
-    
-    for line in lines:
-        line_num += 1
-        stripped = line.lstrip()
+    try:
+        with open(filename, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
         
-        # Skip empty lines and comments
-        if not stripped or stripped.startswith('#'):
-            fixed_lines.append(line)
-            continue
+        # Fix line 984 (join_room indentation)
+        if '    join_room(' in lines[984-1]:
+            lines[984-1] = '        join_room(\'doctor-room\')\n'
+            print("Fixed indentation at line 984")
         
-        # Calculate indentation level (number of spaces)
-        indentation = len(line) - len(stripped)
+        # Fix line 1037 (leave_room indentation)
+        if '        leave_room(' in lines[1037-1]:
+            lines[1037-1] = '    leave_room(\'doctor-room\')\n'
+            print("Fixed indentation at line 1037")
         
-        # Check if indentation is a multiple of 4
-        if indentation % 4 != 0:
-            print(f"Line {line_num}: Indentation is {indentation} spaces (not a multiple of 4)")
-            # Fix by rounding to nearest multiple of 4
-            new_indentation = round(indentation / 4) * 4
-            fixed_line = ' ' * new_indentation + stripped
-            fixed_lines.append(fixed_line)
-            issues_found += 1
-        else:
-            fixed_lines.append(line)
+        # Fix line 320 (return redirect indentation)
+        try:
+            if '            return redirect' in lines[320-1]:
+                lines[320-1] = '                return redirect(url_for(\'home\'))\n'
+                print("Fixed indentation at line 320")
+        except IndexError:
+            print("Line 320 not found, skipping")
+        
+        # Write the fixed file
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.writelines(lines)
+        
+        print(f"Fixed indentation issues in {filename}")
+        return True
+    except Exception as e:
+        print(f"Error fixing indentation: {str(e)}")
+        return False
+
+def fix_indentation():
+    # Read the file
+    with open('app.py', 'r', encoding='utf-8') as file:
+        lines = file.readlines()
     
-    if issues_found > 0:
-        print(f"Found {issues_found} indentation issues. Writing fixed file...")
-        with open(filename + '.fixed', 'w', encoding='utf-8') as f:
-            f.writelines(fixed_lines)
-        print(f"Fixed file written to {filename}.fixed")
-    else:
-        print("No indentation issues found!")
+    # Fix the indentation issues
+    for i in range(len(lines)):
+        # Fix line where 'return redirect(url_for('home'))' has incorrect indentation
+        if "return redirect(url_for('home'))" in lines[i] and lines[i-1].strip().endswith('else:'):
+            indent = lines[i-1].split('else:')[0] + '    '
+            lines[i] = indent + "return redirect(url_for('home'))\n"
+        
+        # Fix line where join_room('doctor-room') has incorrect indentation
+        if "join_room('doctor-room')" in lines[i] and lines[i-1].strip().endswith('if is_available:'):
+            indent = lines[i-1].split('if is_available:')[0] + '    '
+            lines[i] = indent + "join_room('doctor-room')\n"
+    
+    # Write the modified content back to the file
+    with open('app.py', 'w', encoding='utf-8') as file:
+        file.writelines(lines)
+    
+    print("Indentation fixes applied to app.py")
 
 if __name__ == "__main__":
-    fix_indentation_issues("app.py") 
+    if len(sys.argv) > 1:
+        filename = sys.argv[1]
+    else:
+        filename = "app.py"
+    
+    # Read the file
+    with open(filename, 'r') as file:
+        content = file.read()
+
+    # Fix line 320 - add proper indentation to the return statement in the else clause
+    pattern1 = r'(\s+else:\n)(\s+)return redirect\(url_for\(\'home\'\)\)'
+    replacement1 = r'\1\2    return redirect(url_for(\'home\'))'
+
+    content = re.sub(pattern1, replacement1, content)
+
+    # Fix line 984 - add proper indentation to join_room('doctor-room')
+    pattern2 = r'(\s+if is_available:\n)(\s+)join_room\(\'doctor-room\'\)'
+    replacement2 = r'\1\2    join_room(\'doctor-room\')'
+
+    content = re.sub(pattern2, replacement2, content)
+
+    # Write the modified content back to the file
+    with open(filename, 'w', encoding='utf-8') as f:
+        f.write(content)
+
+    print("Indentation fixes applied to app.py")
+
+    fix_indentation() 

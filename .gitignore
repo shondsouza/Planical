@@ -126,6 +126,10 @@ dmypy.json
 firebase-debug.log
 .firebase/
 firebase-adminsdk.json
+firebase-service-account.json
+*.json
+!package.json
+!package-lock.json
 
 # VS Code
 .vscode/
@@ -141,6 +145,7 @@ firebase-adminsdk.json
 config.py
 secrets.json
 credentials.json
+firebase_config.py
 
 # Local development settings
 *.local
@@ -161,6 +166,7 @@ Thumbs.db
 # Database files
 *.db
 *.sqlite
+database.db
 
 # Node modules (if using any JS)
 node_modules/
@@ -176,13 +182,38 @@ yarn-debug.log
 
 # Additional unnecessary files
 *.pkl
-firebase-service-account.json
 chroma_db/
 __pycache__/
 *.csv
 .env
-database.db
 *.bat
+run_app.bat
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Debug files
+debug_lines.txt
+test_socket.py
+
+# Temporary Python files
+*.pyc
+*.pyo
+*.pyd
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+*.lnk
 
 # Allow these specific files
 !stresslevel.pkl

@@ -379,15 +379,8 @@
         firebaseApp: firebase.app(),
         checkInterval: 15000, // 15 seconds
         onStatusChange: handleConnectionStatusChange,
-        onReconnect: handleReconnection,
-        onDisconnect: handleDisconnection
+        skipRealtimeDatabase: true
       });
-      
-      // Enable offline persistence
-      connectionManager.enableOfflinePersistence()
-        .then(success => {
-          console.log('Offline persistence setup:', success ? 'succeeded' : 'failed');
-        });
     }
     
     function handleConnectionStatusChange(status) {
@@ -424,16 +417,6 @@
       
       // Update UI components based on connection status
       updateUIForConnectionStatus();
-    }
-    
-    function handleReconnection(source) {
-      console.log(`Reconnected to ${source}`);
-      showNotification(`Connection restored. You're back online.`, 'success');
-    }
-    
-    function handleDisconnection(source) {
-      console.log(`Disconnected from ${source}`);
-      showNotification('Connection lost. Working in offline mode. Some features may be limited.', 'warning');
     }
     
     function updateUIForConnectionStatus() {
@@ -548,35 +531,38 @@
       
       // Request consultation function
       window.requestConsultation = function(doctorId, doctorName) {
+        // Create a unique consultation ID
+        const consultationId = `consult-${Date.now()}-${doctorId}`;
+        
+        // Store consultation info in session storage
+        sessionStorage.setItem('currentConsultation', JSON.stringify({
+          doctorId: doctorId,
+          doctorName: doctorName,
+          consultationId: consultationId
+        }));
+        
         // Redirect to the consultation request form
-        window.location.href = `/request-consultation/${doctorId}?doctorName=${encodeURIComponent(doctorName)}`;
+        window.location.href = `/request-consultation/${doctorId}?doctorName=${encodeURIComponent(doctorName)}&consultationId=${consultationId}`;
       };
       
       // Listen for consultation accepted event
-      socket.on('consultation-accepted', function(data) {
-        const doctorName = data.doctorName;
-        const callId = data.consultationId;
-        const scheduledTime = data.scheduledTime;
-        
-        if (scheduledTime) {
-          // Format date and time for display
-          const dateObj = new Date(scheduledTime);
-          const formattedDate = dateObj.toLocaleDateString();
-          const formattedTime = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      if (window.socket) {
+        window.socket.on('consultation-accepted', function(data) {
+          console.log('Consultation accepted:', data);
           
-          showNotification(`Dr. ${doctorName} has scheduled your consultation for ${formattedDate} at ${formattedTime}.`, 'success');
+          // Get stored consultation info
+          const consultationInfo = JSON.parse(sessionStorage.getItem('currentConsultation') || '{}');
           
-          // Don't redirect automatically for scheduled consultations
-        } else {
-          // Immediate consultation
-          showNotification(`Dr. ${doctorName} has accepted your consultation request. Redirecting to video call...`, 'success');
-          
-          // Redirect to video call page after a short delay
-          setTimeout(function() {
-            window.location.href = `/patient-video-call/${callId}`;
-          }, 2000);
-        }
-      });
+          if (data.consultationId === consultationInfo.consultationId) {
+            showNotification(`Dr. ${consultationInfo.doctorName} has accepted your consultation request!`, 'success');
+            
+            // Redirect to video call with Jitsi Meet
+            setTimeout(() => {
+              window.location.href = `/patient-video-call/${consultationInfo.consultationId}`;
+            }, 2000);
+          }
+        });
+      }
       
       // Listen for consultation rejected event
       socket.on('consultation-rejected', function(data) {

@@ -1,4 +1,4 @@
-﻿from flask import Flask, json, redirect, render_template, flash, request, jsonify
+from flask import Flask, json, redirect, render_template, flash, request, jsonify
 from flask.globals import request, session
 from flask.helpers import url_for
 from functools import wraps
@@ -22,6 +22,9 @@ from flask_cors import CORS
 # from pypeerjs import PeerJSServer
 from datetime import datetime
 import time
+import logging
+from logging.handlers import RotatingFileHandler
+import threading
 
 # Load environment variables
 load_dotenv()
@@ -48,12 +51,26 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 
 app.secret_key = "tandrima"
 
+# Configure Firebase API keys properly
+app.config.update({
+    'FIREBASE_API_KEY': firebase_config['apiKey'],
+    'FIREBASE_AUTH_DOMAIN': firebase_config['authDomain'],
+    'FIREBASE_PROJECT_ID': firebase_config['projectId'],
+    'FIREBASE_STORAGE_BUCKET': firebase_config['storageBucket'],
+    'FIREBASE_MESSAGING_SENDER_ID': firebase_config['messagingSenderId'],
+    'FIREBASE_APP_ID': firebase_config['appId'],
+    'FIREBASE_DATABASE_URL': firebase_config.get('databaseURL', '')
+})
+
 # Initialize Socket.IO with your Flask app
 socketio = SocketIO(app, 
                     cors_allowed_origins="*", 
                     async_mode='threading',
                     ping_timeout=60,
                     ping_interval=25)
+
+# Lock for thread-safe access to the online_doctors dictionary
+online_doctors_lock = threading.Lock()
 
 # Dictionary to track online doctors and their status
 online_doctors = {}
@@ -300,7 +317,7 @@ def login():
             elif role == 'doctor':
                 return redirect(url_for('doctor_dashboard'))
             else:
-                return redirect(url_for('home'))
+            return redirect(url_for('home'))
             
         except Exception as e:
             print(f"Login error: {str(e)}")
@@ -654,6 +671,55 @@ def chat_proxy():
 def inject_firebase_config():
     return dict(firebase_config=firebase_config)
 
+# REST API fallback for Firestore access
+@app.route('/api/firestore/<collection>', methods=['POST'])
+@login_required
+def firestore_api(collection):
+    """REST API fallback for accessing Firestore when client-side access fails"""
+    try:
+        # Extract filters from request
+        data = request.json or {}
+        filters = data.get('filters', {})
+        
+        # Security check: Make sure user has access to this collection
+        # For consultations, doctors should only see their own requests
+        user_id = session.get('user', {}).get('uid')
+        user_role = session.get('user', {}).get('role', 'patient')
+        
+        # Validate collection (whitelist approach)
+        allowed_collections = ['consultations', 'users', 'notifications']
+        if collection not in allowed_collections:
+            return jsonify({'error': 'Collection not allowed'}), 403
+            
+        # Get a reference to the collection
+        coll_ref = firestore_db.collection(collection)
+        
+        # Apply filters if provided
+        query = coll_ref
+        for field, value in filters.items():
+            query = query.where(field, '==', value)
+            
+        # For consultation requests, enforce doctor_id filter for doctors
+        if collection == 'consultations' and user_role == 'doctor':
+            if 'doctor_id' not in filters or filters['doctor_id'] != user_id:
+                query = query.where('doctor_id', '==', user_id)
+                
+        # Execute query
+        docs = query.stream()
+        
+        # Format results
+        results = []
+        for doc in docs:
+            results.append({
+                'id': doc.id,
+                'data': doc.to_dict()
+            })
+            
+        return jsonify(results)
+    except Exception as e:
+        print(f"Error in Firestore REST API: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/memory-game')
 @login_required
 def memory_game():
@@ -906,8 +972,8 @@ def handle_join_doctor_room(data):
             'id': user_id,
             'name': user_name,
             'status': 'available' if is_available else 'unavailable',
-        'socket_id': request.sid
-    }
+            'socket_id': request.sid
+        }
     
         app.logger.info(f"Doctor available: {is_available}")
         app.logger.info(f"Online doctors: {len(online_doctors)}")
@@ -919,11 +985,11 @@ def handle_join_doctor_room(data):
         app.logger.info(f"Doctor {user_id} added to doctor-room")
     
     # Always join a personal room for direct targeting
-    join_room(f'doctor-{user_id}')
+        join_room(f'doctor-{user_id}')
     app.logger.info(f"Doctor {user_id} added to doctor-{user_id} room")
     
     # Add to all doctor events to receive admin broadcasts
-    join_room('all-doctors')
+        join_room('all-doctors')
     
     # Broadcast updated doctor list to all clients
     socketio.emit('doctors-updated', {
@@ -968,13 +1034,13 @@ def handle_leave_doctor_room(data):
     app.logger.info(f"Doctor {user_name} ({user_id}) left the doctor room")
     
     # Remove from doctor-room
-    leave_room('doctor-room')
+        leave_room('doctor-room')
         
     # Remove from personal room
-    leave_room(f'doctor-{user_id}')
+        leave_room(f'doctor-{user_id}')
     
     # Remove from all-doctors room
-    leave_room('all-doctors')
+        leave_room('all-doctors')
     
     # Update doctor status in online_doctors
     with online_doctors_lock:
@@ -1028,7 +1094,7 @@ def handle_join_call_room(data):
         return
     
     room_name = f'call-{call_id}'
-    join_room(room_name)
+        join_room(room_name)
     
     app.logger.info(f"{user_role.capitalize()} {user_name} ({user_id}) joined call room: {room_name}")
     
@@ -1068,7 +1134,7 @@ def handle_leave_call_room(data):
         return
     
     room_name = f'call-{call_id}'
-    leave_room(room_name)
+        leave_room(room_name)
     
     app.logger.info(f"{user_role.capitalize()} {user_name} ({user_id}) left call room: {room_name}")
     
@@ -1590,46 +1656,120 @@ def handle_new_consultation_request(data):
 @app.route('/submit-consultation-request', methods=['POST'])
 @login_required
 def submit_consultation_request():
+    """Handle submission of a consultation request from a patient"""
+    # Add detailed logging for debugging
+    app.logger.info("=== submit_consultation_request called ===")
+    app.logger.info(f"Request method: {request.method}")
+    app.logger.info(f"Content type: {request.content_type}")
+    app.logger.info(f"Headers: {dict(request.headers)}")
+    
     # Check if the user is a patient
-    if session['user'].get('role') != 'patient':
+    user_role = session.get('user', {}).get('role', 'unknown')
+    app.logger.info(f"User role: {user_role}")
+    
+    if user_role != 'patient':
         flash('Only patients can request consultations.', 'error')
         return redirect(url_for('virtual_consultation'))
     
     # Determine if this is an AJAX request
     is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.content_type == 'application/json'
-    app.logger.info(f"Processing consultation request - AJAX: {is_ajax}")
+    app.logger.info(f"Is AJAX request: {is_ajax}")
+    
+    # Check if this is a form with target=waiting_page
+    target_waiting_page = request.form.get('target') == 'waiting_page'
+    app.logger.info(f"Is target waiting page: {target_waiting_page}")
+    
+    # Log form data for debugging
+    if request.content_type == 'application/json':
+        try:
+            app.logger.info(f"JSON data: {request.json}")
+        except Exception as e:
+            app.logger.warning(f"Could not parse JSON data: {str(e)}")
+    else:
+        app.logger.info(f"Form data: {dict(request.form)}")
+        app.logger.info(f"Form multidict items: {list(request.form.items())}")
     
     try:
         # Get form data
-        if is_ajax:
+        if is_ajax and request.content_type == 'application/json':
             data = request.json
         else:
             data = request.form
-            
+        
+        # Extra logging for debugging form data
+        app.logger.info(f"Data object type: {type(data)}")
+        
+        # Extract and validate each required field with detailed logging
         doctor_id = data.get('doctor_id')
+        app.logger.info(f"doctor_id: {doctor_id}")
+        
         symptoms = data.get('symptoms')
+        app.logger.info(f"symptoms length: {len(symptoms) if symptoms else 0}")
+        
         urgency = data.get('urgency')
-        time_slots = data.getlist('time_slots') if hasattr(data, 'getlist') else data.get('time_slots', [])
-        consultation_type = data.get('consultation_type', 'chat')
+        app.logger.info(f"urgency: {urgency}")
         
-        app.logger.info(f"Form data: doctor_id={doctor_id}, urgency={urgency}, slots={time_slots}")
-        
-        # Validate required fields
-        if not doctor_id or not symptoms or not urgency or not time_slots:
-            app.logger.error("Missing required fields")
-            if is_ajax:
-                return jsonify({'success': False, 'error': 'All fields are required'}), 400
+        # Handle time_slots differently based on request type
+        if hasattr(data, 'getlist'):
+            time_slots = data.getlist('time_slots')
+            app.logger.info(f"time_slots from getlist: {time_slots}")
+        else:
+            # Handle JSON array or single value
+            time_slots_data = data.get('time_slots', [])
+            
+            # Convert to list if it's a string or not already a list
+            if isinstance(time_slots_data, str):
+                time_slots = [time_slots_data]
+            elif not isinstance(time_slots_data, list):
+                # Try to convert if it's something else
+                try:
+                    time_slots = list(time_slots_data)
+                except:
+                    time_slots = [time_slots_data] if time_slots_data else []
             else:
-                flash('All fields are required.', 'error')
+                time_slots = time_slots_data
+                
+            app.logger.info(f"time_slots from get: {time_slots}")
+        
+        consultation_type = data.get('consultation_type', 'chat')
+        app.logger.info(f"consultation_type: {consultation_type}")
+        
+        doctor_name = data.get('doctor_name', 'Doctor')
+        app.logger.info(f"doctor_name: {doctor_name}")
+        
+        # Validate required fields with detailed error messages
+        validation_errors = []
+        if not doctor_id:
+            validation_errors.append("Doctor ID is required")
+        if not symptoms or not symptoms.strip():
+            validation_errors.append("Symptoms description is required")
+        if not urgency:
+            validation_errors.append("Urgency level is required")
+        if not time_slots or len(time_slots) == 0:
+            validation_errors.append("At least one time slot must be selected")
+        
+        # Log and handle validation errors
+        if validation_errors:
+            error_message = ", ".join(validation_errors)
+            app.logger.error(f"Validation errors: {error_message}")
+            
+            if is_ajax:
+                return jsonify({'success': False, 'error': error_message}), 400
+            else:
+                flash(f'Please correct the following: {error_message}', 'error')
                 return redirect(url_for('request_consultation', doctor_id=doctor_id))
         
-        # Create a unique consultation ID
-        consultation_id = f"consult-{int(time.time())}-{session['user'].get('uid')[-6:]}"
+        # All fields are valid, proceed with creating the consultation
+        app.logger.info("Validation passed, creating consultation document")
         
-        # Get patient and doctor information
-        patient_id = session['user'].get('uid')
-        patient_name = session['user'].get('name')
-        doctor_name = data.get('doctor_name', 'Doctor')
+        # Create a unique consultation ID
+        patient_id = session['user'].get('uid', '')
+        consultation_id = f"consult-{int(time.time())}-{patient_id[-6:] if patient_id else 'unknown'}"
+        app.logger.info(f"Generated consultation_id: {consultation_id}")
+        
+        # Get patient information
+        patient_name = session['user'].get('name', 'Patient')
+        app.logger.info(f"Patient name: {patient_name}")
         
         # Create a consultation document in Firestore
         consultation_data = {
@@ -1647,8 +1787,33 @@ def submit_consultation_request():
             'updated_at': firestore.SERVER_TIMESTAMP
         }
         
-        # Save to Firestore
-        firestore_db.collection('consultations').document(consultation_id).set(consultation_data)
+        # Detailed logging of the document we're about to save
+        app.logger.info(f"Consultation data: {consultation_data}")
+        
+        # Save to Firestore with detailed error handling
+        try:
+            # First check if the doctor document exists
+            doctor_doc = firestore_db.collection('users').document(doctor_id).get()
+            if not doctor_doc.exists:
+                error_msg = f"Doctor with ID {doctor_id} not found in Firestore"
+                app.logger.error(error_msg)
+                if is_ajax:
+                    return jsonify({'success': False, 'error': error_msg}), 404
+                else:
+                    flash('The selected doctor is no longer available. Please try another doctor.', 'error')
+                    return redirect(url_for('virtual_consultation'))
+            
+            # Save the consultation document
+            firestore_db.collection('consultations').document(consultation_id).set(consultation_data)
+            app.logger.info(f"Consultation document saved to Firestore with ID: {consultation_id}")
+        except Exception as db_error:
+            error_msg = f"Error saving to Firestore: {str(db_error)}"
+            app.logger.error(error_msg)
+            if is_ajax:
+                return jsonify({'success': False, 'error': error_msg}), 500
+            else:
+                flash('Database error. Please try again later.', 'error')
+                return redirect(url_for('virtual_consultation'))
         
         # Check if doctor is online
         is_doctor_online = False
@@ -1658,7 +1823,7 @@ def submit_consultation_request():
             if doctor_id in online_doctors:
                 is_doctor_online = True
                 doctor_socket_id = online_doctors[doctor_id].get('socket_id')
-                app.logger.info(f"Doctor {doctor_id} is online with socket_id {doctor_socket_id}. Sending real-time notification.")
+                app.logger.info(f"Doctor {doctor_id} is online with socket_id {doctor_socket_id}")
         
         # Prepare notification data
         notification_data = {
@@ -1672,51 +1837,110 @@ def submit_consultation_request():
             'consultationType': consultation_type
         }
         
-        # Send notification via Socket.IO to the doctor
-        try:
-            # METHOD 1: Try sending directly to doctor's Socket ID if available
-            if doctor_socket_id:
-                try:
-                    # Try both event names to ensure compatibility
+        # Send notification via Socket.IO with enhanced error handling
+        notification_sent = False
+        
+        # Make 5 attempts to send notification to ensure doctor receives it
+        max_attempts = 5
+        for attempt in range(1, max_attempts + 1):
+            app.logger.info(f"Notification attempt {attempt} of {max_attempts}")
+            try:
+                # METHOD 1: Direct to doctor's socket if available
+                if doctor_socket_id:
                     socketio.emit('new-consultation-request', notification_data, to=doctor_socket_id)
                     socketio.emit('new-consultation-notification', notification_data, to=doctor_socket_id)
-                    app.logger.info(f"Sent direct notification to doctor socket: {doctor_socket_id}")
-                except Exception as e:
-                    app.logger.error(f"Error sending direct notification: {str(e)}")
-            
-            # METHOD 2: Broadcast to all doctors in the room (as backup)
-            socketio.emit('new-consultation-request', notification_data, to='doctor-room')
-            socketio.emit('new-consultation-notification', notification_data, to='doctor-room')
-            app.logger.info(f"Broadcast notification to doctor-room")
-            
-            # METHOD 3: Specific broadcast targeting our doctor
-            socketio.emit(f'new-consultation-request-{doctor_id}', notification_data)
-            socketio.emit(f'new-consultation-notification-{doctor_id}', notification_data)
-            app.logger.info(f"Sent targeted event for doctor: {doctor_id}")
-            
-        except Exception as e:
-            app.logger.error(f"Socket.IO notification error: {str(e)}")
-            # Continue despite notification error - they'll see it when they refresh
+                    app.logger.info(f"Direct notification sent to doctor socket: {doctor_socket_id}")
+                    notification_sent = True
+                
+                # METHOD 2: Broadcast to all doctors (try regardless of direct result)
+                socketio.emit('new-consultation-request', notification_data, to='doctor-room')
+                socketio.emit('new-consultation-notification', notification_data, to='doctor-room')
+                app.logger.info(f"Broadcast notification sent to doctor-room")
+                
+                # METHOD 3: Send specific event for this doctor (try regardless of other results)
+                socketio.emit(f'new-consultation-request-{doctor_id}', notification_data)
+                socketio.emit(f'new-consultation-notification-{doctor_id}', notification_data)
+                app.logger.info(f"Targeted event sent for doctor: {doctor_id}")
+                
+                # If any notification was sent successfully, break the loop
+                if notification_sent:
+                    app.logger.info(f"Notification sent successfully on attempt {attempt}")
+                    break
+                
+                # Small delay between attempts
+                if attempt < max_attempts:
+                    time.sleep(0.5)
+                    
+            except Exception as e:
+                app.logger.error(f"Error sending notification (attempt {attempt}): {str(e)}")
+                if attempt < max_attempts:
+                    time.sleep(0.5)
         
-        # Respond based on request type
-        if is_ajax:
-            return jsonify({
+        # Fall back to Firestore polling approach for reliability
+        # Update a "new_notifications" collection to allow doctor to poll
+        try:
+            firestore_db.collection('new_notifications').document(doctor_id).set({
+                'consultations': firestore.ArrayUnion([consultation_id]),
+                'updated_at': firestore.SERVER_TIMESTAMP
+            }, merge=True)
+            app.logger.info(f"Added notification to new_notifications collection for doctor {doctor_id}")
+        except Exception as e:
+            app.logger.error(f"Error adding to new_notifications: {str(e)}")
+        
+        # Log notification status
+        app.logger.info(f"Notification status: {'sent' if notification_sent else 'failed'}")
+            
+        # For server-side form submission with target_waiting_page
+        if target_waiting_page and not is_ajax:
+            # Always redirect to waiting page regardless of notification status
+            waiting_url = url_for('consultation_waiting', 
+                              consultation_id=consultation_id,
+                              doctor_name=doctor_name)
+            app.logger.info(f"Redirecting to waiting page: {waiting_url}")
+            return redirect(waiting_url)
+        elif is_ajax:
+            # Always return JSON for AJAX requests
+            response_data = {
                 'success': True, 
-                'consultation_id': consultation_id, 
-                'doctor_online': is_doctor_online
-            })
+                'consultation_id': consultation_id,
+                'doctor_name': doctor_name,
+                'doctor_online': is_doctor_online,
+                'notification_sent': notification_sent
+            }
+            
+            resp = jsonify(response_data)
+            resp.headers['Content-Type'] = 'application/json'
+            app.logger.info(f"Returning JSON response: {response_data}")
+            return resp
         else:
-            # Redirect to waiting page
+            # Default fallback - regular form submission without explicit target
+            flash('Your consultation request has been submitted.', 'success')
             return redirect(url_for('consultation_waiting', 
-                                  consultation_id=consultation_id,
-                                  doctor_name=doctor_name))
+                              consultation_id=consultation_id,
+                              doctor_name=doctor_name))
                                   
     except Exception as e:
-        app.logger.error(f"Error submitting consultation: {str(e)}")
+        # Detailed error logging for root exception
+        app.logger.error(f"=== CRITICAL ERROR in submit_consultation_request ===")
+        app.logger.error(f"Exception type: {type(e).__name__}")
+        app.logger.error(f"Exception message: {str(e)}")
+        import traceback
+        app.logger.error(f"Traceback: {traceback.format_exc()}")
+        
         if is_ajax:
-            return jsonify({'success': False, 'error': str(e)}), 500
+            # Return detailed error for AJAX
+            error_data = {
+                'success': False, 
+                'error': str(e),
+                'error_type': type(e).__name__
+            }
+            resp = jsonify(error_data)
+            resp.headers['Content-Type'] = 'application/json'
+            app.logger.info(f"Returning error JSON response: {error_data}")
+            return resp, 500
         else:
-            flash('An error occurred while submitting your consultation request. Please try again.', 'error')
+            # Flash error and redirect for normal form
+            flash(f'An error occurred while submitting your request: {str(e)}', 'error')
             return redirect(url_for('virtual_consultation'))
 
 @app.route('/virtual-consultation/waiting')
@@ -1873,7 +2097,7 @@ def diagnose_consultations(doctor_id):
         
         # Check if doctor is in the online_doctors dictionary
         is_online = doctor_id in online_doctors
-        socket_id = online_doctors.get(doctor_id, {}).get('socket_id', 'Not connected') if is_online else 'Not connected'
+            socket_id = online_doctors.get(doctor_id, {}).get('socket_id', 'Not connected') if is_online else 'Not connected'
         
         # Try sending a test notification if doctor is online
         notification_sent = False
@@ -2021,6 +2245,100 @@ def handle_doctor_consulting(data):
             })
         else:
             app.logger.warning(f"Doctor {doctor_id} not found in online doctors list")
+
+# Setup enhanced logging
+def setup_logging():
+    """Set up enhanced logging for the application"""
+    log_dir = 'logs'
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+    
+    log_file = os.path.join(log_dir, 'app.log')
+    
+    # Configure file handler with rotation
+    file_handler = RotatingFileHandler(log_file, maxBytes=1024*1024*10, backupCount=5)
+    file_handler.setFormatter(logging.Formatter(
+        '%(asctime)s %(levelname)s [%(filename)s:%(lineno)d] - %(message)s'
+    ))
+    file_handler.setLevel(logging.INFO)
+    
+    # Configure console handler
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(logging.Formatter(
+        '%(asctime)s %(levelname)s [%(filename)s:%(lineno)d] - %(message)s'
+    ))
+    console_handler.setLevel(logging.INFO)
+    
+    # Add handlers to app logger
+    app.logger.addHandler(file_handler)
+    app.logger.addHandler(console_handler)
+    app.logger.setLevel(logging.INFO)
+    
+    # Log startup
+    app.logger.info("Application logging configured")
+
+# Call setup_logging at application startup
+setup_logging()
+
+@app.route('/debug/logs')
+@login_required
+def view_logs():
+    """View recent application logs for debugging - admin only"""
+    # Check if user is admin
+    if session.get('user', {}).get('role') != 'admin':
+        flash('You do not have permission to view logs.', 'error')
+        return redirect(url_for('index'))
+    
+    log_file = 'logs/app.log'
+    logs = []
+    
+    try:
+        if os.path.exists(log_file):
+            with open(log_file, 'r') as f:
+                # Get the last 200 lines
+                logs = f.readlines()[-200:]
+        else:
+            logs = ["Log file not found"]
+    except Exception as e:
+        logs = [f"Error reading logs: {str(e)}"]
+    
+    return render_template('admin/view_logs.html', logs=logs)
+
+@app.route('/api/doctor-requests/<doctor_id>', methods=['GET'])
+@login_required
+def api_doctor_requests(doctor_id):
+    """API endpoint to fetch pending consultation requests for a doctor"""
+    try:
+        # Security check - make sure user is requesting their own data
+        user_id = session.get('user', {}).get('uid')
+        user_role = session.get('user', {}).get('role', 'patient')
+        
+        if user_role != 'doctor' or user_id != doctor_id:
+            return jsonify({'error': 'Unauthorized access'}), 403
+        
+        # Query Firestore for pending consultation requests
+        query = firestore_db.collection('consultations').where('status', '==', 'pending').where('doctor_id', '==', doctor_id)
+        results = []
+        
+        for doc in query.stream():
+            request_data = doc.to_dict()
+            request_data['consultationId'] = doc.id
+            results.append(request_data)
+        
+        return jsonify(results)
+    except Exception as e:
+        print(f"Error in API endpoint: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/test-peerjs')
+def test_peerjs():
+    """Serve a test page for PeerJS functionality"""
+    return render_template('test_peerjs.html')
+
+@app.route('/debug-peerjs')
+def debug_peerjs():
+    """Serve a diagnostic tool for PeerJS connection issues"""
+    return render_template('debug_peerjs.html')
 
 if __name__ == "__main__":
     socketio.run(app, host='0.0.0.0', port=5000, debug=True, allow_unsafe_werkzeug=True)

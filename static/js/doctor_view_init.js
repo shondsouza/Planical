@@ -70,46 +70,64 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Setup timers for consultation requests
       console.log("OVERRIDE - Setting up timers");
-      const doctorId = document.querySelector('meta[name="doctor-id"]')?.content || 
-                       document.getElementById('doctor-id')?.value || 
-                       "unknown";
-      
-      // Set up a timer to check for requests
-      if (typeof window.checkRequestsInterval === 'undefined') {
-        window.checkRequestsInterval = setInterval(function() {
-          if (typeof window.manualCheckForRequests === 'function') {
-            console.log("OVERRIDE - Checking for requests...");
-            window.manualCheckForRequests(doctorId);
-          } else if (typeof manualCheckForRequests === 'function') {
-            console.log("OVERRIDE - Checking for requests (local function)...");
-            manualCheckForRequests(doctorId);
-          } else {
-            console.log("OVERRIDE - manualCheckForRequests function not found");
-          }
-        }, 60000);
+      // Ensure Firebase is initialized (if not already)
+      if (typeof firebase !== 'undefined' && firebase.apps && !firebase.apps.length) {
+        // Firebase config should be passed from server-side template
+        // This is a fallback - ideally the config should come from the server
+        console.warn('Firebase config not found in template, using fallback');
+        firebase.initializeApp({
+          apiKey: "FIREBASE_API_KEY_PLACEHOLDER",
+          authDomain: "planical1.firebaseapp.com",
+          databaseURL: "https://planical1-default-rtdb.firebaseio.com",
+          projectId: "planical1",
+          storageBucket: "planical1.firebasestorage.app",
+          messagingSenderId: "FIREBASE_MESSAGING_SENDER_ID_PLACEHOLDER",
+          appId: "FIREBASE_APP_ID_PLACEHOLDER"
+        });
       }
       
-      // Make all functions globally available
-      window.toggleAvailabilityClean = toggleAvailabilityClean;
+      // Wait for Firebase Auth to be ready before using doctorId anywhere
+      if (typeof firebase !== 'undefined' && firebase.auth) {
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+            const doctorId = user.uid;
+            console.log("UID:", user.uid); // Log UID after login
+            // Now safe to use doctorId for all Firestore and API calls
+            // Setup timers for consultation requests
+            if (typeof window.checkRequestsInterval === 'undefined') {
+              window.checkRequestsInterval = setInterval(function() {
+                if (typeof window.manualCheckForRequests === 'function') {
+                  console.log("OVERRIDE - Checking for requests...");
+                  window.manualCheckForRequests(doctorId);
+                } else if (typeof manualCheckForRequests === 'function') {
+                  console.log("OVERRIDE - Checking for requests (local function)...");
+                  manualCheckForRequests(doctorId);
+                } else {
+                  console.log("OVERRIDE - manualCheckForRequests function not found");
+                }
+              }, 60000);
+            }
+            
+            // Initial check for requests
+            if (typeof window.manualCheckForRequests === 'function') {
+              console.log("OVERRIDE - Running initial check for requests");
+              window.manualCheckForRequests(doctorId);
+            } else if (typeof manualCheckForRequests === 'function') {
+              console.log("OVERRIDE - Running initial check for requests (local function)");
+              manualCheckForRequests(doctorId);
+            }
+            
+            // Make all functions globally available
+            window.toggleAvailabilityClean = toggleAvailabilityClean;
+          } else {
+            console.warn('No user logged in.');
+          }
+        });
+      } else {
+        console.error('Firebase Auth is not available.');
+      }
     } catch (err) {
       console.error("OVERRIDE - Error in UI initialization:", err);
-    }
-    
-    // Run an initial check for requests
-    try {
-      const doctorId = document.querySelector('meta[name="doctor-id"]')?.content || 
-                       document.getElementById('doctor-id')?.value || 
-                       "unknown";
-      
-      if (typeof window.manualCheckForRequests === 'function') {
-        console.log("OVERRIDE - Running initial check for requests");
-        window.manualCheckForRequests(doctorId);
-      } else if (typeof manualCheckForRequests === 'function') {
-        console.log("OVERRIDE - Running initial check for requests (local function)");
-        manualCheckForRequests(doctorId);
-      }
-    } catch (err) {
-      console.error("OVERRIDE - Error in initial request check:", err);
     }
     
     // Add a last-check element to show last update time
@@ -163,12 +181,18 @@ function toggleAvailabilityClean() {
       
       // Notify server about status change
       if (window.socket) {
-        window.socket.emit('update-doctor-status', {
-          doctorId: document.querySelector('meta[name="doctor-id"]')?.content || 
-                   document.getElementById('doctor-id')?.value || 
-                   "unknown",
-          available: false
-        });
+        // Wait for Firebase Auth to be ready before using doctorId anywhere
+        if (typeof firebase !== 'undefined' && firebase.auth) {
+          firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+              const doctorId = user.uid;
+              window.socket.emit('update-doctor-status', {
+                doctorId: doctorId,
+                available: !toggleBtn.classList.contains('active')
+              });
+            }
+          });
+        }
       }
     } else {
       // Change to active
@@ -188,12 +212,18 @@ function toggleAvailabilityClean() {
       
       // Notify server about status change
       if (window.socket) {
-        window.socket.emit('update-doctor-status', {
-          doctorId: document.querySelector('meta[name="doctor-id"]')?.content || 
-                   document.getElementById('doctor-id')?.value || 
-                   "unknown",
-          available: true
-        });
+        // Wait for Firebase Auth to be ready before using doctorId anywhere
+        if (typeof firebase !== 'undefined' && firebase.auth) {
+          firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+              const doctorId = user.uid;
+              window.socket.emit('update-doctor-status', {
+                doctorId: doctorId,
+                available: !toggleBtn.classList.contains('active')
+              });
+            }
+          });
+        }
       }
     }
   } catch (err) {
