@@ -17,3 +17,4 @@ python-engineio==4.9.0
 python-socketio==5.11.1
 Flask-WTF==1.2.1
 WTForms==3.1.2
+pyrebase==3.0.27
