@@ -168,6 +168,237 @@
     .nav-pills .nav-link i {
       margin-right: 0.5rem;
     }
+
+    /* Responsive styles for Dashboard tab only */
+    #dashboard .stats-card {
+      margin-bottom: 1rem;
+    }
+
+    #dashboard .stats-card .count {
+      font-size: 1.5rem;
+    }
+
+    #dashboard .stats-card .icon {
+      width: 3rem;
+      height: 3rem;
+      font-size: 1.25rem;
+    }
+
+    /* Mobile responsive for dashboard stats */
+    @media (max-width: 768px) {
+      /* Fix navbar overlap issue */
+      #main {
+        padding-top: 120px !important;
+        margin-top: 60px;
+      }
+      
+      .dashboard-header {
+        padding: 1rem 0;
+        margin-bottom: 1rem;
+      }
+      
+      .dashboard-header h1 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      .dashboard-header p {
+        font-size: 0.9rem;
+      }
+      
+      /* Sidebar responsive */
+      .col-lg-3 {
+        margin-bottom: 1rem;
+      }
+      
+      #dashboard .row {
+        margin: 0 -0.5rem;
+      }
+      
+      #dashboard .col-md-3 {
+        padding: 0 0.5rem;
+        margin-bottom: 1rem;
+      }
+      
+      #dashboard .stats-card {
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      #dashboard .stats-card .count {
+        font-size: 1.25rem;
+      }
+      
+      #dashboard .stats-card .title {
+        font-size: 0.75rem;
+      }
+      
+      #dashboard .stats-card .icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      #dashboard .card-header {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+      }
+      
+      #dashboard .table {
+        font-size: 0.85rem;
+      }
+      
+      #dashboard .table th,
+      #dashboard .table td {
+        padding: 0.5rem 0.25rem;
+      }
+      
+      #dashboard .btn-sm {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.7rem;
+      }
+      
+      /* Ensure content doesn't overlap with navbar */
+      .container {
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+      
+      /* Fix sidebar layout on mobile */
+      .col-lg-3, .col-lg-9 {
+        width: 100%;
+        max-width: 100%;
+        flex: 0 0 100%;
+      }
+    }
+
+    /* Tablet responsive for dashboard */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      #dashboard .stats-card .count {
+        font-size: 1.75rem;
+      }
+      
+      #dashboard .stats-card .icon {
+        width: 3.5rem;
+        height: 3.5rem;
+        font-size: 1.4rem;
+      }
+    }
+
+    /* Ensure other tabs remain unchanged */
+    #doctor-approvals,
+    #users,
+    #settings {
+      /* Keep original styling for other tabs */
+    }
+    
+    /* Additional navbar and layout fixes */
+    #header {
+      z-index: 1000;
+    }
+    
+    /* Ensure main content has proper spacing from navbar */
+    #main {
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Hamburger menu styles */
+    .mobile-nav-toggle {
+      display: none;
+      font-size: 28px;
+      cursor: pointer;
+      color: #fff;
+      transition: 0.3s;
+    }
+    
+    .mobile-nav-toggle:hover {
+      color: #0d6efd;
+    }
+    
+    /* Mobile navbar styles */
+    @media (max-width: 991px) {
+      .mobile-nav-toggle {
+        display: block;
+      }
+      
+      .navbar-nav {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #fff;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        border-radius: 0 0 10px 10px;
+        padding: 1rem 0;
+        margin: 0;
+        list-style: none;
+      }
+      
+      .navbar-nav.show {
+        display: block;
+      }
+      
+      .navbar-nav .nav-item {
+        margin: 0;
+        border-bottom: 1px solid #f0f0f0;
+      }
+      
+      .navbar-nav .nav-item:last-child {
+        border-bottom: none;
+      }
+      
+      .navbar-nav .nav-link {
+        display: block;
+        padding: 0.75rem 1.5rem;
+        color: #333;
+        text-decoration: none;
+        transition: 0.3s;
+      }
+      
+      .navbar-nav .nav-link:hover,
+      .navbar-nav .nav-link.active {
+        background-color: #f8f9fa;
+        color: #0d6efd;
+      }
+      
+      .navbar-nav .nav-link.active {
+        background-color: #e7f3ff;
+        border-left: 3px solid #0d6efd;
+      }
+    }
+    
+    /* Fix for very small screens */
+    @media (max-width: 576px) {
+      #main {
+        padding-top: 140px !important;
+        margin-top: 80px;
+      }
+      
+      .dashboard-header {
+        padding: 0.75rem 0;
+      }
+      
+      .dashboard-header h1 {
+        font-size: 1.25rem;
+      }
+      
+      .dashboard-header p {
+        font-size: 0.8rem;
+      }
+      
+      /* Stack sidebar and main content vertically */
+      .row {
+        flex-direction: column;
+      }
+      
+      .col-lg-3, .col-lg-9 {
+        width: 100%;
+        margin-bottom: 1rem;
+      }
+    }
   </style>
 </head>
 
@@ -178,13 +409,13 @@
       <h1 class="logo"><img src="{{url_for('static', filename='logo.png')}}" alt="" class="src"><a href="/">Planical</a></h1>
 
       <nav id="navbar" class="navbar">
-        <ul>
-          <li><a class="nav-link" href="/">Home</a></li>
-          <li><a class="nav-link active" href="/admin-dashboard">Admin Dashboard</a></li>
-          <li><a class="nav-link" href="/profile">Profile</a></li>
-          <li><a class="nav-link" href="/logout">Logout</a></li>
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/admin-dashboard">Admin Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
+          <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
         </ul>
-        <i class="bi bi-list mobile-nav-toggle"></i>
+        <i class="bi bi-list mobile-nav-toggle" id="mobile-nav-toggle"></i>
       </nav><!-- .navbar -->
     </div>
   </header><!-- End Header -->
@@ -441,6 +672,44 @@
   
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      // Mobile navbar toggle functionality
+      const mobileNavToggle = document.getElementById('mobile-nav-toggle');
+      const navbarNav = document.querySelector('.navbar-nav');
+      
+      if (mobileNavToggle && navbarNav) {
+        mobileNavToggle.addEventListener('click', function() {
+          navbarNav.classList.toggle('show');
+          
+          // Change icon based on state
+          if (navbarNav.classList.contains('show')) {
+            mobileNavToggle.classList.remove('bi-list');
+            mobileNavToggle.classList.add('bi-x');
+          } else {
+            mobileNavToggle.classList.remove('bi-x');
+            mobileNavToggle.classList.add('bi-list');
+          }
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+          if (!event.target.closest('#navbar') && navbarNav.classList.contains('show')) {
+            navbarNav.classList.remove('show');
+            mobileNavToggle.classList.remove('bi-x');
+            mobileNavToggle.classList.add('bi-list');
+          }
+        });
+        
+        // Close menu when clicking on a link
+        const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+        navLinks.forEach(link => {
+          link.addEventListener('click', function() {
+            navbarNav.classList.remove('show');
+            mobileNavToggle.classList.remove('bi-x');
+            mobileNavToggle.classList.add('bi-list');
+          });
+        });
+      }
+      
       // Update stats from server data
       updateStats();
       

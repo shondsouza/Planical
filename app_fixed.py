@@ -49,7 +49,7 @@ app = Flask(__name__,
 # Enable CORS for all routes
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-app.secret_key = "tandrima"
+app.secret_key = "shondsouza"
 
 # Configure Firebase API keys properly
 app.config.update({
@@ -317,7 +317,7 @@ def login():
             elif role == 'doctor':
                 return redirect(url_for('doctor_dashboard'))
             else:
-            return redirect(url_for('home'))
+                return redirect(url_for('home'))
             
         except Exception as e:
             print(f"Login error: {str(e)}")
@@ -985,11 +985,11 @@ def handle_join_doctor_room(data):
         app.logger.info(f"Doctor {user_id} added to doctor-room")
     
     # Always join a personal room for direct targeting
-        join_room(f'doctor-{user_id}')
+    join_room(f'doctor-{user_id}')
     app.logger.info(f"Doctor {user_id} added to doctor-{user_id} room")
     
     # Add to all doctor events to receive admin broadcasts
-        join_room('all-doctors')
+    join_room('all-doctors')
     
     # Broadcast updated doctor list to all clients
     socketio.emit('doctors-updated', {
@@ -1034,13 +1034,13 @@ def handle_leave_doctor_room(data):
     app.logger.info(f"Doctor {user_name} ({user_id}) left the doctor room")
     
     # Remove from doctor-room
-        leave_room('doctor-room')
-        
+    leave_room('doctor-room')
+    
     # Remove from personal room
-        leave_room(f'doctor-{user_id}')
+    leave_room(f'doctor-{user_id}')
     
     # Remove from all-doctors room
-        leave_room('all-doctors')
+    leave_room('all-doctors')
     
     # Update doctor status in online_doctors
     with online_doctors_lock:

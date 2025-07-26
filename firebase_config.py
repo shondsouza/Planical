@@ -42,7 +42,8 @@ except Exception as e:
     print(f"Error initializing Firebase Authentication: {str(e)}")
     raise
 
-# Initialize Firebase Admin SDK (for Firestore)
+# Initialize Firebase Admin SDK (for Firestore) - Optional for local development
+db = None
 try:
     # Check if the app has already been initialized
     try:
@@ -55,17 +56,22 @@ try:
             firebase_app = firebase_admin.initialize_app(cred)
             print(f"Firebase Admin initialized with service account for project: {project_id}")
         else:
-            # Initialize with application default credentials
-            firebase_app = firebase_admin.initialize_app()
-            print("Firebase Admin initialized with application default credentials")
+            # For local development, skip Firestore if no service account
+            print("No service account found - Firestore will be disabled for local development")
+            print("To enable Firestore, add firebase-service-account.json file")
+            db = None
+            # Don't raise exception, just continue without Firestore
 except Exception as e:
-    print(f"Error initializing Firebase Admin: {str(e)}")
-    raise
+    print(f"Warning: Firebase Admin initialization failed: {str(e)}")
+    print("Continuing without Firestore for local development")
+    db = None
 
-# Get Firestore client
-try:
-    db = firestore.client()
-    print("Firestore client initialized successfully")
-except Exception as e:
-    print(f"Error initializing Firestore client: {str(e)}")
-    raise 
+# Get Firestore client only if admin was initialized
+if db is None:
+    try:
+        db = firestore.client()
+        print("Firestore client initialized successfully")
+    except Exception as e:
+        print(f"Warning: Firestore client not available: {str(e)}")
+        print("Some features may not work without Firestore")
+        db = None 

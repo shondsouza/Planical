@@ -49,7 +49,7 @@ app = Flask(__name__,
 # Enable CORS for all routes
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-app.secret_key = "tandrima"
+app.secret_key = "shondsouza"
 
 # Configure Firebase API keys properly
 app.config.update({
