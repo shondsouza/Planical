@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Matching Game</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet prefetch" href="https://fonts.googleapis.com/css?family=Mina">
+    <link rel="stylesheet" href="css/app.css">
+    <link href="https://cdn.jsdelivr.net/sweetalert2/4.2.4/sweetalert2.min.css" rel="stylesheet"/>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Memory Game</h1>
+        </header>
+
+        <section class="instructions-modal">
+            <!-- Trigger/Open The Modal -->
+            <button id="myBtn">How to Play</button>
+            <p></p>
+
+            <!-- The Modal -->
+            <div id="myModal" class="modal">
+
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>How to Play</h2>
+                    <h3>How The Game Works</h3>
+                        <p>The game board consists of sixteen "cards" arranged in a grid. The deck is made up of eight different pairs of cards, each with different symbols on one side. The cards are arranged randomly on the grid with the symbol face down. The gameplay rules are very simple: flip over two hidden cards at a time to locate the ones that match!</p>
+                        
+                        <p>Each turn:</p>
+                        
+                        <ul class="explanations">
+                        <li>The player flips one card over to reveal its underlying symbol.</li>
+                        <li>The player then turns over a second card, trying to find the corresponding card with the same symbol.</li>
+                        <li>If the cards match, both cards stay flipped over. If the cards do not match, both cards are flipped face down.</li>
+                        <li>The game ends once all cards have been correctly matched.</li>
+                        <li>The goal of the game is to match all the cards in the least moves & time possible.</li>
+                        </ul>
+                        
+                        <h3>Rating</h3>
+                        <p>0 - 15 moves : Three stars</p>
+                        <p>16 - 23 moves : Two stars</p>
+                        <p>24+ : One star</p>
+                        <p></p>
+                </div>
+
+            </div>
+        </section>
+        
+        <section class="score-panel">
+        	<ul class="stars">
+        		<li><i class="fa fa-star"></i></li>
+        		<li><i class="fa fa-star"></i></li>
+        		<li><i class="fa fa-star"></i></li>
+        	</ul>
+
+            <span class="moves"></span> Moves / 
+            
+            <span class="timer"></span>
+
+            <div class="restart">
+                <i class="fa fa-repeat"></i>   Start Over
+            </div>
+        
+        </section>
+
+        <ul class="deck">
+        </ul>
+    </div>
+
+    
+    <script src="js/app.js"></script>
+    <script src="js/sweetalert2.all.js"></script>
+    
+</body>
+</html>
