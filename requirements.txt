@@ -4,8 +4,6 @@ firebase-admin==6.5.0
 python-dotenv==1.0.1
 flask-socketio==5.3.6
 gunicorn==21.2.0
-gevent==24.2.1
-gevent-websocket==0.10.1
 Jinja2==3.1.4
 requests>=2.31.0,<3.0.0
 itsdangerous==2.1.2
