@@ -7,7 +7,7 @@ from firebase_admin import firestore
 import json
 import numpy as np
 import pickle
-import pandas as p
+import pandas as pd
 import plotly
 import plotly.express as px
 import plotly.graph_objs as go
