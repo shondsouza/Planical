@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 
   <title>Planical</title>
@@ -1354,6 +1355,885 @@
   font-size: 20px;
   line-height: 30px;
 }
+
+@media screen and (max-width: 768px) {
+  .home-banner {
+    flex-direction: column;
+    padding: 30px 20px; /* Further reduced padding for mobile */
+  }
+  
+  .home-buttons2 {
+    margin-top: 10px; /* Reduced margin */
+  }
+}
+
+/* Mobile layout fix */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  overflow-x: hidden; /* Prevents horizontal scroll */
+}
+
+/* Force full width on mobile */
+@media (max-width: 768px) {
+  body {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .container, .main-content, #hero, .section {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 10px !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Fix any problematic transforms */
+  * {
+    transform: none !important;
+  }
+}
+
+/* ============================================ */
+/* FIXED CORNER HAMBURGER MENU */
+/* ============================================ */
+
+/* Hamburger Menu Styles - Fixed Position in Corner */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  z-index: 9999;
+  padding: 10px;
+  background: none;
+  border: none;
+  position: absolute; /* Position it in corner */
+  right: 15px; /* Distance from right edge */
+  top: 50%; /* Center vertically */
+  transform: translateY(-50%); /* Perfect vertical centering */
+}
+
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background: #000 !important; /* Pure black */
+  margin: 2px 0;
+  border-radius: 1px;
+  display: block !important;
+  transition: none; /* No animations */
+}
+
+/* FORCE hamburger to always stay visible - no state changes */
+.hamburger,
+.hamburger.active,
+.hamburger:hover,
+.hamburger:focus {
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Ensure spans always stay as 3 lines */
+.hamburger span,
+.hamburger.active span,
+.hamburger:hover span {
+  transform: none !important;
+  opacity: 1 !important;
+  background: #000 !important;
+}
+
+/* Mobile Features Menu */
+.mobile-features-menu {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 280px;
+  height: 100vh;
+  background: white;
+  z-index: 1000;
+  transition: right 0.3s ease;
+  box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+  padding-top: 80px;
+}
+
+.mobile-features-menu.active {
+  right: 0;
+}
+
+.mobile-features-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mobile-features-menu ul li {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.mobile-features-menu ul li a {
+  display: block;
+  padding: 18px 25px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: background 0.3s ease;
+  font-size: 16px;
+}
+
+.mobile-features-menu ul li a:hover {
+  background: #f0f7ff;
+  color: #2c5aa0;
+}
+
+/* Mobile Overlay */
+.mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.mobile-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ============================================ */
+/* CORRECT HAMBURGER & SIDEBAR MENU */
+/* ============================================ */
+
+/* Hamburger Menu Styles - NEVER CHANGES */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  z-index: 9999;
+  padding: 10px;
+  background: none;
+  border: none;
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background: #000 !important;
+  margin: 2px 0;
+  border-radius: 1px;
+  display: block !important;
+  /* NO TRANSITIONS - hamburger never changes */
+}
+
+/* HAMBURGER NEVER CHANGES - Remove all active states */
+.hamburger span:nth-child(1),
+.hamburger span:nth-child(2),
+.hamburger span:nth-child(3) {
+  transform: none !important;
+  opacity: 1 !important;
+  background: #000 !important;
+}
+
+/* Mobile Features Sidebar with X inside */
+.mobile-features-menu {
+  position: fixed;
+  top: 0;
+  right: -100%; /* Hidden off-screen */
+  width: 300px;
+  height: 100vh;
+  background: white;
+  z-index: 10000; /* Higher than hamburger */
+  transition: right 0.3s ease; /* Smooth slide animation */
+  box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+  padding: 0;
+}
+
+.mobile-features-menu.active {
+  right: 0; /* Slides in from right */
+}
+
+/* X CLOSE BUTTON INSIDE SIDEBAR */
+.sidebar-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 40px;
+  height: 40px;
+  background: #f8f9fa;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10001;
+  transition: background 0.2s ease;
+}
+
+.sidebar-close-btn:hover {
+  background: #e9ecef;
+}
+
+.sidebar-close-btn::before,
+.sidebar-close-btn::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 2px;
+  background: #333;
+  border-radius: 1px;
+}
+
+.sidebar-close-btn::before {
+  transform: rotate(45deg);
+}
+
+.sidebar-close-btn::after {
+  transform: rotate(-45deg);
+}
+
+/* Sidebar Content */
+.mobile-features-menu ul {
+  list-style: none;
+  padding: 80px 0 20px 0; /* Top padding for close button */
+  margin: 0;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.mobile-features-menu ul li {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.mobile-features-menu ul li a {
+  display: block;
+  padding: 18px 25px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: background 0.3s ease;
+  font-size: 16px;
+}
+
+.mobile-features-menu ul li a:hover {
+  background: #f0f7ff;
+  color: #2c5aa0;
+}
+
+/* Mobile Overlay */
+.mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 9999; /* Below sidebar but above content */
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.mobile-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ============================================ */
+/* MOBILE RESPONSIVE STYLES */
+/* ============================================ */
+
+#navbar {
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  
+  /* Hide desktop navbar */
+  #navbar ul {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  
+  /* Show hamburger - ALWAYS VISIBLE */
+  .hamburger {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  /* Make sure navbar has space for hamburger */
+  #navbar {
+    min-height: 50px;
+    display: flex !important;
+    align-items: center !important;
+  }
+  
+  /* Adjust logo margin for mobile */
+  .logo {
+    margin-right: 30px !important;
+  }
+  
+  /* Hero section mobile adjustments */
+  .hero-container {
+    flex-direction: column !important;
+    text-align: center !important;
+    gap: 25px !important;
+  }
+  
+  .hero-content {
+    order: 2 !important;
+  }
+  
+  .hero-image {
+    order: 1 !important;
+  }
+  
+  .hero-image img, #hero .hero-img img {
+    max-width: 280px !important;
+    width: 90% !important;
+  }
+  
+  .hero h1, #hero h1 {
+    font-size: 2.2rem !important;
+  }
+  
+  .hero p, #hero p {
+    font-size: 0.95rem !important;
+  }
+  
+  #hero .hero-img {
+    transform: scale(1) !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .hamburger {
+    right: 10px;
+  }
+  
+  .mobile-features-menu {
+    width: 280px; /* Slightly smaller on small screens */
+  }
+  
+  .logo {
+    margin-right: 20px !important;
+  }
+  
+  .hero-image img, #hero .hero-img img {
+    max-width: 240px !important;
+    width: 85% !important;
+  }
+  
+  .hero h1, #hero h1 {
+    font-size: 1.8rem !important;
+  }
+  
+  .hero p, #hero p {
+    font-size: 0.9rem !important;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .hamburger {
+    right: 8px;
+    padding: 8px;
+  }
+  
+  .mobile-features-menu {
+    width: 260px;
+  }
+  
+  .logo {
+    margin-right: 15px !important;
+  }
+  
+  .hero-image img, #hero .hero-img img {
+    max-width: 200px !important;
+    width: 80% !important;
+  }
+  
+  .hero h1, #hero h1 {
+    font-size: 1.5rem !important;
+  }
+  
+  .hero p, #hero p {
+    font-size: 0.85rem !important;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .hamburger {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #hero .container > .row {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    text-align: left !important;
+    display: flex !important;
+  }
+  .col-lg-6.pt-5.pt-lg-0.order-2.order-lg-1.d-flex.flex-column.justify-content-center {
+    flex: 1 1 60%;
+    order: 1 !important;
+    padding-right: 8px;
+    display: flex !important;
+    justify-content: center !important;
+  }
+  .col-lg-6.order-1.order-lg-2.hero-img {
+    flex: 1 1 40%;
+    order: 2 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .hero-image img, #hero .hero-img img, .col-lg-6.order-1.order-lg-2.hero-img img {
+    max-width: 80px !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+  #main-heading.small-heading, .hero h1, #hero h1 {
+    font-size: 1.1rem !important;
+    line-height: 1.1 !important;
+    margin-bottom: 0.5rem !important;
+    white-space: normal !important;
+  }
+  .hero h2, #hero h2 {
+    font-size: 0.85rem !important;
+    line-height: 1.2 !important;
+    margin-bottom: 0.5rem !important;
+    white-space: normal !important;
+  }
+  .btn-watch-video, .btn-get-started {
+    font-size: 0.75rem !important;
+    padding: 8px 12px !important;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .hamburger {
+    right: 8px;
+    padding: 8px;
+  }
+  
+  .mobile-features-menu {
+    width: 260px;
+  }
+  
+  .logo {
+    margin-right: 15px !important;
+  }
+  
+  .hero-image img, #hero .hero-img img {
+    max-width: 200px !important;
+    width: 80% !important;
+  }
+  
+  .hero h1, #hero h1 {
+    font-size: 1.5rem !important;
+  }
+  
+  .hero p, #hero p {
+    font-size: 0.85rem !important;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .hamburger {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .hero-container {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    text-align: left !important;
+  }
+  .hero-content {
+    flex: 1 1 60%;
+    order: 1 !important;
+    padding-right: 8px;
+  }
+  .hero-image {
+    flex: 1 1 40%;
+    order: 2 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hero-image img, #hero .hero-img img {
+    max-width: 120px !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+  .hero h1, #hero h1 {
+    font-size: 1.1rem !important;
+    line-height: 1.1 !important;
+    margin-bottom: 0.5rem !important;
+  }
+  .btn-watch-video, .btn-get-started {
+    font-size: 0.85rem !important;
+    padding: 10px 18px !important;
+  }
+}
+
+/* ============================================ */
+/* BEAUTIFUL MOBILE HERO UI/UX DESIGN */
+/* ============================================ */
+
+@media screen and (max-width: 480px) {
+  #hero {
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(145deg, #f8faff 0%, #e8f4f8 50%, #dbeafe 100%);
+    padding: 0;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  #hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.03)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.03)"/><circle cx="50" cy="10" r="1" fill="rgba(255,255,255,0.02)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    pointer-events: none;
+    z-index: 1;
+  }
+  #hero::after {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+    border-radius: 50%;
+    filter: blur(20px);
+    z-index: 1;
+  }
+  #hero .container {
+    position: relative;
+    z-index: 2;
+    padding: 20px 10px 40px 10px !important;
+    max-width: 100%;
+  }
+  #hero .row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0;
+    position: relative;
+    z-index: 2;
+    display: flex !important;
+  }
+  #hero .col-lg-6.order-2.order-lg-1 {
+    order: 2;
+    padding: 0 10px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  #hero .col-lg-6.order-1.order-lg-2 {
+    order: 1;
+    margin-bottom: 0;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #hero .hero-img {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  #hero .hero-img::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 180px;
+    height: 180px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(147, 51, 234, 0.15));
+    border-radius: 50%;
+    z-index: -1;
+    filter: blur(30px);
+  }
+  #hero .hero-img img {
+    max-width: 140px !important;
+    width: 85% !important;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.10);
+    position: relative;
+    z-index: 2;
+    background: white;
+    padding: 8px;
+  }
+  #hero h1 {
+    font-size: 1.5rem !important;
+    font-weight: 800 !important;
+    line-height: 1.1 !important;
+    margin-bottom: 14px !important;
+    background: linear-gradient(135deg, #1e293b 0%, #475569 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-align: center;
+    letter-spacing: -1px;
+  }
+  #hero h2 {
+    font-size: 0.95rem !important;
+    line-height: 1.4 !important;
+    color: #64748b !important;
+    margin: 0 0 22px 0 !important;
+    font-weight: 400;
+    text-align: center;
+    max-width: 260px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  #hero .d-flex {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 12px !important;
+    margin-top: 12px;
+  }
+  #hero .btn-get-started {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+    border: none !important;
+    border-radius: 50px !important;
+    padding: 12px 24px !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    color: white !important;
+    text-decoration: none !important;
+    box-shadow: 0 6px 18px rgba(59, 130, 246, 0.18) !important;
+    transition: all 0.3s ease !important;
+    position: relative;
+    overflow: hidden;
+    min-width: 160px;
+  }
+  #hero .btn-get-started:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 28px rgba(59, 130, 246, 0.22) !important;
+  }
+  #hero .btn-get-started::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+  #hero .btn-get-started:hover::before {
+    left: 100%;
+  }
+  #hero .btn-watch-video {
+    background: rgba(255, 255, 255, 0.9) !important;
+    color: #475569 !important;
+    border: 2px solid rgba(59, 130, 246, 0.2) !important;
+    border-radius: 50px !important;
+    padding: 10px 18px !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    transition: all 0.3s ease !important;
+    backdrop-filter: blur(10px);
+  }
+  #hero .btn-watch-video:hover {
+    background: rgba(59, 130, 246, 0.1) !important;
+    border-color: rgba(59, 130, 246, 0.3) !important;
+    transform: translateY(-1px);
+  }
+  #hero .btn-watch-video i {
+    font-size: 1.2em;
+    color: #3b82f6;
+  }
+}
+
+/* ============================================ */
+/* FIX TEXT BREAKING/WRAPPING ISSUES */
+/* ============================================ */
+
+#hero h1,
+#main-heading,
+.hero h1 {
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: none !important;
+  line-height: 1.1 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  letter-spacing: -0.5px !important;
+}
+
+@media screen and (max-width: 480px) {
+  #hero h1,
+  #main-heading {
+    font-size: 1.8rem !important;
+    line-height: 1.2 !important;
+    margin-bottom: 20px !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    letter-spacing: -0.3px !important;
+    text-align: center !important;
+    padding: 0 10px !important;
+  }
+  #hero .container {
+    padding: 0 15px !important;
+    max-width: 100% !important;
+  }
+  #hero .col-lg-6 {
+    padding: 0 10px !important;
+  }
+  #hero h2 {
+    font-size: 1rem !important;
+    line-height: 1.4 !important;
+    margin: 15px 0 25px 0 !important;
+    padding: 0 5px !important;
+    text-align: center !important;
+  }
+}
+@media screen and (max-width: 360px) {
+  #hero h1,
+  #main-heading {
+    font-size: 1.6rem !important;
+    line-height: 1.3 !important;
+    padding: 0 15px !important;
+    letter-spacing: -0.2px !important;
+  }
+  #hero h2 {
+    font-size: 0.95rem !important;
+    line-height: 1.4 !important;
+    padding: 0 10px !important;
+  }
+  #hero .container {
+    padding: 0 10px !important;
+  }
+}
+@media screen and (max-width: 320px) {
+  #hero h1,
+  #main-heading {
+    font-size: 1.4rem !important;
+    line-height: 1.3 !important;
+    padding: 0 20px !important;
+    letter-spacing: 0px !important;
+  }
+  #hero h2 {
+    font-size: 0.9rem !important;
+    line-height: 1.5 !important;
+    padding: 0 15px !important;
+  }
+}
+@media screen and (max-width: 480px) {
+  #hero h1 {
+    word-break: keep-all !important;
+    overflow-wrap: break-word !important;
+    -webkit-hyphens: auto !important;
+    -moz-hyphens: auto !important;
+    hyphens: auto !important;
+    lang: "en" !important;
+  }
+  #hero .d-flex {
+    margin-top: 30px !important;
+    padding: 0 15px !important;
+  }
+  #hero .btn-get-started {
+    padding: 12px 20px !important;
+    font-size: 0.9rem !important;
+    white-space: nowrap !important;
+  }
+  #hero .btn-watch-video {
+    font-size: 0.85rem !important;
+    white-space: nowrap !important;
+  }
+}
+@media screen and (max-width: 768px) and (orientation: landscape) {
+  #hero h1,
+  #main-heading {
+    font-size: 1.8rem !important;
+    line-height: 1.2 !important;
+    padding: 0 10px !important;
+  }
+  #hero h2 {
+    font-size: 0.95rem !important;
+    line-height: 1.3 !important;
+  }
+}
+#hero h1,
+#hero h2,
+#main-heading {
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: optimizeLegibility !important;
+  font-feature-settings: "kern" 1 !important;
+  font-kerning: auto !important;
+}
+
+@media (max-width: 480px) {
+  #hero h1,
+  #main-heading,
+  .main-heading {
+    font-size: clamp(18px, 6vw, 28px) !important;
+    line-height: 1.15 !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin-top: 90px !important; /* Extra space for navbar */
+    margin-bottom: 16px !important;
+    padding: 0 10px !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+  }
+  #hero .container {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+  }
+}
+
+@media (max-width: 375px) {
+  #hero h1,
+  #main-heading,
+  .main-heading {
+    font-size: clamp(16px, 5vw, 22px) !important;
+    margin-top: 100px !important;
+    padding: 0 8px !important;
+  }
+  #hero h2 {
+    font-size: 0.95rem !important;
+    padding: 0 6px !important;
+  }
+}
 </style>
 
 <body>
@@ -1439,98 +2319,118 @@
   <!-- ChatBot end -->
 
 
+<!-- ======= Header ======= -->
+<header id="header" class="fixed-top">
+  <div class="container d-flex align-items-center justify-content-between">
+    <h1 class="logo" style="margin-right: 100px;">
+      <img src="{{url_for('static', filename='logo.png')}}" alt="" class="src">
+      <a href="#">Planical</a>
+    </h1>
 
-
-
-  <!-- ======= Header ======= -->
-  <header id="header" class="fixed-top">
-    <div class="container d-flex align-items-center justify-content-between">
-      <h1 class="logo" style="margin-right: 100px;"><img src="{{url_for('static', filename='logo.png')}}" alt="" class="src"><a href="#">Planical</a></h1>
-
-      <nav id="navbar" class="navbar">
-        <ul>
-          <li><a class="nav-link scrollto" href="{% if session.get('user') %}#services{% else %}/login{% endif %}">Features</a></li>
-          <li><a class="nav-link scrollto" href="{% if session.get('user') %}#publications{% else %}/login{% endif %}">Blogs</a></li>
-          <li><a class="nav-link scrollto" href="#cta">Call to Action</a></li>
-          <li><a class="nav-link scrollto" href="{% if session.get('user') %}/planical-ai{% else %}/login{% endif %}">Planical AI</a></li>
-          <li><a class="nav-link scrollto" href="{% if session.get('user') %}{{ url_for('virtual_consultation') }}{% else %}/login{% endif %}">Doctor Consult</a></li>
-          <li>
-            {% if session.get('user') %}
-              <a class="getstarted scrollto" href="#services">Get Started</a>
-            {% else %}
-              <a class="getstarted" href="/login">Get Started</a>
-            {% endif %}
-          </li>
+    <nav id="navbar" class="navbar">
+      <!-- Desktop Navigation -->
+      <ul>
+        <li><a class="nav-link scrollto" href="{% if session.get('user') %}#services{% else %}/login{% endif %}">Features</a></li>
+        <li><a class="nav-link scrollto" href="{% if session.get('user') %}#publications{% else %}/login{% endif %}">Blogs</a></li>
+        <li><a class="nav-link scrollto" href="#cta">Call to Action</a></li>
+        <li><a class="nav-link scrollto" href="{% if session.get('user') %}/planical-ai{% else %}/login{% endif %}">Planical AI</a></li>
+        <li><a class="nav-link scrollto" href="{% if session.get('user') %}{{ url_for('virtual_consultation') }}{% else %}/login{% endif %}">Doctor Consult</a></li>
+        <li>
           {% if session.get('user') %}
-            <li class="profile-dropdown">
-              <a class="profile-button" href="#" style="background: #0d6efd; color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 500; line-height: 1; position: relative;">
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-                  {% if session['user'].get('name') %}
-                    S
-                  {% else %}
-                    U
-                  {% endif %}
-                </div>
-              </a>
-              <div class="profile-dropdown-content">
-                <div class="sidebar-close-btn">
-                  <i class="bi bi-x-lg"></i>
-                </div>
-                <div class="profile-header">
-                  <div class="profile-avatar" style="display: flex; align-items: center; justify-content: center; line-height: 1; position: relative; background: #0d6efd;">
-                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-                      {% if session['user'].get('name') %}
-                        S
-                      {% else %}
-                        U
-                      {% endif %}
-                    </div>
-                  </div>
-                  <div class="profile-info">
-                    <h5>{% if session['user'].get('name') %}Shon S{% else %}User{% endif %}</h5>
-                    <p>{% if session['user'].get('email') %}{{ session['user'].get('email') }}{% else %}No email provided{% endif %}</p>
-                  </div>
-                </div>
-                <ul class="profile-menu">
-                  <li>
-                    <a href="/profile">
-                      <i class="bi bi-person"></i>
-                      <span>Edit Profile</span>
-                    </a>
-            </li>
-                  <li>
-                    <a href="/settings">
-                      <i class="bi bi-gear"></i>
-                      <span>Settings & Privacy</span>
-                    </a>
-            </li>
-                  <li>
-                    <a href="/help-support">
-                      <i class="bi bi-question-circle"></i>
-                      <span>Help & Support</span>
-            </a>
-          </li>
-                  <li>
-                    <a href="/logout">
-                      <i class="bi bi-box-arrow-right"></i>
-                      <span>Logout</span>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </li>
+            <a class="getstarted scrollto" href="#services">Get Started</a>
+          {% else %}
+            <a class="getstarted" href="/login">Get Started</a>
           {% endif %}
-        </ul>
-        <i class="bi bi-list mobile-nav-toggle"></i>
-      </nav><!-- .navbar -->
-    </div>
-  </header><!-- End Header -->
+        </li>
+        {% if session.get('user') %}
+          <li class="profile-dropdown">
+            <a class="profile-button" href="#" style="background: #0d6efd; color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 500; line-height: 1; position: relative;">
+              <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                {% if session['user'].get('name') %}
+                  S
+                {% else %}
+                  U
+                {% endif %}
+              </div>
+            </a>
+            <div class="profile-dropdown-content">
+              <div class="sidebar-close-btn">
+                <i class="bi bi-x-lg"></i>
+              </div>
+              <div class="profile-header">
+                <div class="profile-avatar" style="display: flex; align-items: center; justify-content: center; line-height: 1; position: relative; background: #0d6efd;">
+                  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                    {% if session['user'].get('name') %}
+                      S
+                    {% else %}
+                      U
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="profile-info">
+                  <h5>{% if session['user'].get('name') %}Shon S{% else %}User{% endif %}</h5>
+                  <p>{% if session['user'].get('email') %}{{ session['user'].get('email') }}{% else %}No email provided{% endif %}</p>
+                </div>
+              </div>
+              <ul class="profile-menu">
+                <li>
+                  <a href="/profile">
+                    <i class="bi bi-person"></i>
+                    <span>Edit Profile</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/settings">
+                    <i class="bi bi-gear"></i>
+                    <span>Settings & Privacy</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/help-support">
+                    <i class="bi bi-question-circle"></i>
+                    <span>Help & Support</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/logout">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+        {% endif %}
+      </ul>
+      
+      <!-- HAMBURGER MENU - NEVER CHANGES -->
+      <div class="hamburger" onclick="toggleFeaturesMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </nav><!-- .navbar -->
+  </div>
+</header><!-- End Header -->
 
+<!-- MOBILE OVERLAY -->
+<div class="mobile-overlay"></div>
 
-
-
-
-
+<!-- MOBILE SIDEBAR WITH X INSIDE -->
+<div class="mobile-features-menu">
+  <!-- X CLOSE BUTTON INSIDE SIDEBAR -->
+  <div class="sidebar-close-btn"></div>
+  
+  <!-- SIDEBAR MENU -->
+  <ul>
+    <li><a href="{% if session.get('user') %}#services{% else %}/login{% endif %}">Features</a></li>
+    <li><a href="{% if session.get('user') %}#mental-health-tools{% else %}/login{% endif %}">Mental Health Tools</a></li>
+    <li><a href="{% if session.get('user') %}#expert-consultations{% else %}/login{% endif %}">Expert Consultations</a></li>
+    <li><a href="{% if session.get('user') %}#progress-tracking{% else %}/login{% endif %}">Progress Tracking</a></li>
+    <li><a href="{% if session.get('user') %}#support{% else %}/login{% endif %}">24/7 Support</a></li>
+    <li><a href="{% if session.get('user') %}/planical-ai{% else %}/login{% endif %}">Planical AI</a></li>
+  </ul>
+</div>
 
   <!-- ======= Hero Section ======= -->
   <section id="hero" class="d-flex align-items-center">
@@ -2336,7 +3236,7 @@
             Copyright © 2025 <b>Planical</b>. All Rights Reserved.
       </div>
           <div style="color: black; font-size: 14px;">
-            Designed &by <a href="https://github.com/shondsouza" target="_blank" style="color: blue; text-decoration: none; transition: color 0.3s ease;">Shon Dsouza</a>
+            Designed & Developed by <a href="https://github.com/shondsouza" target="_blank" style="color: blue; text-decoration: none; transition: color 0.3s ease;">Shon Dsouza</a>
       </div>
     </div>
             </div>
@@ -2606,6 +3506,95 @@
       }
     });
 
+// ============================================
+// CORRECT SIDEBAR MENU FUNCTIONS
+// Hamburger NEVER changes, X is inside sidebar
+// ============================================
+
+function toggleFeaturesMenu() {
+  const mobileMenu = document.querySelector('.mobile-features-menu');
+  const overlay = document.querySelector('.mobile-overlay');
+  
+  if (mobileMenu && overlay) {
+    // Only toggle sidebar and overlay - NEVER touch hamburger
+    mobileMenu.classList.add('active');
+    overlay.classList.add('active');
+    
+    // Prevent body scrolling when sidebar is open
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeFeaturesMenu() {
+  const mobileMenu = document.querySelector('.mobile-features-menu');
+  const overlay = document.querySelector('.mobile-overlay');
+  
+  if (mobileMenu && overlay) {
+    // Only close sidebar and overlay - hamburger stays unchanged
+    mobileMenu.classList.remove('active');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+}
+
+// Auto-close menu when screen becomes larger
+window.addEventListener('resize', () => {
+  if (window.innerWidth > 768) {
+    closeFeaturesMenu();
+  }
+});
+
+// Handle orientation change
+window.addEventListener('orientationchange', () => {
+  setTimeout(() => {
+    if (window.innerWidth > 768) {
+      closeFeaturesMenu();
+    }
+  }, 100);
+});
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  // Ensure sidebar is closed on page load
+  closeFeaturesMenu();
+  
+  // Add click event to close button inside sidebar
+  const closeBtn = document.querySelector('.sidebar-close-btn');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeFeaturesMenu);
+  }
+  
+  // Close sidebar when clicking on overlay
+  const overlay = document.querySelector('.mobile-overlay');
+  if (overlay) {
+    overlay.addEventListener('click', closeFeaturesMenu);
+  }
+  
+  // Close sidebar when clicking on menu links
+  const menuLinks = document.querySelectorAll('.mobile-features-menu ul li a');
+  menuLinks.forEach(link => {
+    link.addEventListener('click', closeFeaturesMenu);
+  });
+  
+  // Close sidebar when tapping outside (for touch devices)
+  document.addEventListener('touchstart', function(e) {
+    const mobileMenu = document.querySelector('.mobile-features-menu');
+    const hamburger = document.querySelector('.hamburger');
+    
+    if (mobileMenu && mobileMenu.classList.contains('active') && 
+        !mobileMenu.contains(e.target) && 
+        !hamburger.contains(e.target)) {
+      closeFeaturesMenu();
+    }
+  });
+  
+  // Handle escape key to close sidebar
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeFeaturesMenu();
+    }
+  });
+});
     // Close button functionality
     const closeButtons = document.querySelectorAll('.sidebar-close-btn');
     closeButtons.forEach(button => {
