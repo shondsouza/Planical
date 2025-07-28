@@ -1,5 +1,5 @@
 # **Planical Chatbot**  
-<img width="1882" height="1102" alt="Image" src="https://github.com/user-attachments/assets/e0f48dd5-7e28-45f0-9d6e-e79d5c863d95" />
+<img width="1896" height="1109" alt="Image" src="https://github.com/user-attachments/assets/f4676a29-d8b4-4666-b19f-407b0c221b4f" />
 A simple WebSocket-based chatbot designed to provide **mental health support** by responding to user messages based on predefined keywords.  
 
 ## **Features**  
