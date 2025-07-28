@@ -1,11 +1,11 @@
 # Planical - Mental Healthcare Platform
 
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/ef1fd885-53ec-4dba-bd76-2b882f32bbb4" alt="Planical Platform Preview" width="800"/>
+  <img width="1889" height="1104" alt="Image" src="https://github.com/user-attachments/assets/bc7e269a-c1e5-48fa-a549-1875d6454a34" />
 </div>
 
 <h1 align="center">
-  🧠 Prioritize Your Mental Health
+   Prioritize Your Mental Health
 </h1>
 
 <p align="center">
@@ -24,38 +24,38 @@
 
 </div>
 
-## 🌟 Features
+##  Features
 
-### 🩺 Professional Support
+### Professional Support
 - **Video Consultations**: Secure real-time video sessions with licensed mental health professionals
 - **Doctor Approval System**: Verified healthcare providers through admin-controlled approval process
 - **Appointment Scheduling**: Easy-to-use booking system for patient-doctor consultations
 - **Consultation Management**: Comprehensive tools for doctors to manage their practice
 
-### 🔐 User Authentication & Security
+###  User Authentication & Security
 - **Secure Login System**: Multi-role authentication for patients, doctors, and administrators
 - **Firebase Authentication**: Industry-standard security protocols
 - **User Profiles**: Customizable profiles for both patients and healthcare providers
 - **Data Privacy**: HIPAA-compliant data handling and storage
 
-### 🧠 Self-Help Resources
+###  Self-Help Resources
 - **Stress Analysis Dashboard**: Interactive visualization of stress patterns using Plotly
 - **ML-Powered Stress Detection**: K-Nearest Neighbour algorithm for personalized stress assessment
 - **Music Therapy**: Guided meditation sessions with curated background music
 - **Exercise Recommendations**: Personalized workout routines with step-by-step instructions
 - **Mental Health Resources**: Comprehensive library of wellness tools and guides
 
-### 🤖 AI-Powered Assistance
+###  AI-Powered Assistance
 - **Planical AI Chatbot**: 24/7 intelligent support for general mental health questions
 - **Real-time Notifications**: Socket.IO-based instant updates for appointments and consultations
 - **Habit Tracking**: Monitor and record mental wellness activities and progress
 
-### 📊 Analytics & Insights
+###  Analytics & Insights
 - **Interactive Data Visualization**: Stress analysis through dynamic charts and graphs
 - **Progress Tracking**: Monitor improvement over time with detailed analytics
 - **Personalized Recommendations**: Data-driven suggestions for mental wellness
 
-## 🚀 Tech Stack
+##  Tech Stack
 
 ### Backend
 - **Python & Flask**: Robust server-side framework
@@ -73,7 +73,7 @@
 - **Scikit-learn**: Machine learning algorithms
 - **K-Nearest Neighbour**: Stress level prediction model
 
-## 📱 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - Python 3.8 or higher
@@ -117,20 +117,7 @@
    - Main Application: http://localhost:5000
    - AI Chatbot: http://localhost:5000/planical-ai
 
-## 🏗️ Project Structure
-
-```
-planical/
-├── app.py                 # Main Flask application
-├── start_services.py      # Service orchestrator
-├── Chatbot/              # AI chatbot backend
-├── static/               # CSS, JS, images
-├── templates/            # HTML templates
-├── requirements.txt      # Python dependencies
-└── .env                  # Environment variables
-```
-
-## 🔧 Core Functionalities
+## Core Functionalities
 
 ### For Patients
 - Schedule and attend video consultations
@@ -150,7 +137,7 @@ planical/
 - Monitor platform usage and analytics
 - Manage user accounts and permissions
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions to improve Planical! Please follow these steps:
 
@@ -160,11 +147,11 @@ We welcome contributions to improve Planical! Please follow these steps:
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
+## License
 
 This project is proprietary and confidential. All rights reserved.
 
-## 🆘 Support
+## Support
 
 For support and inquiries:
 - Create an issue in this repository
