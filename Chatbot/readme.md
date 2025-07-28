@@ -27,7 +27,7 @@ A simple WebSocket-based chatbot designed to provide **mental health support** b
    The server starts at **ws://localhost:8765**  
 
 4. **Connect a WebSocket Client**  
-   - Use a WebSocket tool (e.g., Postman, a browser-based client, or a frontend app) to send messages.  
+   - Use a WebSocket tool (e.g., Postman, a browser-based client, or frontend app) to send messages.  
 
 ## **Usage**  
 - Send messages containing words like **stress, anxiety, sadness** to get appropriate responses.  
